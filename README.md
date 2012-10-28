@@ -1,9 +1,30 @@
-Mellifera Project README
-========================
+Mellifera Project
+=================
 
 To do:
 ------
 * Liability Limit
+
+Open Economics
+--------------
+
+1. Representation of money.
+2. Contribution.
+3. Payment and compensation.
+4. The case for shared surplus.
+
+Time-Trading Rules
+------------------
+
+* Members may have only one account.
+* Do not over-report your hours; be honest when accounting for time worked.
+* Do not waste others' time; share knowledge of best practices.
+* Do not waste your own time; use best practices whenever possible, and seek guidance when you need it.
+* Do not hoard money indefinitely; spend it regularly.
+
+Rule 1 ensures that everyone gets the same amount of dividends and liability limit.
+Rules 2-5 above help stabilize the money supply.
+Failing to abide by these rules causes the community currency to lose its usefulness, and should be grounds for the termination of membership.
 
 
 Early prototype:
