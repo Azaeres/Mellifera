@@ -9,11 +9,10 @@ To do:
 Open Economics
 --------------
 
-1. Representation of money.
-2. Contribution.
-3. Payment and compensation.
-4. The case for shared surplus.
-5. How to use Mellifera
+1. Money and wealth.
+2. Contribution, the start of the Monetary Cycle.
+3. Payment and compensation, the end of the Monetary Cycle.
+4. The case for shared surplus and occupational information.
 
 Time-trading rules
 ------------------
@@ -26,6 +25,12 @@ Time-trading rules
 
 Rule 1 ensures that everyone gets the same amount of dividends and liability limit. Rules 2-5 help stabilize the money supply. Failing to abide by these rules causes the community currency to lose its usefulness, and should be grounds for the termination of membership.
 
+How to use Mellifera
+--------------------
+
+* How to start a time-trading community server
+* How to report a contribution of time
+* How to pay someone
 
 Early prototype:
 ----------------
