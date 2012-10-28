@@ -4,10 +4,15 @@
 
 <body>
   {{loginButtons}}
+	{{> main}}
 </body>
 
-<template name="hello">
-  <h1>Hello World!</h1>
-  {{greeting}}
-  <input type="button" value="Click" />
+<template name="main">
+  {{#if loggedIn}}
+	  <h1>Hello World!</h1>
+	  <div>
+		  {{greeting}}
+		  <input type="button" value="Click" />
+		</div>
+  {{/if}}
 </template>
