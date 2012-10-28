@@ -3,7 +3,7 @@ Mellifera Project README
 
 To do:
 ------
-* User login
+* Liability Limit
 
 
 Early prototype:
