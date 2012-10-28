@@ -1,5 +1,6 @@
-Mellifera Project
-=================
+Mellifera
+=========
+A time-trading system.
 
 To do:
 ------
@@ -12,19 +13,18 @@ Open Economics
 2. Contribution.
 3. Payment and compensation.
 4. The case for shared surplus.
+5. How to use Mellifera
 
-Time-Trading Rules
+Time-trading rules
 ------------------
 
-* Members may have only one account.
-* Do not over-report your hours; be honest when accounting for time worked.
-* Do not waste others' time; share knowledge of best practices.
-* Do not waste your own time; use best practices whenever possible, and seek guidance when you need it.
-* Do not hoard money indefinitely; spend it regularly.
+1. Members may have only one account.
+2. Do not over-report your hours; be honest when accounting for time worked.
+3. Do not waste others' time; share knowledge of best practices.
+4. Do not waste your own time; use best practices whenever possible, and seek guidance when you need it.
+5. Do not hoard money indefinitely; spend it regularly.
 
-Rule 1 ensures that everyone gets the same amount of dividends and liability limit.
-Rules 2-5 above help stabilize the money supply.
-Failing to abide by these rules causes the community currency to lose its usefulness, and should be grounds for the termination of membership.
+Rule 1 ensures that everyone gets the same amount of dividends and liability limit. Rules 2-5 help stabilize the money supply. Failing to abide by these rules causes the community currency to lose its usefulness, and should be grounds for the termination of membership.
 
 
 Early prototype:
