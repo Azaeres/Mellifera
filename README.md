@@ -9,7 +9,7 @@ To do:
 Open Economics
 --------------
 
-1. Money and wealth.
+1. An explanation of money and wealth.
 2. Contribution, the start of the Monetary Cycle.
 3. Payment and compensation, the end of the Monetary Cycle.
 4. The case for shared surplus and occupational information.
