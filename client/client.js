@@ -24,11 +24,13 @@ TimeAccounts = new Meteor.Collection('TimeAccounts');
 
 Helpers = {
   liabilityLimit: function() {
-  //  d_('foo');
-    Meteor.call('LiabilityLimit', function(error, result) {
-      (typeof error === 'undefined') ? d_(result) : d_(error);
-    });
-    return 'Fetching liability limit...';
+    var sharedAcct = TimeAccounts.findOne({owner:null});
+    var liabilityLimit = null;
+    if (typeof sharedAcct !== 'undefined') {
+      liabilityLimit = sharedAcct.liabilityLimit;
+    }
+
+    return liabilityLimit;
   },
   wipeAccount: function() {
     Meteor.call('WipeAccount', function(error, result) {
@@ -67,11 +69,30 @@ Helpers = {
     var timeAccount = TimeAccounts.findOne({_id:acctId});
 
     return timeAccount;
+  },
+  percentDebtOfLimit: function() {
+    var percent = 0, debt;
+
+    var sharedAccount = TimeAccounts.findOne({owner:null});
+    if (typeof sharedAccount !== 'undefined') {
+      var limit = sharedAccount.liabilityLimit;
+      var timeAccount = h_.timeAccount();
+
+      if (typeof timeAccount !== 'undefined') {
+        debt = timeAccount.debt;
+        percent = (debt / limit) * 100;
+      }
+    }
+
+    return percent;
   }
 };
 h_ = Helpers;
 
 Template.main.helpers({
+  liabilityLimit: function() {
+    return h_.liabilityLimit();
+  },
   credit: function() {
     var credit;
     var timeAccount = h_.timeAccount();
@@ -96,20 +117,7 @@ Template.main.helpers({
     return (Meteor.userId() !== null);
   },
   percentDebtOfLimit: function() {
-    var percent = 0, debt;
-
-    var sharedAccount = TimeAccounts.findOne({owner:null});
-    if (typeof sharedAccount !== 'undefined') {
-      var limit = sharedAccount.liabilityLimit;
-      var timeAccount = h_.timeAccount();
-
-      if (typeof timeAccount !== 'undefined') {
-        debt = timeAccount.debt;
-        percent = (debt / limit) * 100;
-      }
-    }
-
-    return percent;
+    return h_.percentDebtOfLimit();
   },
   debtWarning: function() {
     var warning = 'success', percent = 0, debt;
@@ -137,16 +145,16 @@ Template.main.helpers({
 
 /*
 Template.main.rendered = function() {
-  $('.credit-amount').hover(function() {
-    $('.credit-amount').tooltip({
+  $('.debt-amount .progress').hover(function() {
+    $('.debt-amount .progress').tooltip({
       trigger: 'manual',
       placement:'top',
-      title:'Credit',
+      title:'Debt: ' + h_.roundCurrency(h_.percentDebtOfLimit()) + '%',
       placement:'left'
         }).tooltip('show');
   },
   function() {
-    $('.credit-amount').tooltip('hide');
+    $('.debt-amount .progress').tooltip('hide');
   });
 };
 */
@@ -190,6 +198,25 @@ Template.main.events({
     $(event.target).select();
   }
 });
+
+var AppRouter = Backbone.Router.extend({
+  routes: {
+  //  "*actions": "defaultRoute", // matches http://example.com/#anything-here
+    "users/:user": "user"
+  },
+  'user': function(user) {
+    d_('user: '+user);
+  }
+});
+// Initiate the router
+var app_router = new AppRouter;
+
+app_router.on('route:defaultRoute', function(actions) {
+  d_(actions);
+})
+
+// Start Backbone history a necessary step for bookmarkable URL's
+Backbone.history.start();
 
 /*
 Template.main.events({

@@ -5,7 +5,7 @@
 }
 
 div {
-	-border:1px solid blue;
+	1-border:1px solid blue;
 }
 
 .debt-amount {
@@ -17,14 +17,15 @@ div {
 	font-weight: bold;
 	color: #aaa;
 	font-size: 17px;
-	display:inline;
+	display:inline-block;
 	line-height:40px;
+	width:3em;
 }
 .debt-amount .progress {
 	margin-top: 11px;
 }
 .debt-amount .amount, .credit-amount .amount {
-	text-align:right;
+	1-text-align:right;
 }
 
 .credit-amount {
@@ -33,3 +34,14 @@ div {
 	line-height:40px;
 }
 
+.report-cont-form {
+	1-display:inline-block;
+}
+
+#report-cont-input {
+	text-align:right;
+}
+
+.form-right {
+	width: 22em; 
+}

@@ -4,8 +4,7 @@ A time-trading system.
 
 To do:
 ------
-* Shared time account
-* Liability Limit
+* Find users
 
 Open Economics
 --------------

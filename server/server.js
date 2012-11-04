@@ -111,6 +111,9 @@ Meteor.methods({
 						amount -= remaining;
 					}
 
+					if (amount < 0)
+						amount = 0;
+
 					TimeAccounts.update({ _id:acct._id }, { $inc:{ credit:amount, debt:amount } });
 					result = amount;
 				}
