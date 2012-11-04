@@ -94,8 +94,9 @@ Meteor.methods({
 	 * Checks for the liability limit before applying.
 	 */
 	ReportContribution: function(amount) {
+		var result = 0;
 		var liabilityLimit = h_.liabilityLimit();
-
+		
 		if (liabilityLimit !== null) {
 		  var userId = this.userId;
 		  if (userId !== null) {
@@ -111,6 +112,7 @@ Meteor.methods({
 					}
 
 					TimeAccounts.update({ _id:acct._id }, { $inc:{ credit:amount, debt:amount } });
+					result = amount;
 				}
 				else
 					throw new Meteor.Error(500, 'No time account found for user.');
@@ -121,6 +123,7 @@ Meteor.methods({
 		else
 			throw new Meteor.Error(500, 'Liability limit not set.');
 
+		return result;
 /*
 			var availableDebt = gLiabilityLimit - gDebt[memberId];
 			var remaining = availableDebt - amount;

@@ -3,3 +3,33 @@
 #login-buttons {
 	margin: 1em;
 }
+
+div {
+	-border:1px solid blue;
+}
+
+.debt-amount {
+	font-size:32px;
+	color:#a00;
+	line-height:40px;
+}
+.debt-amount label, .credit-amount label {
+	font-weight: bold;
+	color: #aaa;
+	font-size: 17px;
+	display:inline;
+	line-height:40px;
+}
+.debt-amount .progress {
+	margin-top: 11px;
+}
+.debt-amount .amount, .credit-amount .amount {
+	text-align:right;
+}
+
+.credit-amount {
+	font-size:32px;
+	color:#0a0;
+	line-height:40px;
+}
+
