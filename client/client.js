@@ -21,6 +21,7 @@ Meteor.autorun(function() {
 });
 
 TimeAccounts = new Meteor.Collection('TimeAccounts');
+Session.set('currentPage', 'accountDetails');
 
 Helpers = {
   liabilityLimit: function() {
@@ -114,6 +115,20 @@ Helpers = {
 h_ = Helpers;
 
 Template.main.helpers({
+  loggedIn: function () {
+    return (Meteor.userId() !== null);
+  },
+  accountDetailsPage: function() {
+    var currentPage = Session.get('currentPage');
+    return (currentPage === 'accountDetails') ? true : false;
+  },
+  barterPage: function() {
+    var currentPage = Session.get('currentPage');
+    return (currentPage === 'barter') ? true : false;
+  }
+});
+
+Template.accountDetails.helpers({
   liabilityLimit: function() {
     return h_.liabilityLimit();
   },
@@ -136,9 +151,6 @@ Template.main.helpers({
     }
 
     return h_.hoursFromCents(debt);
-  },
-  loggedIn: function () {
-    return (Meteor.userId() !== null);
   },
   percentDebtOfLimit: function() {
     return h_.percentDebtOfLimit();
@@ -168,7 +180,7 @@ Template.main.helpers({
 });
 
 
-Template.main.rendered = function() {
+Template.accountDetails.rendered = function() {
   $('.debt-amount .progress').hover(function() {
     $('.debt-amount .progress').tooltip({
       trigger: 'manual',
@@ -182,7 +194,7 @@ Template.main.rendered = function() {
   });
 };
 
-Template.main.events({
+Template.accountDetails.events({
   'click #report-cont-button': function(event) {
     var btn = $(event.target);
     var hours = parseFloat($('#report-cont-input').val());

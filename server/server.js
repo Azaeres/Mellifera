@@ -227,7 +227,6 @@ Meteor.methods({
 		return h_.boostSharedCredit();
 	},
 	Payment: function(payeeAccountId, amount) {
-  	d_(payeeAccountId);
 		return h_.payment(payeeAccountId, amount);
 	}
 });
