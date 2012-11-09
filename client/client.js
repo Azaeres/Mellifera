@@ -143,7 +143,7 @@ Template.main.helpers({
   }
 });
 
-/*
+
 Template.main.rendered = function() {
   $('.debt-amount .progress').hover(function() {
     $('.debt-amount .progress').tooltip({
@@ -157,7 +157,6 @@ Template.main.rendered = function() {
     $('.debt-amount .progress').tooltip('hide');
   });
 };
-*/
 
 Template.main.events({
   'click #report-cont-button': function(event) {
@@ -199,6 +198,8 @@ Template.main.events({
   }
 });
 
+/* // Testing backbone router
+
 var AppRouter = Backbone.Router.extend({
   routes: {
   //  "*actions": "defaultRoute", // matches http://example.com/#anything-here
@@ -217,7 +218,7 @@ app_router.on('route:defaultRoute', function(actions) {
 
 // Start Backbone history a necessary step for bookmarkable URL's
 Backbone.history.start();
-
+*/
 /*
 Template.main.events({
   'click input' : function () {

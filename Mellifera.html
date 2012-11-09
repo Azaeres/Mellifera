@@ -12,11 +12,7 @@
   <div class="container-fluid">
 	  <div class="row-fluid">
 	    <div class="span3">
-	      <!--Sidebar content-->
-				<ul class="nav nav-list">
-				  <li class="active"><a href="#"><i class="icon-home icon-white"></i> Home</a></li>
-				  <li class="disabled"><a href="#"><i class="icon-wrench"></i> Settings</a></li>
-				</ul>
+	    	{{> sidebarContent}}
 	    </div>
 	    <div class="span9">
 	      <!--Body content-->
@@ -68,4 +64,12 @@
 		</div>
 	</div>
   {{/if}}
+</template>
+
+<template name="sidebarContent">
+  <!--Sidebar content-->
+	<ul class="nav nav-list">
+	  <li class="active"><a href="#"><i class="icon-home icon-white"></i> Home</a></li>
+	  <li class="disabled"><a href="#"><i class="icon-wrench"></i> Settings</a></li>
+	</ul>
 </template>

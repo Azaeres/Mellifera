@@ -154,7 +154,7 @@ Meteor.startup(function () {
 
 	var sharedAcct = TimeAccounts.findOne({owner:null});
 	if (typeof sharedAcct === 'undefined') {
-		TimeAccounts.insert({owner:null, credit:0, debt:0, dividends:0, liabilityLimit:20});
+		TimeAccounts.insert({owner:null, credit:0, debt:0, dividends:0, liabilityLimit:16000});
 	}
 });
 
