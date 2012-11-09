@@ -30,8 +30,9 @@
 <template name="sidebarContent">
   <!--Sidebar content-->
 	<ul class="nav nav-list">
-	  <li class="active"><a href="#"><i class="icon-home icon-white"></i> Home</a></li>
-	  <li class="disabled"><a href="#"><i class="icon-wrench"></i> Settings</a></li>
+	  <li{{accountDetailsActive}} id="home-nav"><a href="#"><i class="icon-home icon-white"></i> Home</a></li>
+	  <li{{barterActive}} id="barter-nav"><a href="#"><i class="icon-arrow-right icon-white"></i> Barter</a></li>
+	  <li class="disabled" id="settings-nav"><a href="#"><i class="icon-wrench"></i> Settings</a></li>
 	</ul>
 </template>
 

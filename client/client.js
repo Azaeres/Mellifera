@@ -114,6 +114,30 @@ Helpers = {
 };
 h_ = Helpers;
 
+Template.sidebarContent.helpers({
+  accountDetailsActive: function() {
+    var currentPage = Session.get('currentPage');
+    var result = (currentPage === 'accountDetails') ? ' class=active' : '';
+    return result;
+  },
+  barterActive: function() {
+    var currentPage = Session.get('currentPage');
+    var result = (currentPage === 'barter') ? ' class=active' : '';
+    return result;
+  }
+});
+
+Template.sidebarContent.rendered = function() {
+  $('#home-nav a').click(function(e) {
+    e.preventDefault();
+    Session.set('currentPage', 'accountDetails');
+  });
+  $('#barter-nav a').click(function(e) {
+    e.preventDefault();
+    Session.set('currentPage', 'barter');
+  });
+};
+
 Template.main.helpers({
   loggedIn: function () {
     return (Meteor.userId() !== null);
