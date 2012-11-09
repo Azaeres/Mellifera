@@ -21,7 +21,12 @@ Meteor.autorun(function() {
 });
 
 TimeAccounts = new Meteor.Collection('TimeAccounts');
-Session.set('currentPage', 'accountDetails');
+
+Meteor.startup(function() {
+  if (Session.equals('currentPage', undefined)) {
+    Session.set('currentPage', 'accountDetails');
+  }
+});
 
 Helpers = {
   liabilityLimit: function() {
@@ -216,6 +221,8 @@ Template.accountDetails.rendered = function() {
   function() {
     $('.debt-amount .progress').tooltip('hide');
   });
+
+  $('.typeahead').typeahead();
 };
 
 Template.accountDetails.events({

@@ -62,21 +62,39 @@
   <div class="row-fluid">
 		<div class="span8">
 			<div class="well report-cont-form">
-				<div>
+			  <fieldset>
+			    <legend>Report Time Contribution</legend>
+			    <br>
+			    <div class="pull-right form-right">
+						<span class="input-append">
+					    <input class="span6" id="report-cont-input" type="text" value="0.00">
+						  <span class="add-on">hours</span>
+						</span>&nbsp;
+						<button id="report-cont-button" type="submit" class="btn btn-primary">Submit</button>
+					</div>
+			    
+			  </fieldset>
 
-				  <fieldset>
-				    <legend>Report Time Contribution</legend>
-				    <br>
-				    <div class="pull-right form-right">
-							<span class="input-append">
-						    <input class="span6" id="report-cont-input" type="text" value="0.00">
-							  <span class="add-on">hours</span>
-							</span>&nbsp;
-							<button id="report-cont-button" type="submit" class="btn btn-primary">Submit</button>
-						</div>
-				    
-				  </fieldset>
-			  </div>
+			</div>
+    </div>
+  </div>
+  <div class="row-fluid">
+		<div class="span8">
+			<div class="well report-payment-form">
+			  <fieldset>
+			    <legend>Make Payment</legend>
+			    <br>
+			    <label>Payee Email Address: </payee>
+			    <input type="text" data-provide="typeahead">
+			    <div class="pull-right form-right">
+						<span class="input-append">
+					    <input class="span6" id="report-cont-input" type="text" value="0.00">
+						  <span class="add-on">hours</span>
+						</span>&nbsp;
+						<button id="report-cont-button" type="submit" class="btn btn-primary">Submit</button>
+					</div>
+			    
+			  </fieldset>
 
 			</div>
     </div>
@@ -85,6 +103,6 @@
 
 <template name="barter">
 	<div>
-		foo
+		[page contents go here]
 	</div>
 </template>
