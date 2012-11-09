@@ -15,12 +15,12 @@ Meteor.publish('TimeAccounts', function () {
 TimeAccounts = new Meteor.Collection('TimeAccounts');
 
 Helpers = {
-	/***********************************************************************************
+	/**
 	 * Returns the universal liability limit.
 	 * Returns null if it hasn't been set.
 	 */
 	liabilityLimit: function() {
-		var sharedAcct = TimeAccounts.findOne({owner:null});
+		var sharedAcct = TimeAccounts.findOne({ owner:null });
 		var liabilityLimit = null;
 		if (typeof sharedAcct !== 'undefined') {
 			liabilityLimit = sharedAcct.liabilityLimit;
@@ -28,7 +28,7 @@ Helpers = {
 
 		return liabilityLimit;
 	},
-	/***********************************************************************************
+	/**
 	 * Returns the time account for the logged-in user.
 	 * 
 	 * Returns null if the user isn't logged in.
@@ -39,16 +39,16 @@ Helpers = {
 	  var userId = Meteor.userId();
 
 	  if (typeof userId !== 'undefined' && userId !== null) {
-	  	acct = TimeAccounts.findOne({owner:userId});
+	  	acct = TimeAccounts.findOne({ owner:userId });
 		  if (typeof acct === 'undefined') {
-		    acctId = TimeAccounts.insert({owner:userId, credit:0, debt:0, dividends:0});
-		    acct = TimeAccounts.findOne({_id:acctId});
+		    acctId = TimeAccounts.insert({ owner:userId, credit:0, debt:0, dividends:0 });
+		    acct = TimeAccounts.findOne({ _id:acctId });
 		  }
 	  }
 
 	  return acct;
 	},
-	/***********************************************************************************
+	/**
 	 * Returns the time account id for the logged-in user.
 	 * 
 	 * Returns null if the user isn't logged in.
@@ -64,6 +64,9 @@ Helpers = {
 
 		return acctId;
 	},
+  /** FOR TESTING
+   * Zeroes the logged-in user's time account.
+   */
   wipeAccount: function() {
     var userId = Meteor.userId();
     if (typeof userId !== 'undefined') {
@@ -71,6 +74,92 @@ Helpers = {
     }
 
     return 'Account wiped.'
+  },
+  /**
+   * Applies a credit to a user's time account.
+   * The credit is applied to their debt, and the excess credit is returned.
+   */
+  applyCreditToDebt: function(accountId, amount) {
+  	var excessCredit = 0, update = 0;
+  	var timeAccount = TimeAccounts.findOne({ _id:accountId });
+  	var newDebt = timeAccount.debt - amount;
+
+  	if (newDebt < 0) {
+  		update = 0;
+  		excessCredit = Math.abs(newDebt);
+  	}
+  	else {
+  		update = newDebt;
+  	}
+
+  	TimeAccounts.update({ _id:accountId }, { $set:{ debt:update } });
+  	return excessCredit;
+  },
+  /**
+   * Returns the shared time account.
+   */
+  sharedAccount: function() {
+	 return TimeAccounts.findOne({ owner:null });
+  },
+  /**
+   * Evenly distributes credit in the shared time account to each user's time account.
+   * The remainder (after dividing the credit evenly amongst all users) stays in the shared account.
+   */
+  distributeDividends: function() {
+  	var sharedAccount = h_.sharedAccount();
+		var memberCount = Meteor.users.find().count();
+
+		// Finds an amount that can be distributed to every user.		
+		var remainder = sharedAccount.credit % memberCount;
+		var divisibleFund = sharedAccount.credit - remainder;
+		var dividendAmount = divisibleFund / memberCount;
+
+		var excessCredit = 0;
+		TimeAccounts.find({ owner:{ $ne:null } }).map(function(account) {
+			// Grants dividend to each member.
+			var accountId = account._id;
+			excessCredit = h_.applyCreditToDebt(accountId, dividendAmount);
+			TimeAccounts.update({ _id:accountId }, { $inc:{ credit:excessCredit } });
+		});
+
+		// The remainder of shared credit stays in the shared account for later 
+		// 	distribution (after more shared credit accumulates).
+		TimeAccounts.update({ _id:sharedAccount._id }, { $set:{ credit:remainder } });
+  },
+  /** FOR TESTING
+   * Generously adds 10 hours to the shared time account.
+   */
+  boostSharedCredit: function() {
+  	TimeAccounts.update({ owner:null }, { $inc:{ credit:1000, debt:1000 } });
+  },
+  /**
+   * Takes credit from the payer's account, and applies it to the payee's debt.
+   * If there isn't enough credit in the payer's account, the payment is aborted.
+   */
+  payment: function(payeeAccountId, amount) {
+  	var success = false;
+
+  	var payerAccount = h_.userTimeAccount();
+  	var payeeAccount = TimeAccounts.findOne({ _id:payeeAccountId });
+
+		// Makes sure there's enough credit for the payment.
+  	if (payerAccount.credit >= amount) {
+			// Deduct the amount of the payment from the payer's credit.
+			TimeAccounts.update({ _id:payerAccount._id }, { $inc:{ credit:-amount } });
+
+			// Now we deduct the amount of the payment from the payee's debt.
+			var excessCredit = h_.applyCreditToDebt(payeeAccountId, amount);
+
+			// Any excess credit is shared, and goes into the shared time account.
+			TimeAccounts.update({ owner:null }, { $inc:{ credit:excessCredit } });
+
+			// Distribute shared credit.
+			h_.distributeDividends();
+
+			success = true;
+  	}
+
+  	return success;
   }
 };
 h_ = Helpers;
@@ -127,20 +216,19 @@ Meteor.methods({
 			throw new Meteor.Error(500, 'Liability limit not set.');
 
 		return result;
-/*
-			var availableDebt = gLiabilityLimit - gDebt[memberId];
-			var remaining = availableDebt - amount;
-
-			if (remaining < 0)
-			{
-				remaining = Math.abs(remaining);
-				amount -= remaining;
-			}
-
-			gCredit[memberId] += amount;
-			gDebt[memberId] += amount;
-
- */
+	},
+	ApplyCreditToDebt: function() {
+		return h_.applyCreditToDebt(h_.userTimeAccountId(), 200);
+	},
+	DistributeDividends: function() {
+		return h_.distributeDividends();
+	},
+	BoostSharedCredit: function() {
+		return h_.boostSharedCredit();
+	},
+	Payment: function(payeeAccountId, amount) {
+  	d_(payeeAccountId);
+		return h_.payment(payeeAccountId, amount);
 	}
 });
 
@@ -152,9 +240,9 @@ Meteor.startup(function () {
 	// It also differs from other time accounts by how it records the universal 
 	// liability limit.
 
-	var sharedAcct = TimeAccounts.findOne({owner:null});
+	var sharedAcct = TimeAccounts.findOne({ owner:null });
 	if (typeof sharedAcct === 'undefined') {
-		TimeAccounts.insert({owner:null, credit:0, debt:0, dividends:0, liabilityLimit:16000});
+		TimeAccounts.insert({ owner:null, credit:0, debt:0, dividends:0, liabilityLimit:16000 });
 	}
 });
 

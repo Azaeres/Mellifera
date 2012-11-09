@@ -85,6 +85,30 @@ Helpers = {
     }
 
     return percent;
+  },
+  applyCreditToDebt: function() {
+    Meteor.call('ApplyCreditToDebt', function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    return 'Applying credit...';
+  },
+  distributeDividends: function() {
+    Meteor.call('DistributeDividends', function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    return 'Distributing dividends...';
+  },
+  boostSharedCredit: function() {
+    Meteor.call('BoostSharedCredit', function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    return 'Boosting shared credit...';
+  },
+  payment: function(payeeAccountId, amount) {
+    Meteor.call('Payment', payeeAccountId, amount, function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    return 'Processing payment...';
   }
 };
 h_ = Helpers;
