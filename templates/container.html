@@ -1,0 +1,22 @@
+<template name="container">
+  {{#if loggedIn}}
+  <div id="container" class="container-fluid">
+	  <div class="row-fluid">
+	    <div class="span3">
+	    	{{> navigation}}
+	    </div>
+	    <div class="span6">
+	    	{{#if accountDetailsPage}}
+		    	{{> account}}
+	    	{{/if}}
+	    	{{#if barterPage}}
+		    	{{> barter}}
+	    	{{/if}}
+	    </div>
+	    <div class="span3">
+	    	{{> notifications}}
+	    </div>
+		</div>
+	</div>
+  {{/if}}
+</template>

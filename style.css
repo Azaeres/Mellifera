@@ -1,0 +1,57 @@
+
+/* Login Buttons *****************************/
+
+#login-buttons {
+	margin:1em;
+}
+
+
+
+/* Account ***********************************/
+
+#account label {
+	display:inline;
+}
+#account .amount-input input {
+	text-align:right;
+}
+#account .amount label {
+	font-weight:bold;
+	color:#aaa;
+	font-size:17px;
+	display:inline-block;
+	line-height:40px;
+	width:3em;
+}
+#account .amount .credit {
+	font-size:32px;
+	color:#191;
+	line-height:40px;
+}
+#account .amount .debt {
+	font-size:32px;
+	color:#911;
+	line-height:40px;
+}
+#account .debt-amount .progress {
+	margin-top:11px;
+}
+#account .payee-field {
+	margin-bottom:1em;
+	margin-right:5.5em;
+}
+#account .payee-input {
+	margin-top:0;
+}
+#account .payee-field label {
+	font-size:11px;
+}
+
+
+
+
+
+
+
+
+
