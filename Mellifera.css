@@ -28,6 +28,10 @@ div {
 	1-text-align:right;
 }
 
+.report-payment-form label {
+	display:inline;
+}
+
 .credit-amount {
 	font-size:32px;
 	color:#0a0;
@@ -38,7 +42,8 @@ div {
 	1-display:inline-block;
 }
 
-#report-cont-input {
+#report-cont-input,
+#payment-amount-input {
 	text-align:right;
 }
 

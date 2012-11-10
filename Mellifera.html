@@ -72,9 +72,7 @@
 						</span>&nbsp;
 						<button id="report-cont-button" type="submit" class="btn btn-primary">Submit</button>
 					</div>
-			    
 			  </fieldset>
-
 			</div>
     </div>
   </div>
@@ -84,18 +82,16 @@
 			  <fieldset>
 			    <legend>Make Payment</legend>
 			    <br>
-			    <label>Payee Email Address: </payee>
-			    <input type="text" data-provide="typeahead">
+			    <label>Payee Email Address: </label>
+			    {{#constant}}<input id="payment-input" type="text" data-provide="typeahead" class="typeahead span3">{{/constant}}
 			    <div class="pull-right form-right">
 						<span class="input-append">
-					    <input class="span6" id="report-cont-input" type="text" value="0.00">
+					    {{#constant}}<input class="span6" id="payment-amount-input" type="text" value="0.00">{{/constant}}
 						  <span class="add-on">hours</span>
 						</span>&nbsp;
-						<button id="report-cont-button" type="submit" class="btn btn-primary">Submit</button>
+						<button id="payment-button" type="submit" class="btn btn-primary">Submit</button>
 					</div>
-			    
 			  </fieldset>
-
 			</div>
     </div>
   </div>

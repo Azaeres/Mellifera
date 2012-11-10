@@ -160,6 +160,20 @@ Helpers = {
   	}
 
   	return success;
+  },
+  queryUsersRegex: function(str) {
+    var arr, newStr, s;
+    s = str || '';
+    s = s.replace(RegExp(' ', 'g'), '');
+    arr = s.split('');
+    newStr = '';
+
+    _.map(arr, function(ch) {
+      ch = ch + '.*';
+      return newStr += ch;
+    });
+
+    return RegExp(newStr, 'i');
   }
 };
 h_ = Helpers;
@@ -226,8 +240,25 @@ Meteor.methods({
 	BoostSharedCredit: function() {
 		return h_.boostSharedCredit();
 	},
-	Payment: function(payeeAccountId, amount) {
-		return h_.payment(payeeAccountId, amount);
+	Payment: function(payeeEmail, amount) {
+		var payeeAccount = Meteor.users.findOne({ "emails.address":payeeEmail });
+		var timeAccount = TimeAccounts.findOne({ owner:payeeAccount._id });
+		return h_.payment(timeAccount._id, amount);
+	},
+	QueryUsers: function(query) {
+		var info = {};
+
+		if (typeof query !== 'undefined') {
+			var regex = h_.queryUsersRegex(query);
+			var results = Meteor.users.find({ "emails.address":regex }, { $limit:10 });
+			var users = results.fetch();
+
+			info = _.map(users, function(user) {
+				return { emails:user.emails };
+			})
+		}
+
+		return info;
 	}
 });
 

@@ -115,6 +115,20 @@ Helpers = {
       (typeof error === 'undefined') ? d_(result) : d_(error);
     });
     return 'Processing payment...';
+  },
+  queryUsersRegex: function(str) {
+    var arr, newStr, s;
+    s = str || '';
+    s = s.replace(RegExp(' ', 'g'), '');
+    arr = s.split('');
+    newStr = '';
+    
+    _.map(arr, function(ch) {
+      ch = ch + '.*';
+      return newStr += ch;
+    });
+
+    return RegExp(newStr, 'i');
   }
 };
 h_ = Helpers;
@@ -210,6 +224,7 @@ Template.accountDetails.helpers({
 
 
 Template.accountDetails.rendered = function() {
+  /*
   $('.debt-amount .progress').hover(function() {
     $('.debt-amount .progress').tooltip({
       trigger: 'manual',
@@ -221,8 +236,29 @@ Template.accountDetails.rendered = function() {
   function() {
     $('.debt-amount .progress').tooltip('hide');
   });
+*/
 
-  $('.typeahead').typeahead();
+  $('.typeahead').typeahead({
+    source: function (query, process) {
+      Meteor.call('QueryUsers', query, function(error, result) {
+        if (typeof error === 'undefined') {
+          var arr = [];
+          _.each(result, function(user) {
+            _.each(user.emails, function(email) {
+              arr.push(email.address);
+            });
+          });
+          process(arr);
+        }
+        else {
+          d_(error);
+        }
+      });
+    },
+    matcher: function(item) {
+      return true;
+    }
+  });
 };
 
 Template.accountDetails.events({
@@ -239,7 +275,7 @@ Template.accountDetails.events({
             d_(error.details);
         }
         else {
-          var hours = h_.hoursFromCents(result);
+          hours = h_.hoursFromCents(result);
           var hoursTxt = (hours === 1) ? ' hour' : ' hours';
           if (result) {
             h_.showAlert('success', 'A contribution of <strong>' + hours + hoursTxt +'</strong> has been applied to your account.');
@@ -260,8 +296,53 @@ Template.accountDetails.events({
       $('#report-cont-button').click();
     }
   },
+  'keypress #payment-amount-input': function(event) {
+    if (event.which === 13) {
+      $(event.target).blur();
+      $('#payment-button').click();
+    }
+  },
   'click #report-cont-input': function(event) {
     $(event.target).select();
+  },
+  'click #payment-amount-input': function(event) {
+    $(event.target).select();
+  },
+  'click #payment-button': function(event) {
+    var email = $('#payment-input').val();
+    var hours = parseFloat($('#payment-amount-input').val());
+    var cents = h_.centsFromHours(hours);
+    
+    $('#payment-amount-input').val('0.00');
+
+    Meteor.call('Payment', email, cents, function(error, result) {
+      //(typeof error === 'undefined') ? d_(result) : d_(error);
+      if (error) {
+        h_.showAlert('error', '<strong>Error ' + error.error + ':</strong> ' + error.reason);
+        if (typeof error.details !== 'undefined')
+          d_(error.details);
+      }
+      else {
+        hours = h_.hoursFromCents(cents);
+        var hoursTxt = (hours === 1) ? ' hour' : ' hours';
+        if (result) {
+          h_.showAlert('success', 'Payment of <strong>' + hours + hoursTxt +'</strong> completed.');
+        }
+        else {
+          h_.showAlert('error', 'Payment of <strong>' + hours + hoursTxt + '</strong> rejected.');
+        }
+      /*
+        var hours = h_.hoursFromCents(result);
+        var hoursTxt = (hours === 1) ? ' hour' : ' hours';
+        if (result) {
+          h_.showAlert('success', 'A contribution of <strong>' + hours + hoursTxt +'</strong> has been applied to your account.');
+        }
+        else {
+          h_.showAlert('block', 'A contribution of <strong>' + hours + hoursTxt + '</strong> has been applied to your account.');
+        }
+      */
+      }
+    });
   }
 });
 
