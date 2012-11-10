@@ -109,7 +109,9 @@ Helpers = {
   	var sharedAccount = h_.sharedAccount();
 		var memberCount = Meteor.users.find().count();
 
-		// Finds an amount that can be distributed to every user.		
+		// TODO: Collide the shared time account (apply its credit to its debt).
+
+		// Finds an amount that can be distributed to every user.
 		var remainder = sharedAccount.credit % memberCount;
 		var divisibleFund = sharedAccount.credit - remainder;
 		var dividendAmount = divisibleFund / memberCount;
@@ -241,9 +243,26 @@ Meteor.methods({
 		return h_.boostSharedCredit();
 	},
 	Payment: function(payeeEmail, amount) {
+		var result = { success:false, details:'' };
+		var timeAccount;
 		var payeeAccount = Meteor.users.findOne({ "emails.address":payeeEmail });
-		var timeAccount = TimeAccounts.findOne({ owner:payeeAccount._id });
-		return h_.payment(timeAccount._id, amount);
+		if (typeof payeeAccount !== 'undefined') {
+			timeAccount = TimeAccounts.findOne({ owner:payeeAccount._id });
+			if (typeof timeAccount !== 'undefined') {
+				result.success = h_.payment(timeAccount._id, amount);
+				if (result.success === false) {
+					result.details = 'Not enough funds.';
+				}
+			}
+			else {
+				result.details = 'Time account not found.';
+			}
+		}
+		else {
+			result.details = 'User account not found.';
+		}
+
+		return result;
 	},
 	QueryUsers: function(query) {
 		var info = {};

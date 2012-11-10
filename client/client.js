@@ -237,7 +237,6 @@ Template.accountDetails.rendered = function() {
     $('.debt-amount .progress').tooltip('hide');
   });
 */
-
   $('.typeahead').typeahead({
     source: function (query, process) {
       Meteor.call('QueryUsers', query, function(error, result) {
@@ -260,6 +259,43 @@ Template.accountDetails.rendered = function() {
     }
   });
 };
+
+(function() {
+  var credit;
+  var debt;
+
+  Meteor.autorun(function() {
+    var timeAccount = h_.timeAccount();
+    if (typeof timeAccount !== 'undefined') {
+      if (typeof debt === 'undefined') {
+        debt = timeAccount.debt;
+      }
+      else {
+        var diff = debt - timeAccount.debt;
+        var hours = h_.hoursFromCents(Math.abs(diff));
+        var hoursTxt = (hours === 1) ? ' hour' : ' hours';
+        if (diff > 0) {
+          h_.showAlert('success', 'Your debt has decreased by <strong>' + hours + hoursTxt + '</strong>.');
+        }
+        debt = timeAccount.debt;
+      }
+
+      if (typeof credit === 'undefined') {
+        credit = timeAccount.credit;
+      }
+      else {
+        var diff = credit - timeAccount.credit;
+        var hours = h_.hoursFromCents(Math.abs(diff));
+        var hoursTxt = (hours === 1) ? ' hour' : ' hours';
+        if (diff < 0) {
+          h_.showAlert('success', 'Your credit has increased by <strong>' + hours + hoursTxt + '</strong>.');
+        }
+        credit = timeAccount.credit;
+      }
+    }
+  });
+
+})();
 
 Template.accountDetails.events({
   'click #report-cont-button': function(event) {
@@ -308,6 +344,9 @@ Template.accountDetails.events({
   'click #payment-amount-input': function(event) {
     $(event.target).select();
   },
+  'click #payment-input': function(event) {
+    $(event.target).select();
+  },
   'click #payment-button': function(event) {
     var email = $('#payment-input').val();
     var hours = parseFloat($('#payment-amount-input').val());
@@ -325,11 +364,11 @@ Template.accountDetails.events({
       else {
         hours = h_.hoursFromCents(cents);
         var hoursTxt = (hours === 1) ? ' hour' : ' hours';
-        if (result) {
+        if (result.success) {
           h_.showAlert('success', 'Payment of <strong>' + hours + hoursTxt +'</strong> completed.');
         }
         else {
-          h_.showAlert('error', 'Payment of <strong>' + hours + hoursTxt + '</strong> rejected.');
+          h_.showAlert('error', 'Payment of <strong>' + hours + hoursTxt + '</strong> failed. ' + result.details);
         }
       /*
         var hours = h_.hoursFromCents(result);

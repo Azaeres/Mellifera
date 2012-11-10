@@ -5,7 +5,7 @@
 }
 
 div {
-	1-border:1px solid blue;
+	`border:1px solid blue;
 }
 
 .debt-amount {
@@ -25,7 +25,7 @@ div {
 	margin-top: 11px;
 }
 .debt-amount .amount, .credit-amount .amount {
-	1-text-align:right;
+	`text-align:right;
 }
 
 .report-payment-form label {
@@ -39,7 +39,7 @@ div {
 }
 
 .report-cont-form {
-	1-display:inline-block;
+	`display:inline-block;
 }
 
 #report-cont-input,
@@ -47,6 +47,15 @@ div {
 	text-align:right;
 }
 
-.form-right {
-	width: 22em; 
+#payment-input {
+	margin-top: 0;
+}
+
+.payee-field {
+	margin-bottom:1em;
+	margin-right: 5.5em;
+}
+
+.payee-field label {
+	font-size:11px;
 }

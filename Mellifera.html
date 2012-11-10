@@ -14,13 +14,18 @@
 	    <div class="span3">
 	    	{{> sidebarContent}}
 	    </div>
-	    <div id="page-content" class="span9">
+	    <div id="page-content" class="span6">
 	    	{{#if accountDetailsPage}}
 		    	{{> accountDetails}}
 	    	{{/if}}
 	    	{{#if barterPage}}
 		    	{{> barter}}
 	    	{{/if}}
+	    </div>
+	    <div class="span3">
+			  <div class="row-fluid">
+			  	{{#constant}}<div id="alert-area" class="span12"></div>{{/constant}}
+			  </div>
 	    </div>
 		</div>
 	</div>
@@ -40,27 +45,24 @@
   <!--Body content-->
   <h2>Account Balance</h2>
   <div class="row-fluid credit-amount">
-		<div class="span4 amount">
+		<div class="span7 amount">
 			<label>Credit</label>&nbsp;<span>{{credit}}</span>
     </div>
   </div>
   <div class="row-fluid debt-amount">
-		<div class="span4 amount">
+		<div class="span7 amount">
 			<label>Debt</label>&nbsp;<span>{{debt}}</span>
     </div>
   </div>
   <div class="row-fluid">
-  	<div class="span8">
+  	<div class="span12">
 			<div class="progress">
 			  <div class="bar bar-{{debtWarning}}" style="width: {{percentDebtOfLimit}}%;"></div>
 			</div>
   	</div>
   </div>
   <div class="row-fluid">
-  	{{#constant}}<div id="alert-area" class="span8"></div>{{/constant}}
-  </div>
-  <div class="row-fluid">
-		<div class="span8">
+		<div class="span12">
 			<div class="well report-cont-form">
 			  <fieldset>
 			    <legend>Report Time Contribution</legend>
@@ -77,13 +79,17 @@
     </div>
   </div>
   <div class="row-fluid">
-		<div class="span8">
+		<div class="span12">
 			<div class="well report-payment-form">
 			  <fieldset>
 			    <legend>Make Payment</legend>
 			    <br>
-			    <label>Payee Email Address: </label>
-			    {{#constant}}<input id="payment-input" type="text" data-provide="typeahead" class="typeahead span3">{{/constant}}
+			    <div class="payee-field pull-left form-left">
+						<span class="input-prepend">
+						  <span class="add-on">Payee email</span>
+					    {{#constant}}<input id="payment-input" class="typeahead span11" type="text" data-provide="typeahead">{{/constant}}
+					  </span>
+			    </div>
 			    <div class="pull-right form-right">
 						<span class="input-append">
 					    {{#constant}}<input class="span6" id="payment-amount-input" type="text" value="0.00">{{/constant}}
