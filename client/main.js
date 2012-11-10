@@ -21,30 +21,10 @@ Meteor.startup(function() {
   }
 });
 
-Helpers = {
-  // Shared
-  // 
-
-
-
-  liabilityLimit: function() {
-    var sharedAcct = TimeAccounts.findOne({owner:null});
-    var liabilityLimit = null;
-    if (typeof sharedAcct !== 'undefined') {
-      liabilityLimit = sharedAcct.liabilityLimit;
-    }
-
-    return liabilityLimit;
-  },
-  wipeAccount: function() {
-    Meteor.call('WipeAccount', function(error, result) {
-      (typeof error === 'undefined') ? d_(result) : d_(error);
-    });
-    return 'Wiping account...';
-  },
+_.extend(Helpers, {
   showAlert: function(type, message) {
     $("#notifications .alert-area").append('<div class="alert alert-message alert-' + type + ' fade in" data-alert> <button type="button" class="close" data-dismiss="alert">×</button> <p> ' + message + ' </p> </div>');
-    $(".alert-message").delay(6000).fadeOut("slow", function () { $(this).remove(); });
+    $(".alert-message").delay(8000).fadeOut(3000, function () { $(this).remove(); });
 
     return 'Showing alert...';
   },
@@ -102,12 +82,6 @@ Helpers = {
     });
     return 'Distributing dividends...';
   },
-  boostSharedCredit: function() {
-    Meteor.call('BoostSharedCredit', function(error, result) {
-      (typeof error === 'undefined') ? d_(result) : d_(error);
-    });
-    return 'Boosting shared credit...';
-  },
   payment: function(payeeAccountId, amount) {
     Meteor.call('Payment', payeeAccountId, amount, function(error, result) {
       (typeof error === 'undefined') ? d_(result) : d_(error);
@@ -128,8 +102,7 @@ Helpers = {
 
     return RegExp(newStr, 'i');
   }
-};
-h_ = Helpers;
+});
 
 // Watches for changes to the time account, and notifies the logged-in user.
 (function() {

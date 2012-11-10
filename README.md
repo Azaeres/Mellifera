@@ -4,10 +4,9 @@ This is a working proof-of-concept for a time-trading free market that, in princ
 
 To do:
 ------
-* Refactorization
-* Polish notifications
-* Jasmine testing framework
+* Account collision
 * String localization
+* Jasmine testing framework
 * Team payment
 * User activity logging
 * Global stats/charts

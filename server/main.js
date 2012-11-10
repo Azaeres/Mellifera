@@ -7,21 +7,8 @@ Meteor.publish('TimeAccounts', function () {
 		return TimeAccounts.find({});
 });
 
-Helpers = {
-	/**
-	 * Returns the universal liability limit.
-	 * Returns null if it hasn't been set.
-	 */
-	liabilityLimit: function() {
-		var sharedAcct = TimeAccounts.findOne({ owner:null });
-		var liabilityLimit = null;
-		if (typeof sharedAcct !== 'undefined') {
-			liabilityLimit = sharedAcct.liabilityLimit;
-		}
-
-		return liabilityLimit;
-	},
-	/**
+_.extend(Helpers, {
+ 	/**
 	 * Returns the time account for the logged-in user.
 	 * 
 	 * Returns null if the user isn't logged in.
@@ -57,17 +44,6 @@ Helpers = {
 
 		return acctId;
 	},
-  /** FOR TESTING
-   * Zeroes the logged-in user's time account.
-   */
-  wipeAccount: function() {
-    var userId = Meteor.userId();
-    if (typeof userId !== 'undefined') {
-      TimeAccounts.update({ owner:userId }, { $set:{ credit:0, debt:0, dividends:0 }});
-    }
-
-    return 'Account wiped.'
-  },
   /**
    * Applies a credit to a user's time account.
    * The credit is applied to their debt, and the excess credit is returned.
@@ -121,12 +97,6 @@ Helpers = {
 		// 	distribution (after more shared credit accumulates).
 		TimeAccounts.update({ _id:sharedAccount._id }, { $set:{ credit:remainder } });
   },
-  /** FOR TESTING
-   * Generously adds 10 hours to the shared time account.
-   */
-  boostSharedCredit: function() {
-  	TimeAccounts.update({ owner:null }, { $inc:{ credit:1000, debt:1000 } });
-  },
   /**
    * Takes credit from the payer's account, and applies it to the payee's debt.
    * If there isn't enough credit in the payer's account, the payment is aborted.
@@ -170,8 +140,7 @@ Helpers = {
 
     return RegExp(newStr, 'i');
   }
-};
-h_ = Helpers;
+});
 
 Meteor.methods({
 	UserTimeAccountId: function() {
@@ -179,9 +148,6 @@ Meteor.methods({
 	},
 	LiabilityLimit: function() {
 		return h_.liabilityLimit();
-	},
-	WipeAccount: function() {
-		return h_.wipeAccount();
 	},
 	/******************************************************
 	 * Clients report contributions of time to the server.
@@ -231,9 +197,6 @@ Meteor.methods({
 	},
 	DistributeDividends: function() {
 		return h_.distributeDividends();
-	},
-	BoostSharedCredit: function() {
-		return h_.boostSharedCredit();
 	},
 	Payment: function(payeeEmail, amount) {
 		var result = { success:false, details:'' };
