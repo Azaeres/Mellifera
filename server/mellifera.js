@@ -263,6 +263,20 @@ Meteor.methods({
 		}
 
 		return info;
+	},
+	UniversalBalance: function() {
+		var credit = 0, debt = 0, result = { credit:null, debt:null, max:null };
+		TimeAccounts.find().map(function(account) {
+			credit += account.credit;
+			debt += account.debt;
+		});
+		result.credit = credit;
+		result.debt = debt;
+
+		var memberCount = Meteor.users.find().count();
+		result.max = h_.liabilityLimit() * memberCount;
+
+		return result;
 	}
 });
 

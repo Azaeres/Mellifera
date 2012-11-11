@@ -29,10 +29,7 @@ _.extend(Helpers, {
     return 'Showing alert...';
   },
   isInteger: function(value) {
-    if (value === parseInt(value, 10))
-      return true;
-    
-    return false;
+    return typeof value === 'number' && parseFloat(value) == parseInt(value, 10) && !isNaN(value);
   },
   roundCurrency: function(amount) {
     return (Math.round(amount * 100) / 100).toFixed(2);
@@ -50,14 +47,14 @@ _.extend(Helpers, {
   },
   timeAccount: function() {
     var acctId = Session.get('timeAccountId');
-    var timeAccount = TimeAccounts.findOne({_id:acctId});
+    var timeAccount = TimeAccounts.findOne({ _id:acctId });
 
     return timeAccount;
   },
   percentDebtOfLimit: function() {
     var percent = 0, debt;
 
-    var sharedAccount = TimeAccounts.findOne({owner:null});
+    var sharedAccount = TimeAccounts.findOne({ owner:null });
     if (typeof sharedAccount !== 'undefined') {
       var limit = sharedAccount.liabilityLimit;
       var timeAccount = h_.timeAccount();

@@ -4,7 +4,7 @@ This is a working proof-of-concept for a time-trading free market that could sta
 
 To do:
 ------
-* Jasmine testing framework
+* Write tests
 * Changing liability limit
 * Freezing/seizing time accounts
 * Team payment
