@@ -9,6 +9,10 @@ Template.container.helpers({
   barterPage: function() {
     var currentPage = Session.get('currentPage');
     return (currentPage === 'barter') ? true : false;
+  },
+  testsPage: function() {
+    var currentPage = Session.get('currentPage');
+    return (currentPage === 'tests') ? true : false;
   }
 });
 
