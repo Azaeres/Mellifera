@@ -6,19 +6,19 @@ To do:
 ------
 * Jasmine testing framework
 
+* Account collision
+* Changing liability limit
+* Freezing/seizing time accounts
+
 * Team payment
 * User activity logging
 * Quickpay
 * Advanced user search
 * User profiles
 
-* Changing liability limit
-* Freezing/seizing time accounts
-* Account collision
-
 * Global stats/charts
 * String localization
-
+* Gravatars
 
 Open Economics
 --------------

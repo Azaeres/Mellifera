@@ -5,7 +5,7 @@ _.extend(Helpers, {
   wipeAccount: function() {
     var userId = Meteor.userId();
     if (typeof userId !== 'undefined') {
-      TimeAccounts.update({ owner:userId }, { $set:{ credit:0, debt:0, dividends:0 }});
+      TimeAccounts.update({ owner:userId }, { $set:{ credit:0, debt:0 }});
     }
 
     return 'Account wiped.'
@@ -15,6 +15,8 @@ _.extend(Helpers, {
    */
   boostSharedCredit: function() {
   	TimeAccounts.update({ owner:null }, { $inc:{ credit:1000, debt:1000 } });
+
+    return 'Shared time account boosted.';
   }
 });
 
@@ -22,7 +24,19 @@ Meteor.methods({
 	WipeAccount: function() {
 		return h_.wipeAccount();
 	},
-	BoostSharedCredit: function() {
+	BoostSharedAccount: function() {
 		return h_.boostSharedCredit();
-	}
+	},
+  CollideSharedAccount: function() {
+    var sharedAcct = h_.sharedAccount();
+    h_.collideTimeAccount(sharedAcct._id);
+
+    return 'Shared time account collided.';
+  },
+  CollideAccount: function() {
+    var timeAcctId = h_.userTimeAccountId();
+    h_.collideTimeAccount(timeAcctId);
+
+    return 'Time account collided.';
+  }
 });

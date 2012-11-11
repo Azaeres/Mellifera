@@ -13,7 +13,7 @@ Meteor.startup(function () {
 
 	var sharedAcct = TimeAccounts.findOne({ owner:null });
 	if (typeof sharedAcct === 'undefined') {
-		TimeAccounts.insert({ owner:null, credit:0, debt:0, dividends:0, liabilityLimit:16000 });
+		TimeAccounts.insert({ owner:null, credit:0, debt:0, liabilityLimit:16000 });
 	}
 });
 
@@ -37,7 +37,7 @@ _.extend(Helpers, {
 	  if (typeof userId !== 'undefined' && userId !== null) {
 	  	acct = TimeAccounts.findOne({ owner:userId });
 		  if (typeof acct === 'undefined') {
-		    acctId = TimeAccounts.insert({ owner:userId, credit:0, debt:0, dividends:0 });
+		    acctId = TimeAccounts.insert({ owner:userId, credit:0, debt:0 });
 		    acct = TimeAccounts.findOne({ _id:acctId });
 		  }
 	  }
@@ -92,26 +92,29 @@ _.extend(Helpers, {
    */
   distributeDividends: function() {
   	var sharedAccount = h_.sharedAccount();
-		var memberCount = Meteor.users.find().count();
-
-		// TODO: Collide the shared time account (apply its credit to its debt).
+    h_.collideTimeAccount(sharedAccount._id);
 
 		// Finds an amount that can be distributed to every user.
-		var remainder = sharedAccount.credit % memberCount;
-		var divisibleFund = sharedAccount.credit - remainder;
-		var dividendAmount = divisibleFund / memberCount;
+		var memberCount = Meteor.users.find().count();
+		if (memberCount > 0) {
+			var remainder = sharedAccount.credit % memberCount;
+			var divisibleFund = sharedAccount.credit - remainder;
+			var dividendAmount = divisibleFund / memberCount;
 
-		var excessCredit = 0;
-		TimeAccounts.find({ owner:{ $ne:null } }).map(function(account) {
-			// Grants dividend to each member.
-			var accountId = account._id;
-			excessCredit = h_.applyCreditToDebt(accountId, dividendAmount);
-			TimeAccounts.update({ _id:accountId }, { $inc:{ credit:excessCredit } });
-		});
+			var amountNotDistributed = divisibleFund;
+			TimeAccounts.find({ owner:{ $ne:null } }).map(function(account) {
+				// Grants dividend to each member.
+				var accountId = account._id;
+				var excessCredit = h_.applyCreditToDebt(accountId, dividendAmount);
+				TimeAccounts.update({ _id:accountId }, { $inc:{ credit:excessCredit } });
+				amountNotDistributed -= dividendAmount;
+			});
 
-		// The remainder of shared credit stays in the shared account for later 
-		// 	distribution (after more shared credit accumulates).
-		TimeAccounts.update({ _id:sharedAccount._id }, { $set:{ credit:remainder } });
+			// The remainder of shared credit stays in the shared account for later 
+			// 	distribution (after more shared credit accumulates).
+			amountNotDistributed += remainder;
+			TimeAccounts.update({ _id:sharedAccount._id }, { $set:{ credit:amountNotDistributed } });
+		}
   },
   /**
    * Takes credit from the payer's account, and applies it to the payee's debt.
@@ -163,6 +166,11 @@ _.extend(Helpers, {
     });
 
     return RegExp(newStr, 'i');
+  },
+  collideTimeAccount: function(accountId) {
+  	var timeAccount = TimeAccounts.findOne({ _id:accountId });
+  	var excessCredit = h_.applyCreditToDebt(accountId, timeAccount.credit);
+  	TimeAccounts.update({ _id:accountId }, { $set:{ credit:excessCredit } });
   }
 });
 
