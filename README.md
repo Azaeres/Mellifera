@@ -4,9 +4,9 @@ This is a working proof-of-concept for a time-trading free market that could sta
 
 To do:
 ------
-* Write tests
 * Changing liability limit
 * Freezing/seizing time accounts
+* Write more tests
 * Team payment
 * User activity logging
 * Quickpay
@@ -22,7 +22,7 @@ Open Economics
 1. An explanation of money and wealth.
 2. Contribution, the start of the Monetary Cycle.
 3. Payment and compensation, the end of the Monetary Cycle.
-4. The case for shared surplus and occupational information.
+4. The case for shared surplus and sharing trade "secrets".
 
 Time-trading rules
 ------------------
