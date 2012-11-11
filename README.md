@@ -1,21 +1,17 @@
 Mellifera
 =========
-This is a working proof-of-concept for a time-trading free market that, in principle, stands a good chance of surviving an automated future. This system acts as a hub of activity for a time-based local currency.
+This is a working proof-of-concept for a time-trading free market that could stand a good chance of surviving an automated future. This system acts as a hub of activity for a time-based local currency.
 
 To do:
 ------
 * Jasmine testing framework
-
-* Account collision
 * Changing liability limit
 * Freezing/seizing time accounts
-
 * Team payment
 * User activity logging
 * Quickpay
 * Advanced user search
 * User profiles
-
 * Global stats/charts
 * String localization
 * Gravatars
