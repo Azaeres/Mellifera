@@ -50,6 +50,35 @@ Template.account.helpers({
 });
 
 
+// Localization
+// 
+Template.account.helpers({
+  accountBalanceStr: function() {
+    return l_('Account Balance');
+  },
+  creditStr: function() {
+    return l_('Credit');
+  },
+  debtStr: function() {
+    return l_('Debt');
+  },
+  reportContributionStr: function() {
+    return l_('Report Contribution');
+  },
+  hoursStr: function() {
+    return l_('hours');
+  },
+  submitStr: function() {
+    return l_('Submit');
+  },
+  makePaymentStr: function() {
+    return l_('Make Payment');
+  },
+  payeeEmailStr: function() {
+    return l_('Payee');
+  }
+})
+
 Template.account.rendered = function() {
   /* // Hover tooltip.
 

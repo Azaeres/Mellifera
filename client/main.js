@@ -1,3 +1,9 @@
+Meteor.startup(function() {
+  if (Session.equals('currentPage', undefined)) {
+    Session.set('currentPage', 'account');
+  }
+});
+
 Meteor.autosubscribe(function () {
   Meteor.subscribe('TimeAccounts');
 });
@@ -12,12 +18,6 @@ Meteor.autorun(function() {
         d_(error);
       }
     });
-  }
-});
-
-Meteor.startup(function() {
-  if (Session.equals('currentPage', undefined)) {
-    Session.set('currentPage', 'account');
   }
 });
 
@@ -104,10 +104,40 @@ _.extend(Helpers, {
   }
 });
 
+// Localization
+// English string generators
+// 
+_.extend(Helpers, {
+  debtDecreaseStr: function(cents) {
+    return h_.debtDecreaseStrEN(cents);
+  },
+  debtIncreaseStr: function(cents) {
+    return h_.debtIncreaseStrEN(cents);
+  },
+  creditIncreaseStr: function(cents) {
+    return h_.creditIncreaseStrEN(cents);
+  },
+  debtDecreaseStrEN: function(cents) {
+    var hours = h_.hoursFromCents(cents);
+    var hoursTxt = (hours === 1) ? ' hour' : ' hours';
+    return 'Your debt has decreased by <strong>' + hours + hoursTxt + '</strong>.';
+  },
+  debtIncreaseStrEN: function(cents) {
+    var hours = h_.hoursFromCents(cents);
+    var hoursTxt = (hours === 1) ? ' hour' : ' hours';
+    return 'Your debt has increased by <strong>' + hours + hoursTxt + '</strong>.';
+  },
+  creditIncreaseStrEN: function(cents) {
+    var hours = h_.hoursFromCents(cents);
+    var hoursTxt = (hours === 1) ? ' hour' : ' hours';
+    return 'Your credit has increased by <strong>' + hours + hoursTxt + '</strong>.';
+  }
+});
+
 // Watches for changes to the time account, and notifies the logged-in user.
+// 
 (function() {
-  var credit;
-  var debt;
+  var credit, debt;
 
   Meteor.autorun(function() {
     var timeAccount = h_.timeAccount();
@@ -117,13 +147,11 @@ _.extend(Helpers, {
       }
       else {
         var diff = debt - timeAccount.debt;
-        var hours = h_.hoursFromCents(Math.abs(diff));
-        var hoursTxt = (hours === 1) ? ' hour' : ' hours';
         if (diff > 0) {
-          h_.showAlert('success', 'Your debt has decreased by <strong>' + hours + hoursTxt + '</strong>.');
+          h_.showAlert('success', h_.debtDecreaseStr(diff));
         }
         else if (diff < 0) {
-          h_.showAlert('warning', 'Your debt has increased by <strong>' + hours + hoursTxt + '</strong>.');
+          h_.showAlert('warning', h_.debtIncreaseStr(Math.abs(diff)));
         }
 
         debt = timeAccount.debt;
@@ -134,10 +162,8 @@ _.extend(Helpers, {
       }
       else {
         var diff = credit - timeAccount.credit;
-        var hours = h_.hoursFromCents(Math.abs(diff));
-        var hoursTxt = (hours === 1) ? ' hour' : ' hours';
         if (diff < 0) {
-          h_.showAlert('success', 'Your credit has increased by <strong>' + hours + hoursTxt + '</strong>.');
+          h_.showAlert('success', h_.creditIncreaseStr(Math.abs(diff)));
         }
 
         credit = timeAccount.credit;

@@ -10,7 +10,7 @@
 /* Account ***********************************/
 
 #account label {
-	display:inline;
+	display:inline-block;
 }
 #account .amount-input input {
 	text-align:right;
@@ -21,7 +21,7 @@
 	font-size:17px;
 	display:inline-block;
 	line-height:40px;
-	width:3em;
+	`width:3em;
 }
 #account .amount .credit {
 	font-size:32px;

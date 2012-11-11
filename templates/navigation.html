@@ -1,8 +1,8 @@
 <template name="navigation">
   <!--Sidebar content-->
 	<ul id="navigation" class="nav nav-list">
-	  <li class="home{{accountActive}}"><a href="#"><i class="icon-home"></i> Home</a></li>
-	  <li class="barter{{barterActive}}"><a href="#"><i class="icon-arrow-right"></i> Barter</a></li>
-	  <li class="disabled" class="settings"><a href="#"><i class="icon-wrench"></i> Settings</a></li>
+	  <li class="home{{accountActive}}"><a href="#"><i class="icon-home"></i> {{accountStr}}</a></li>
+	  <li class="barter{{barterActive}}"><a href="#"><i class="icon-arrow-right"></i> {{barterStr}}</a></li>
+	  <li class="profile disabled"><a href="#"><i class="icon-list-alt"></i> {{profileStr}}</a></li>
 	</ul>
 </template>

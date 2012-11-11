@@ -4,17 +4,20 @@ This is a working proof-of-concept for a time-trading free market that, in princ
 
 To do:
 ------
-* Account collision
-* String localization
 * Jasmine testing framework
+
 * Team payment
 * User activity logging
-* Global stats/charts
 * Quickpay
-* Changing liability limit
-* Freezing/seizing time accounts
 * Advanced user search
 * User profiles
+
+* Changing liability limit
+* Freezing/seizing time accounts
+* Account collision
+
+* Global stats/charts
+* String localization
 
 
 Open Economics
