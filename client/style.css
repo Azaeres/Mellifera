@@ -21,7 +21,6 @@
 	font-size:17px;
 	display:inline-block;
 	line-height:40px;
-	`width:3em;
 }
 #account .amount .credit {
 	font-size:32px;
@@ -38,13 +37,21 @@
 }
 #account .payee-field {
 	margin-bottom:1em;
-	margin-right:5.5em;
+	margin-right:1em;
 }
 #account .payee-input {
 	margin-top:0;
 }
 #account .payee-field label {
 	font-size:11px;
+}
+
+.typeahead {
+	z-index: 1050;
+}
+#reportContributionModal .modal-body, 
+#paymentModal .modal-body {
+	text-align: right;
 }
 
 

@@ -9,7 +9,7 @@ Meteor.autosubscribe(function () {
 });
 
 Meteor.autorun(function() {
-  if (Meteor.userLoaded()) {
+  if (Meteor.userId()) {
     Meteor.call('UserTimeAccountId', function(error, result) {
       if (typeof result !== 'undefined') {
         Session.set('timeAccountId', result);

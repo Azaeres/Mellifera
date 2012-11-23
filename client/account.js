@@ -103,6 +103,14 @@ Template.account.rendered = function() {
     $('.debt-amount .progress').tooltip('hide');
   });
 */
+  $('#reportContributionModal').on('shown', function () {
+    $('#account .contribution-amount-input').select();
+  });
+
+  $('#paymentModal').on('shown', function () {
+    $('#account .payee-input').select();
+  });
+
   $('.typeahead').typeahead({
     source: function (query, process) {
       Meteor.call('QueryUsers', query, function(error, result) {
@@ -161,8 +169,10 @@ Template.account.events({
       });
     }
     else {
-      h_.showAlert('block', 'A contribution of <strong>0 hours</strong> has been applied to your account.');
+      h_.showAlert('block', 'A contribution of <strong>0.00 hours</strong> has been applied to your account.');
     }
+
+    $('#reportContributionModal').modal('hide');
   },
   'click #account .payee-input': function(event) {
     $(event.target).select();
@@ -199,6 +209,8 @@ Template.account.events({
         }
       }
     });
+
+    $('#paymentModal').modal('hide');
   }
 });
 
