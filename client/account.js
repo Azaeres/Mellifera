@@ -1,3 +1,34 @@
+
+(function() {
+  var debtWarning = function(p) {
+    var w = 'success';
+
+    if (p >= 70)
+      w = 'warning'
+
+    if (p >= 90)
+      w = 'danger'
+
+    return w;
+  };
+
+  var warning = 'success';
+  Meteor.autorun(function() {
+    var percent = h_.percentDebtOfLimit();
+    var $progressBar = $('.progress .bar').width(percent+'%');
+
+    var newWarning = debtWarning(percent);
+    if (newWarning !== warning) {
+      // Warning changed.
+      var oldc = 'bar-'+warning;
+      warning = newWarning;
+      var newc = 'bar-'+warning;
+
+      $('.progress .bar').removeClass(oldc).addClass(newc);
+    }
+  });
+})();
+
 Template.account.helpers({
   liabilityLimit: function() {
     return h_.liabilityLimit();
@@ -24,28 +55,6 @@ Template.account.helpers({
   },
   percentDebtOfLimit: function() {
     return h_.percentDebtOfLimit();
-  },
-  debtWarning: function() {
-    var warning = 'success', percent = 0, debt;
-
-    var sharedAccount = TimeAccounts.findOne({owner:null});
-    if (typeof sharedAccount !== 'undefined') {
-      var limit = sharedAccount.liabilityLimit;
-      var timeAccount = h_.timeAccount();
-
-      if (typeof timeAccount !== 'undefined') {
-        debt = timeAccount.debt;
-        percent = (debt / limit) * 100;
-
-        if (percent >= 70)
-          warning = 'warning'
-
-        if (percent >= 90)
-          warning = 'danger'
-      }
-    }
-
-    return warning;
   }
 });
 

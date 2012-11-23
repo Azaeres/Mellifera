@@ -88,7 +88,7 @@ if (userId !== null) {
 
 		it('the universal money supply should be within the universal liability limit', function() {
 			runs(function() {
-				var within = (result.credit <= result.max);
+				var within = (result.credit <= result.liabilityLimit);
 				expect(within).toBeTruthy();
 			});
 		});

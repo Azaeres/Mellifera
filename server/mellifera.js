@@ -265,7 +265,7 @@ Meteor.methods({
 		return info;
 	},
 	UniversalBalance: function() {
-		var credit = 0, debt = 0, result = { credit:null, debt:null, max:null };
+		var credit = 0, debt = 0, result = { credit:null, debt:null, liabilityLimit:null };
 		TimeAccounts.find().map(function(account) {
 			credit += account.credit;
 			debt += account.debt;
@@ -274,7 +274,7 @@ Meteor.methods({
 		result.debt = debt;
 
 		var memberCount = Meteor.users.find().count();
-		result.max = h_.liabilityLimit() * memberCount;
+		result.liabilityLimit = h_.liabilityLimit() * memberCount;
 
 		return result;
 	}
