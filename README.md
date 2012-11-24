@@ -5,8 +5,6 @@ Mellifera is a working proof-of-concept for a time-trading free market that coul
 Future features
 ---------------
 
-* Seizing funds
-* Changing liability limit
 * Freezing time accounts
 * More tests
 * Team payment

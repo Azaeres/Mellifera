@@ -22,6 +22,19 @@ _.extend(Helpers, {
       (typeof error === 'undefined') ? d_(result) : d_(error);
     });
     return 'Colliding user account...';
+  },
+  setLiabilityLimit: function(newLimit) {
+    Meteor.call('SetLiabilityLimit', newLimit, function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    return 'Setting liability limit...';
+  },
+  seizeDebt: function(amount) {
+    var timeAccount = h_.timeAccount();
+    Meteor.call('SeizeDebt', timeAccount._id, amount, function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    return 'Seizing debt...';
   }
 });
 

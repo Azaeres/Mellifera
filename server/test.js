@@ -38,5 +38,11 @@ Meteor.methods({
     h_.collideTimeAccount(timeAcctId);
 
     return 'Time account collided.';
+  },
+  SetLiabilityLimit: function(newLimit) {
+    h_.setLiabilityLimit(newLimit);
+  },
+  SeizeDebt: function(accountId, amount) {
+    h_.seizeDebt(accountId, amount);
   }
 });

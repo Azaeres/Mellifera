@@ -26,11 +26,13 @@
 	font-size:32px;
 	color:#191;
 	line-height:40px;
+	margin-left: .5em;
 }
 #account .amount .debt {
 	font-size:32px;
 	color:#911;
 	line-height:40px;
+	margin-left: .5em;
 }
 #account .debt-amount .progress {
 	margin-top:11px;

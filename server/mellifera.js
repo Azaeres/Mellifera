@@ -95,11 +95,12 @@ _.extend(Helpers, {
     h_.collideTimeAccount(sharedAccount._id);
 
 		// Finds an amount that can be distributed to every user.
-		var memberCount = Meteor.users.find().count();
-		if (memberCount > 0) {
-			var remainder = sharedAccount.credit % memberCount;
+		var count = TimeAccounts.find().count();
+		if (count > 0) {
+  		sharedAccount = h_.sharedAccount();
+			var remainder = sharedAccount.credit % count;
 			var divisibleFund = sharedAccount.credit - remainder;
-			var dividendAmount = divisibleFund / memberCount;
+			var dividendAmount = divisibleFund / count;
 
 			var amountNotDistributed = divisibleFund;
 			TimeAccounts.find({ owner:{ $ne:null } }).map(function(account) {
@@ -171,6 +172,33 @@ _.extend(Helpers, {
   	var timeAccount = TimeAccounts.findOne({ _id:accountId });
   	var excessCredit = h_.applyCreditToDebt(accountId, timeAccount.credit);
   	TimeAccounts.update({ _id:accountId }, { $set:{ credit:excessCredit } });
+  },
+  seizeDebt: function(accountId, amount) {
+  	var account = TimeAccounts.findOne({ _id:accountId });
+  	
+  	var newDebt = account.debt - amount;
+  	var seizedDebt = amount;
+  	if (newDebt < 0) {
+  		newDebt = 0;
+  		seizedDebt = account.debt;
+  	}
+  	
+  	TimeAccounts.update({ _id:accountId }, { $set:{ debt:newDebt } });
+  	TimeAccounts.update({ owner:null }, { $inc:{ debt:seizedDebt } });
+  },
+  setLiabilityLimit: function(newLimit) {
+  	var seizedDebt = 0;
+
+  	TimeAccounts.find({ owner:{ $ne:null } }).map(function(account) {
+  		if (newLimit < account.debt) {
+  			var diff = account.debt - newLimit;
+  			seizedDebt += diff;
+  			d_(newLimit);
+  			TimeAccounts.update({ _id:account._id }, { $set:{ debt:newLimit } });
+  		}
+  	});
+
+  	TimeAccounts.update({ owner:null }, { $set:{ liabilityLimit:newLimit }, $inc:{ debt:seizedDebt } });
   }
 });
 
