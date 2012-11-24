@@ -12,7 +12,7 @@ Meteor.startup(function () {
 	// liability limit.
 
 	var sharedAcct = TimeAccounts.findOne({ liabilityLimit:{ $exists:true } });
-	if (sharedAcct === null) {
+	if (typeof sharedAcct == 'undefined') {
 		TimeAccounts.insert({ owner:null, credit:0, debt:0, status:'active', liabilityLimit:16000 });
 	}
 });
@@ -44,7 +44,7 @@ _.extend(Helpers, {
 
 	  if (userId !== null) {
 	  	account = TimeAccounts.findOne({ owner:userId });
-		  if (account === null) {
+		  if (typeof account == 'undefined') {
 		    accountId = TimeAccounts.insert({ owner:userId, credit:0, debt:0, status:'frozen' });
 		    account = TimeAccounts.findOne({ _id:accountId });
 		  }
@@ -74,18 +74,27 @@ _.extend(Helpers, {
    */
   applyCreditToDebt: function(accountId, amount) {
   	var excessCredit = 0, update = 0;
-  	var timeAccount = TimeAccounts.findOne({ _id:accountId });
-  	var newDebt = timeAccount.debt - amount;
+  	var account = TimeAccounts.findOne({ _id:accountId });
+  	if (typeof account != 'undefined') {
+  		if (h_.isInteger(amount) && amount >= 0) {
+		  	var newDebt = account.debt - amount;
 
-  	if (newDebt < 0) {
-  		update = 0;
-  		excessCredit = Math.abs(newDebt);
-  	}
-  	else {
-  		update = newDebt;
-  	}
+		  	if (newDebt < 0) {
+		  		update = 0;
+		  		excessCredit = Math.abs(newDebt);
+		  	}
+		  	else {
+		  		update = newDebt;
+		  	}
 
-  	TimeAccounts.update({ _id:accountId }, { $set:{ debt:update } });
+		  	TimeAccounts.update({ _id:accountId }, { $set:{ debt:update } });
+  		}
+	  	else
+				throw new Meteor.Error(500, 'Invalid amount.');
+  	}
+  	else
+			throw new Meteor.Error(500, 'Time account not found.');
+
   	return excessCredit;
   },
   /**
@@ -306,9 +315,9 @@ Meteor.methods({
 		var result = false;
 		var timeAccount;
 		var payeeAccount = Meteor.users.findOne({ 'emails.address':payeeEmail });
-		if (payeeAccount !== null) {
+		if (typeof payeeAccount != 'undefined') {
 			timeAccount = TimeAccounts.findOne({ owner:payeeAccount._id });
-			if (timeAccount !== null) {
+			if (typeof timeAccount != 'undefined') {
 				result = h_.payment(timeAccount._id, amount);
 			}
 			else

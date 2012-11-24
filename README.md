@@ -2,8 +2,8 @@ About
 =====
 Mellifera is a working proof-of-concept for a time-trading free market that could stand a good chance of surviving an automated future. This system acts as a hub of activity for a time-based local currency.
 
-Future features
----------------
+Roadmap
+-------
 
 * More tests
 * Team payment
@@ -22,7 +22,7 @@ Theory
 1. An explanation of money and wealth.
 2. Contribution, the start of the Monetary Cycle.
 3. Payment and compensation, the end of the Monetary Cycle.
-4. The case for shared surplus and sharing trade "secrets".
+4. The case for shared occupational knowledge and shared surplus.
 
 Time-trading rules
 ------------------
