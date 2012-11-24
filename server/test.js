@@ -10,6 +10,12 @@ _.extend(Helpers, {
 
     return 'Account wiped.'
   },
+  wipeAllAccounts: function() {
+    //TimeAccounts.update({}, { $set:{ credit:0, debt:0 } }, { multi:true });
+    
+    TimeAccounts.update({ owner:{ $ne:null }}, { $set:{ credit:6000, debt:6000 } }, { multi:true });
+    TimeAccounts.update({ owner:null }, { $set:{ credit:0, debt:0 } });
+  },
   /** FOR TESTING
    * Generously adds 10 hours to the shared time account.
    */
@@ -24,6 +30,9 @@ Meteor.methods({
 	WipeAccount: function() {
 		return h_.wipeAccount();
 	},
+  WipeAllAccounts: function() {
+    return h_.wipeAllAccounts();
+  },
 	BoostSharedAccount: function() {
 		return h_.boostSharedCredit();
 	},

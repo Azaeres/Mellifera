@@ -23,6 +23,14 @@ Meteor.publish('TimeAccounts', function () {
 });
 
 
+
+
+
+
+
+
+
+
 _.extend(Helpers, {
  	/**
 	 * Returns the time account for the logged-in user.
@@ -95,7 +103,7 @@ _.extend(Helpers, {
     h_.collideTimeAccount(sharedAccount._id);
 
 		// Finds an amount that can be distributed to every user.
-		var count = TimeAccounts.find().count();
+		var count = TimeAccounts.find({ owner:{ $ne:null }}).count();
 		if (count > 0) {
   		sharedAccount = h_.sharedAccount();
 			var remainder = sharedAccount.credit % count;
@@ -193,7 +201,6 @@ _.extend(Helpers, {
   		if (newLimit < account.debt) {
   			var diff = account.debt - newLimit;
   			seizedDebt += diff;
-  			d_(newLimit);
   			TimeAccounts.update({ _id:account._id }, { $set:{ debt:newLimit } });
   		}
   	});
@@ -201,6 +208,14 @@ _.extend(Helpers, {
   	TimeAccounts.update({ owner:null }, { $set:{ liabilityLimit:newLimit }, $inc:{ debt:seizedDebt } });
   }
 });
+
+
+
+
+
+
+
+
 
 Meteor.methods({
 	UserTimeAccountId: function() {

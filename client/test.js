@@ -5,6 +5,12 @@ _.extend(Helpers, {
     });
     return 'Wiping account...';
   },
+  wipeAllAccounts: function() {
+    Meteor.call('WipeAllAccounts', function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    return 'Wiping all accounts...';
+  },
   boostSharedAccount: function() {
     Meteor.call('BoostSharedAccount', function(error, result) {
       (typeof error === 'undefined') ? d_(result) : d_(error);

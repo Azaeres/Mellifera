@@ -89,10 +89,9 @@ Template.account.helpers({
 })
 
 Template.account.rendered = function() {
-  /* // Hover tooltip.
-
-  $('.debt-amount .progress').hover(function() {
-    $('.debt-amount .progress').tooltip({
+  // Hover tooltip.
+  $('#account .progress').hover(function() {
+    $('#account .progress').tooltip({
       trigger: 'manual',
       placement:'top',
       title:'Debt: ' + h_.roundCurrency(h_.percentDebtOfLimit()) + '%',
@@ -100,9 +99,10 @@ Template.account.rendered = function() {
         }).tooltip('show');
   },
   function() {
-    $('.debt-amount .progress').tooltip('hide');
+    $('#account .progress').tooltip('hide');
   });
-*/
+  
+
   $('#reportContributionModal').on('shown', function () {
     $('#account .contribution-amount-input').select();
   });

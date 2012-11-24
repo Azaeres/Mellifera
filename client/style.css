@@ -9,6 +9,9 @@
 
 /* Account ***********************************/
 
+#account {
+	margin-bottom:2em;
+}
 #account label {
 	display:inline-block;
 }

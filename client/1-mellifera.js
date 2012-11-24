@@ -24,7 +24,7 @@ Meteor.autorun(function() {
 _.extend(Helpers, {
   showAlert: function(type, message) {
     $("#notifications .alert-area").append('<div class="alert alert-message alert-' + type + ' fade in" data-alert> <button type="button" class="close" data-dismiss="alert">×</button> <p> ' + message + ' </p> </div>');
-    $(".alert-message").delay(8000).fadeOut(3000, function () { $(this).remove(); });
+    $(".alert-message").delay(7000).fadeOut(2000, function () { $(this).remove(); });
 
     return 'Showing alert...';
   },
