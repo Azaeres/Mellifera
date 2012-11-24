@@ -13,7 +13,7 @@ Meteor.startup(function () {
 
 	var sharedAcct = TimeAccounts.findOne({ owner:null });
 	if (typeof sharedAcct === 'undefined') {
-		TimeAccounts.insert({ owner:null, credit:0, debt:0, liabilityLimit:16000 });
+		TimeAccounts.insert({ owner:null, credit:0, debt:0, status:'active', liabilityLimit:16000 });
 	}
 });
 
@@ -39,18 +39,18 @@ _.extend(Helpers, {
 	 * If the logged-in user doesn't have a time account yet, one is created.
 	 */
 	userTimeAccount: function() {
-	  var acct;
+	  var account;
 	  var userId = Meteor.userId();
 
-	  if (typeof userId !== 'undefined' && userId !== null) {
-	  	acct = TimeAccounts.findOne({ owner:userId });
-		  if (typeof acct === 'undefined') {
-		    acctId = TimeAccounts.insert({ owner:userId, credit:0, debt:0 });
-		    acct = TimeAccounts.findOne({ _id:acctId });
+	  if (userId !== null) {
+	  	account = TimeAccounts.findOne({ owner:userId });
+		  if (account === null) {
+		    accountId = TimeAccounts.insert({ owner:userId, credit:0, debt:0, status:'frozen' });
+		    account = TimeAccounts.findOne({ _id:accountId });
 		  }
 	  }
 
-	  return acct;
+	  return account;
 	},
 	/**
 	 * Returns the time account id for the logged-in user.
@@ -59,14 +59,14 @@ _.extend(Helpers, {
 	 * If the logged-in user doesn't have a time account yet, one is created.
 	 */
 	userTimeAccountId: function() {
-		var acctId;
-		var acct = h_.userTimeAccount();
+		var accountId;
+		var account = h_.userTimeAccount();
 
-		if (typeof acct !== 'undefined' && acct !== null) {
-			acctId = acct._id;
+		if (account !== null) {
+			accountId = account._id;
 		}
 
-		return acctId;
+		return accountId;
 	},
   /**
    * Applies a credit to a user's time account.
@@ -94,6 +94,43 @@ _.extend(Helpers, {
   sharedAccount: function() {
 	 return TimeAccounts.findOne({ owner:null });
   },
+  contribute: function(accountId, amount) {
+		var result = 0;
+		var liabilityLimit = h_.liabilityLimit();
+		
+		if (liabilityLimit !== null) {
+			var account = TimeAccounts.findOne(accountId);
+			if (account !== null) {
+				if (account.status === 'active') {
+					if (h_.isInteger(amount) && amount >= 0) {
+						var availableDebt = liabilityLimit - account.debt;
+						var remaining = availableDebt - amount;
+
+						if (remaining < 0) {
+							remaining = Math.abs(remaining);
+							amount -= remaining;
+						}
+
+						if (amount < 0)
+							amount = 0;
+
+						TimeAccounts.update({ _id:account._id }, { $inc:{ credit:amount, debt:amount } });
+						result = amount;
+					}
+					else
+						throw new Meteor.Error(500, 'Invalid contribution amount.');
+				}
+				else
+					throw new Meteor.Error(500, 'User\'s time account is frozen.');
+			}
+			else
+				throw new Meteor.Error(500, 'No time account found for user.');
+		}
+		else
+			throw new Meteor.Error(500, 'Liability limit not set.');
+
+		return result;
+	},
   /**
    * Evenly distributes credit in the shared time account to each user's time account.
    * The remainder (after dividing the credit evenly amongst all users) stays in the shared account.
@@ -103,15 +140,17 @@ _.extend(Helpers, {
     h_.collideTimeAccount(sharedAccount._id);
 
 		// Finds an amount that can be distributed to every user.
-		var count = TimeAccounts.find({ owner:{ $ne:null }}).count();
+		var count = TimeAccounts.find({ $and: [{ owner:{ $ne:null } }, { status:'active' }] }).count();
 		if (count > 0) {
+			// Refresh our snapshot of the shared account, now that it's been collided.
   		sharedAccount = h_.sharedAccount();
+  		
 			var remainder = sharedAccount.credit % count;
 			var divisibleFund = sharedAccount.credit - remainder;
 			var dividendAmount = divisibleFund / count;
 
 			var amountNotDistributed = divisibleFund;
-			TimeAccounts.find({ owner:{ $ne:null } }).map(function(account) {
+			TimeAccounts.find({ $and: [{ owner:{ $ne:null } }, { status:'active' }] }).map(function(account) {
 				// Grants dividend to each member.
 				var accountId = account._id;
 				var excessCredit = h_.applyCreditToDebt(accountId, dividendAmount);
@@ -132,28 +171,33 @@ _.extend(Helpers, {
   payment: function(payeeAccountId, amount) {
   	var result = { success:false, details:'' };
 
-  	if (typeof amount === 'number') {
+  	if (h_.isInteger(amount) && amount >= 0) {
 	  	var payerAccount = h_.userTimeAccount();
 	  	var payeeAccount = TimeAccounts.findOne({ _id:payeeAccountId });
 
-			// Makes sure there's enough credit for the payment.
-	  	if (payerAccount.credit >= amount) {
-				// Deduct the amount of the payment from the payer's credit.
-				TimeAccounts.update({ _id:payerAccount._id }, { $inc:{ credit:-amount } });
+	  	if (payeeAccount.status === 'active') {
+				// Makes sure there's enough credit for the payment.
+		  	if (payerAccount.credit >= amount) {
+					// Deduct the amount of the payment from the payer's credit.
+					TimeAccounts.update({ _id:payerAccount._id }, { $inc:{ credit:-amount } });
 
-				// Now we deduct the amount of the payment from the payee's debt.
-				var excessCredit = h_.applyCreditToDebt(payeeAccountId, amount);
+					// Now we deduct the amount of the payment from the payee's debt.
+					var excessCredit = h_.applyCreditToDebt(payeeAccountId, amount);
 
-				// Any excess credit is shared, and goes into the shared time account.
-				TimeAccounts.update({ owner:null }, { $inc:{ credit:excessCredit } });
+					// Any excess credit is shared, and goes into the shared time account.
+					TimeAccounts.update({ owner:null }, { $inc:{ credit:excessCredit } });
 
-				// Distribute shared credit.
-				h_.distributeDividends();
+					// Distribute shared credit.
+					h_.distributeDividends();
 
-				result.success = true;
+					result.success = true;
+		  	}
+		  	else {
+					result.details = 'Not enough funds.';
+		  	}
 	  	}
 	  	else {
-				result.details = 'Not enough funds.';
+				result.details = 'Payee\'s account is frozen.';
 	  	}
   	}
   	else {
@@ -206,6 +250,18 @@ _.extend(Helpers, {
   	});
 
   	TimeAccounts.update({ owner:null }, { $set:{ liabilityLimit:newLimit }, $inc:{ debt:seizedDebt } });
+  },
+  freezeTimeAccount: function(accountId) {
+  	var account = TimeAccounts.findOne(accountId);
+
+		// The shared account cannot be frozen.
+  	if (account.owner !== null) {
+			TimeAccounts.update({ _id:account._id }, { $set:{ status:'frozen' } });
+  	}
+  },
+  activateTimeAccount: function(accountId) {
+  	var account = TimeAccounts.findOne(accountId);
+		TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
   }
 });
 
@@ -234,36 +290,12 @@ Meteor.methods({
 	 */
 	ReportContribution: function(amount) {
 		var result = 0;
-		var liabilityLimit = h_.liabilityLimit();
-		
-		if (liabilityLimit !== null) {
-		  var userId = this.userId;
-		  if (userId !== null) {
-				var acct = h_.userTimeAccount();
-
-				if (acct !== null) {
-					var availableDebt = liabilityLimit - acct.debt;
-					var remaining = availableDebt - amount;
-
-					if (remaining < 0) {
-						remaining = Math.abs(remaining);
-						amount -= remaining;
-					}
-
-					if (amount < 0)
-						amount = 0;
-
-					TimeAccounts.update({ _id:acct._id }, { $inc:{ credit:amount, debt:amount } });
-					result = amount;
-				}
-				else
-					throw new Meteor.Error(500, 'No time account found for user.');
-		  }
-			else
-				throw new Meteor.Error(500, 'User not logged in.');
+		var accountId = h_.userTimeAccountId();
+		if (accountId !== null) {
+			result = h_.contribute(accountId, amount);
 		}
 		else
-			throw new Meteor.Error(500, 'Liability limit not set.');
+			throw new Meteor.Error(500, 'User not logged in.');
 
 		return result;
 	},
@@ -276,18 +308,18 @@ Meteor.methods({
 	Payment: function(payeeEmail, amount) {
 		var result = { success:false, details:'' };
 		var timeAccount;
-		var payeeAccount = Meteor.users.findOne({ "emails.address":payeeEmail });
-		if (typeof payeeAccount !== 'undefined') {
+		var payeeAccount = Meteor.users.findOne({ 'emails.address':payeeEmail });
+		if (payeeAccount !== null) {
 			timeAccount = TimeAccounts.findOne({ owner:payeeAccount._id });
-			if (typeof timeAccount !== 'undefined') {
+			if (timeAccount !== null) {
 				result = h_.payment(timeAccount._id, amount);
 			}
 			else {
-				result.details = 'Time account not found.';
+				result.details = 'Found no time account for that user.';
 			}
 		}
 		else {
-			result.details = 'User account not found.';
+			result.details = 'Found no user account with that email address.';
 		}
 
 		return result;

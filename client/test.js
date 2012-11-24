@@ -41,6 +41,20 @@ _.extend(Helpers, {
       (typeof error === 'undefined') ? d_(result) : d_(error);
     });
     return 'Seizing debt...';
+  },
+  freezeTimeAccount: function(accountId) {
+    var timeAccount = h_.timeAccount();
+    Meteor.call('FreezeTimeAccount', timeAccount._id, function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    return 'Freezing time account...';
+  },
+  activateTimeAccount: function(accountId) {
+    var timeAccount = h_.timeAccount();
+    Meteor.call('ActivateTimeAccount', timeAccount._id, function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    return 'Activating time account...';
   }
 });
 

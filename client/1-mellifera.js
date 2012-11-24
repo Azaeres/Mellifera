@@ -28,9 +28,6 @@ _.extend(Helpers, {
 
     return 'Showing alert...';
   },
-  isInteger: function(value) {
-    return typeof value === 'number' && parseFloat(value) == parseInt(value, 10) && !isNaN(value);
-  },
   roundCurrency: function(amount) {
     return (Math.round(amount * 100) / 100).toFixed(2);
   },
