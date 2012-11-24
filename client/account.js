@@ -192,7 +192,6 @@ Template.account.events({
     var cents = h_.centsFromHours(hours);
     
     Meteor.call('Payment', email, cents, function(error, result) {
-      //(typeof error === 'undefined') ? d_(result) : d_(error);
       if (error) {
         h_.showAlert('error', '<strong>Error ' + error.error + ':</strong> ' + error.reason);
         if (typeof error.details !== 'undefined')
@@ -201,7 +200,7 @@ Template.account.events({
       else {
         hours = h_.hoursFromCents(cents);
         var hoursTxt = (hours === 1) ? ' hour' : ' hours';
-        if (result.success) {
+        if (result) {
           h_.showAlert('success', 'Payment of <strong>' + hours + hoursTxt +'</strong> completed.');
         }
         else {

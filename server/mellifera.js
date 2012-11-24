@@ -144,7 +144,7 @@ _.extend(Helpers, {
 		if (count > 0) {
 			// Refresh our snapshot of the shared account, now that it's been collided.
   		sharedAccount = h_.sharedAccount();
-  		
+
 			var remainder = sharedAccount.credit % count;
 			var divisibleFund = sharedAccount.credit - remainder;
 			var dividendAmount = divisibleFund / count;
@@ -169,7 +169,7 @@ _.extend(Helpers, {
    * If there isn't enough credit in the payer's account, the payment is aborted.
    */
   payment: function(payeeAccountId, amount) {
-  	var result = { success:false, details:'' };
+  	var result = false;
 
   	if (h_.isInteger(amount) && amount >= 0) {
 	  	var payerAccount = h_.userTimeAccount();
@@ -190,19 +190,16 @@ _.extend(Helpers, {
 					// Distribute shared credit.
 					h_.distributeDividends();
 
-					result.success = true;
+					result = true;
 		  	}
-		  	else {
-					result.details = 'Not enough funds.';
-		  	}
+		  	else
+					throw new Meteor.Error(500, 'Not enough funds.');
 	  	}
-	  	else {
-				result.details = 'Payee\'s account is frozen.';
-	  	}
+	  	else
+				throw new Meteor.Error(500, 'Payee\'s account is frozen.');
   	}
-  	else {
-			result.details = 'Invalid amount.';
-  	}
+  	else
+			throw new Meteor.Error(500, 'Invalid amount.');
 
   	return result;
   },
@@ -306,7 +303,7 @@ Meteor.methods({
 		return h_.distributeDividends();
 	},
 	Payment: function(payeeEmail, amount) {
-		var result = { success:false, details:'' };
+		var result = false;
 		var timeAccount;
 		var payeeAccount = Meteor.users.findOne({ 'emails.address':payeeEmail });
 		if (payeeAccount !== null) {
@@ -314,13 +311,11 @@ Meteor.methods({
 			if (timeAccount !== null) {
 				result = h_.payment(timeAccount._id, amount);
 			}
-			else {
-				result.details = 'Found no time account for that user.';
-			}
+			else
+				throw new Meteor.Error(500, 'Found no time account for that user.');
 		}
-		else {
-			result.details = 'Found no user account with that email address.';
-		}
+		else
+			throw new Meteor.Error(500, 'Found no user account with that email address.');
 
 		return result;
 	},
