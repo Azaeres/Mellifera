@@ -15,6 +15,8 @@ _.extend(Helpers, {
 
     //TimeAccounts.update({ liabilityLimit:{ $exists:false } }, { $set:{ credit:6000, debt:6000 } }, { multi:true });
     //TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ credit:0, debt:0 } });
+
+    return 'All accounts wiped.';
   },
   /** FOR TESTING
    * Generously adds 10 hours to the shared time account.
@@ -50,14 +52,22 @@ Meteor.methods({
   },
   SetLiabilityLimit: function(newLimit) {
     h_.setLiabilityLimit(newLimit);
+
+    return 'Liability limit set.';
   },
   SeizeDebt: function(accountId, amount) {
     h_.seizeDebt(accountId, amount);
+
+    return 'Debt seized.';
   },
   FreezeTimeAccount: function(accountId) {
     h_.freezeTimeAccount(accountId);
+
+    return 'Time account frozen.';
   },
   ActivateTimeAccount: function(accountId) {
     h_.activateTimeAccount(accountId);
+
+    return 'Time account activated.';
   }
 });

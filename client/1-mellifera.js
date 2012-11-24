@@ -65,22 +65,13 @@ _.extend(Helpers, {
     return percent;
   },
   applyCreditToDebt: function() {
-    Meteor.call('ApplyCreditToDebt', function(error, result) {
-      (typeof error === 'undefined') ? d_(result) : d_(error);
-    });
-    return 'Applying credit...';
+    return h_.call('ApplyCreditToDebt', 'Applying credit...');
   },
   distributeDividends: function() {
-    Meteor.call('DistributeDividends', function(error, result) {
-      (typeof error === 'undefined') ? d_(result) : d_(error);
-    });
-    return 'Distributing dividends...';
+    return h_.call('DistributeDividends', 'Distributing dividends...');
   },
   payment: function(payeeAccountId, amount) {
-    Meteor.call('Payment', payeeAccountId, amount, function(error, result) {
-      (typeof error === 'undefined') ? d_(result) : d_(error);
-    });
-    return 'Processing payment...';
+    return h_.call('Payment', 'Processing payment...');
   },
   queryUsersRegex: function(str) {
     var arr, newStr, s;
@@ -95,6 +86,18 @@ _.extend(Helpers, {
     });
 
     return RegExp(newStr, 'i');
+  },
+  call: function(serverMethodName, displayText) {
+    var output = serverMethodName;
+    if (typeof displayText == 'string') {
+      output = displayText;
+    }
+
+    Meteor.call(serverMethodName, function(error, result) {
+      (typeof error === 'undefined') ? d_(result) : d_(error);
+    });
+    
+    return output;
   }
 });
 
