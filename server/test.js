@@ -13,14 +13,14 @@ _.extend(Helpers, {
   wipeAllAccounts: function() {
     TimeAccounts.update({}, { $set:{ credit:0, debt:0 } }, { multi:true });
 
-    //TimeAccounts.update({ owner:{ $ne:null }}, { $set:{ credit:6000, debt:6000 } }, { multi:true });
-    //TimeAccounts.update({ owner:null }, { $set:{ credit:0, debt:0 } });
+    //TimeAccounts.update({ liabilityLimit:{ $exists:false } }, { $set:{ credit:6000, debt:6000 } }, { multi:true });
+    //TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ credit:0, debt:0 } });
   },
   /** FOR TESTING
    * Generously adds 10 hours to the shared time account.
    */
   boostSharedCredit: function() {
-  	TimeAccounts.update({ owner:null }, { $inc:{ credit:1000, debt:1000 } });
+  	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:1000, debt:1000 } });
 
     return 'Shared time account boosted.';
   }

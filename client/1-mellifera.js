@@ -51,7 +51,7 @@ _.extend(Helpers, {
   percentDebtOfLimit: function() {
     var percent = 0, debt;
 
-    var sharedAccount = TimeAccounts.findOne({ owner:null });
+    var sharedAccount = TimeAccounts.findOne({ liabilityLimit:{ $exists:true } });
     if (typeof sharedAccount !== 'undefined') {
       var limit = sharedAccount.liabilityLimit;
       var timeAccount = h_.timeAccount();

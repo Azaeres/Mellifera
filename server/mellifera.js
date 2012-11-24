@@ -11,8 +11,8 @@ Meteor.startup(function () {
 	// It also differs from other time accounts by how it records the universal 
 	// liability limit.
 
-	var sharedAcct = TimeAccounts.findOne({ owner:null });
-	if (typeof sharedAcct === 'undefined') {
+	var sharedAcct = TimeAccounts.findOne({ liabilityLimit:{ $exists:true } });
+	if (sharedAcct === null) {
 		TimeAccounts.insert({ owner:null, credit:0, debt:0, status:'active', liabilityLimit:16000 });
 	}
 });
@@ -92,7 +92,7 @@ _.extend(Helpers, {
    * Returns the shared time account.
    */
   sharedAccount: function() {
-	 return TimeAccounts.findOne({ owner:null });
+	 return TimeAccounts.findOne({ liabilityLimit:{ $exists:true } });
   },
   contribute: function(accountId, amount) {
 		var result = 0;
@@ -140,7 +140,7 @@ _.extend(Helpers, {
     h_.collideTimeAccount(sharedAccount._id);
 
 		// Finds an amount that can be distributed to every user.
-		var count = TimeAccounts.find({ $and: [{ owner:{ $ne:null } }, { status:'active' }] }).count();
+		var count = TimeAccounts.find({ $and: [{ liabilityLimit:{ $exists:false } }, { status:'active' }] }).count();
 		if (count > 0) {
 			// Refresh our snapshot of the shared account, now that it's been collided.
   		sharedAccount = h_.sharedAccount();
@@ -150,7 +150,7 @@ _.extend(Helpers, {
 			var dividendAmount = divisibleFund / count;
 
 			var amountNotDistributed = divisibleFund;
-			TimeAccounts.find({ $and: [{ owner:{ $ne:null } }, { status:'active' }] }).map(function(account) {
+			TimeAccounts.find({ $and: [{ liabilityLimit:{ $exists:false } }, { status:'active' }] }).map(function(account) {
 				// Grants dividend to each member.
 				var accountId = account._id;
 				var excessCredit = h_.applyCreditToDebt(accountId, dividendAmount);
@@ -185,7 +185,7 @@ _.extend(Helpers, {
 					var excessCredit = h_.applyCreditToDebt(payeeAccountId, amount);
 
 					// Any excess credit is shared, and goes into the shared time account.
-					TimeAccounts.update({ owner:null }, { $inc:{ credit:excessCredit } });
+					TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:excessCredit } });
 
 					// Distribute shared credit.
 					h_.distributeDividends();
@@ -233,12 +233,12 @@ _.extend(Helpers, {
   	}
   	
   	TimeAccounts.update({ _id:accountId }, { $set:{ debt:newDebt } });
-  	TimeAccounts.update({ owner:null }, { $inc:{ debt:seizedDebt } });
+  	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ debt:seizedDebt } });
   },
   setLiabilityLimit: function(newLimit) {
   	var seizedDebt = 0;
 
-  	TimeAccounts.find({ owner:{ $ne:null } }).map(function(account) {
+  	TimeAccounts.find({ liabilityLimit:{ $exists:false } }).map(function(account) {
   		if (newLimit < account.debt) {
   			var diff = account.debt - newLimit;
   			seizedDebt += diff;
@@ -246,13 +246,13 @@ _.extend(Helpers, {
   		}
   	});
 
-  	TimeAccounts.update({ owner:null }, { $set:{ liabilityLimit:newLimit }, $inc:{ debt:seizedDebt } });
+  	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ liabilityLimit:newLimit }, $inc:{ debt:seizedDebt } });
   },
   freezeTimeAccount: function(accountId) {
   	var account = TimeAccounts.findOne(accountId);
 
 		// The shared account cannot be frozen.
-  	if (account.owner !== null) {
+  	if (typeof account.liabilityLimit != 'undefined') {
 			TimeAccounts.update({ _id:account._id }, { $set:{ status:'frozen' } });
   	}
   },
