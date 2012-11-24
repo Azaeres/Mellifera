@@ -15,56 +15,56 @@
 				</div>{{/constant}}
 	  	</div>
 	  </div>
-
-
 		<!-- Button to trigger modal -->
 		<a href="#reportContributionModal" role="button" class="btn" data-toggle="modal">{{reportContributionStr}}</a>
-		 
-		<!-- Modal -->
-		<div id="reportContributionModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		  <div class="modal-header">
-		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		    <h3 id="myModalLabel">{{reportContributionStr}}</h3>
-		  </div>
-		  <div class="modal-body">
-				<span class="amount-input input-append">
-			    <input class="contribution-amount-input span3" type="text" value="0.00">
-				  <span class="add-on">{{hoursStr}}</span>
-				</span>
-		  </div>
-		  <div class="modal-footer">
-		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		    <button class="contribution-submit btn btn-primary">Submit</button>
-		  </div>
-		</div>
 
 		<!-- Button to trigger modal -->
 		<a href="#paymentModal" role="button" class="btn" data-toggle="modal">{{makePaymentStr}}</a>
-		 
-		<!-- Modal -->
-		<div id="paymentModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		  <div class="modal-header">
-		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		    <h3 id="myModalLabel">{{makePaymentStr}}</h3>
-		  </div>
-		  <div class="modal-body">
-		    <div class="payee-field form-left pull-left">
-					<span class="input-prepend">
-					  <span class="add-on">{{payeeEmailStr}}</span>
-				    {{#constant}}<input class="payee-input typeahead span12" type="text" data-provide="typeahead">{{/constant}}
-				  </span>
-		    </div>
-		    <div>
-					<span class="amount-input input-append">
-				    <input class="payment-amount-input span3" type="text" value="0.00">
-					  <span class="add-on">{{hoursStr}}</span>
-					</span>
-				</div>
-		  </div>
-		  <div class="modal-footer">
-		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		    <button class="payment-submit btn btn-primary">Submit</button>
-		  </div>
-		</div>
 	</div>
+
+	{{#constant}}
+	<!-- Modal -->
+	<div id="reportContributionModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="myModalLabel">Report Contribution</h3>
+	  </div>
+	  <div class="modal-body">
+			<span class="amount-input input-append">
+		    <input class="contribution-amount-input span3" type="text" value="0.00">
+			  <span class="add-on">hours</span>
+			</span>
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+	    <button class="contribution-submit btn btn-primary">Submit</button>
+	  </div>
+	</div>
+
+	<!-- Modal -->
+	<div id="paymentModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="myModalLabel">Make Payment</h3>
+	  </div>
+	  <div class="modal-body">
+	    <div class="payee-field form-left pull-left">
+				<span class="input-prepend">
+				  <span class="add-on">Payee</span>
+			    <input class="payee-input typeahead span12" type="text" data-provide="typeahead">
+			  </span>
+	    </div>
+	    <div>
+				<span class="amount-input input-append">
+			    <input class="payment-amount-input span3" type="text" value="0.00">
+				  <span class="add-on">hours</span>
+				</span>
+			</div>
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+	    <button class="payment-submit btn btn-primary">Submit</button>
+	  </div>
+	</div>
+	{{/constant}}
 </template>

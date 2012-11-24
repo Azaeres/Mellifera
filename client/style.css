@@ -40,16 +40,6 @@
 #account .debt-amount .progress {
 	margin-top:11px;
 }
-#account .payee-field {
-	margin-bottom:1em;
-	margin-right:1em;
-}
-#account .payee-input {
-	margin-top:0;
-}
-#account .payee-field label {
-	font-size:11px;
-}
 
 .typeahead {
 	z-index: 1050;
@@ -58,7 +48,16 @@
 #paymentModal .modal-body {
 	text-align: right;
 }
-
+#paymentModal .payee-field {
+	margin-bottom:1em;
+	margin-right:1em;
+}
+#paymentModal .payee-input {
+	margin-top:0;
+}
+#paymentModal .payee-field label {
+	font-size:11px;
+}
 
 
 

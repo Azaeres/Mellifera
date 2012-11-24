@@ -94,7 +94,7 @@ Template.account.rendered = function() {
     $('#account .progress').tooltip({
       trigger: 'manual',
       placement:'top',
-      title:'Debt: ' + h_.roundCurrency(h_.percentDebtOfLimit()) + '%',
+      title:'Debt: ' + (Math.round(h_.percentDebtOfLimit() * 100) / 100).toFixed(1) + '%',
       placement:'left'
         }).tooltip('show');
   },
@@ -104,11 +104,11 @@ Template.account.rendered = function() {
   
 
   $('#reportContributionModal').on('shown', function () {
-    $('#account .contribution-amount-input').select();
+    $('#reportContributionModal .contribution-amount-input').select();
   });
 
   $('#paymentModal').on('shown', function () {
-    $('#account .payee-input').select();
+    $('#paymentModal .payee-input').select();
   });
 
   $('.typeahead').typeahead({
@@ -135,18 +135,18 @@ Template.account.rendered = function() {
 };
 
 Template.account.events({
-  'keypress #account .contribution-amount-input': function(event) {
+  'keypress #reportContributionModal .contribution-amount-input': function(event) {
     if (event.which === 13) {
       $(event.target).blur();
-      $('#account .contribution-submit').click();
+      $('#reportContributionModal .contribution-submit').click();
     }
   },
-  'click #account .contribution-amount-input': function(event) {
+  'click #reportContributionModal .contribution-amount-input': function(event) {
     $(event.target).select();
   },
-  'click #account .contribution-submit': function(event) {
+  'click #reportContributionModal .contribution-submit': function(event) {
     var btn = $(event.target);
-    var hours = parseFloat($('#account .contribution-amount-input').val());
+    var hours = parseFloat($('#reportContributionModal .contribution-amount-input').val());
     var cents = h_.centsFromHours(hours);
 
     if (!isNaN(cents)) {
@@ -174,21 +174,21 @@ Template.account.events({
 
     $('#reportContributionModal').modal('hide');
   },
-  'click #account .payee-input': function(event) {
+  'click #paymentModal .payee-input': function(event) {
     $(event.target).select();
   },
-  'keypress #account .payment-amount-input': function(event) {
+  'keypress #paymentModal .payment-amount-input': function(event) {
     if (event.which === 13) {
       $(event.target).blur();
-      $('#account .payment-submit').click();
+      $('#paymentModal .payment-submit').click();
     }
   },
-  'click #account .payment-amount-input': function(event) {
+  'click #paymentModal .payment-amount-input': function(event) {
     $(event.target).select();
   },
-  'click #account .payment-submit': function(event) {
-    var email = $('#account .payee-input').val();
-    var hours = parseFloat($('#account .payment-amount-input').val());
+  'click #paymentModal .payment-submit': function(event) {
+    var email = $('#paymentModal .payee-input').val();
+    var hours = parseFloat($('#paymentModal .payment-amount-input').val());
     var cents = h_.centsFromHours(hours);
     
     Meteor.call('Payment', email, cents, function(error, result) {
