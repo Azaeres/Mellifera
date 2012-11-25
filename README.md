@@ -6,6 +6,7 @@ Roadmap
 -------
 
 * More tests
+* Better testing framework
 * Team payment
 * Improved notifications
 * User activity logging
@@ -44,6 +45,9 @@ Getting started
 	2. Clone the repo `git clone git@github.com:ryancbarry/Mellifera.git`.
 	3. Run `meteor` from within the project directory.
 	4. Visit `http://localhost:3000` with a web browser.
+
+* Running tests
+ 
 
 * How to report a contribution of time
 * How to pay someone

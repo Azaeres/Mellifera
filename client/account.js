@@ -90,13 +90,15 @@ Template.account.helpers({
 
 Template.account.rendered = function() {
   // Hover tooltip.
+  var debtPercent = (Math.round(h_.percentDebtOfLimit() * 100) / 100).toFixed(1);
+
   $('#account .progress').hover(function() {
-    $('#account .progress').tooltip({
+    $('#account .progress').tooltip('destroy').tooltip({
       trigger: 'manual',
       placement:'top',
-      title:'Debt: ' + (Math.round(h_.percentDebtOfLimit() * 100) / 100).toFixed(1) + '%',
+      title:'Debt: ' + debtPercent + '%',
       placement:'left'
-        }).tooltip('show');
+    }).tooltip('show');
   },
   function() {
     $('#account .progress').tooltip('hide');
@@ -191,7 +193,7 @@ Template.account.events({
     var hours = parseFloat($('#paymentModal .payment-amount-input').val());
     var cents = h_.centsFromHours(hours);
     
-    Meteor.call('Payment', email, cents, function(error, result) {
+    Meteor.call('MakePayment', email, cents, function(error, result) {
       if (error) {
         h_.showAlert('error', '<strong>Error ' + error.error + ':</strong> ' + error.reason);
         if (typeof error.details !== 'undefined')

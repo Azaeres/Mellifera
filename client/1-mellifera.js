@@ -51,7 +51,7 @@ _.extend(Helpers, {
   percentDebtOfLimit: function() {
     var percent = 0, debt;
 
-    var sharedAccount = TimeAccounts.findOne({ liabilityLimit:{ $exists:true } });
+    var sharedAccount = h_.sharedAccount();
     if (typeof sharedAccount !== 'undefined') {
       var limit = sharedAccount.liabilityLimit;
       var timeAccount = h_.timeAccount();
@@ -63,41 +63,6 @@ _.extend(Helpers, {
     }
 
     return percent;
-  },
-  applyCreditToDebt: function() {
-    return h_.call('ApplyCreditToDebt', 'Applying credit...');
-  },
-  distributeDividends: function() {
-    return h_.call('DistributeDividends', 'Distributing dividends...');
-  },
-  payment: function(payeeAccountId, amount) {
-    return h_.call('Payment', 'Processing payment...');
-  },
-  queryUsersRegex: function(str) {
-    var arr, newStr, s;
-    s = str || '';
-    s = s.replace(RegExp(' ', 'g'), '');
-    arr = s.split('');
-    newStr = '';
-    
-    _.map(arr, function(ch) {
-      ch = ch + '.*';
-      return newStr += ch;
-    });
-
-    return RegExp(newStr, 'i');
-  },
-  call: function(serverMethodName, displayText) {
-    var output = serverMethodName;
-    if (typeof displayText == 'string') {
-      output = displayText;
-    }
-
-    Meteor.call(serverMethodName, function(error, result) {
-      (typeof error === 'undefined') ? d_(result) : d_(error);
-    });
-    
-    return output;
   }
 });
 
