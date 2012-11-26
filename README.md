@@ -1,6 +1,7 @@
 About
 =====
-Mellifera is a working proof-of-concept for a time-trading free market that could stand a good chance of surviving an automated future. This system acts as a hub of activity for a time-based local currency.
+
+Mellifera is a working proof-of-concept for a time-trading free market that could stand a good chance of surviving an automated future. This system acts as a hub of activity for a time-based local currency. This project is very new and is under active development.
 
 Roadmap
 -------

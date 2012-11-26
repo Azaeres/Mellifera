@@ -15,9 +15,6 @@
 #account label {
 	display:inline-block;
 }
-#account .amount-input input {
-	text-align:right;
-}
 #account .amount label {
 	font-weight:bold;
 	color:#aaa;
@@ -45,7 +42,9 @@
 	z-index: 1050;
 }
 #reportContributionModal .modal-body, 
-#paymentModal .modal-body {
+#paymentModal .modal-body,
+#reportContributionModal .amount-input input,
+#paymentModal .amount-input input {
 	text-align: right;
 }
 #paymentModal .payee-field {
