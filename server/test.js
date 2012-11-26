@@ -32,14 +32,14 @@ if (1/*_TESTING*/) {
       return 'Shared time account boosted.';
     },
     setupTestEnvironment: function() {
-      var results = {};
+      var result = {};
 
       // Removes all accounts, including the shared account.
       TimeAccounts.remove({});
 
       // Creates the shared account.
       var sharedAccountId = h_.createSharedTimeAccount();
-      results.sharedAccount = TimeAccounts.findOne(sharedAccountId);
+      result.sharedAccount = TimeAccounts.findOne(sharedAccountId);
 
       // Creates 100 zombie accounts.
       //_.range(100).map(function(i) {
@@ -49,81 +49,100 @@ if (1/*_TESTING*/) {
       // Gives all the accounts some money.
       //TimeAccounts.update({ liabilityLimit:{ $exists:false } }, { $set:{ status:'active', credit:6000, debt:6000 } }, { multi:true });
 
-      return results;
+      return result;
     },
     testContribution: function() {
-      var results = {};
+      var result = {};
       
       // Get a dummy user.
       var testUsername = '0d86a0d3-2baa-4fe5-9bda-7603003720a8-test-';
       var testUser = Meteor.users.findOne({ username:testUsername });
       if (typeof testUser == 'undefined') {
-        results.testUserId = Accounts.createUser({ username:testUsername })
+        result.testUserId = Accounts.createUser({ username:testUsername })
 
         // Create a test account.
-        var contributor = h_.timeAccount(results.testUserId);
-        results.contributorAfterCreation = TimeAccounts.findOne(contributor._id);
+        var contributor = h_.timeAccount(result.testUserId);
+        result.contributorAfterCreation = TimeAccounts.findOne(contributor._id);
 
         // Try to contribute to a frozen account.
-        results.contributionAmount = 8000;
+        result.contributionAmount = 8000;
         try {
-          h_.contribute(contributor._id, results.contributionAmount);
+          h_.contribute(contributor._id, result.contributionAmount);
         }
         catch(error) {
-          results.contributionError1 = error;
+          result.contributionError1 = error;
         }
 
-        results.contributorAfterFailedContribution = TimeAccounts.findOne(contributor._id);
+        result.contributorAfterFailedContribution = TimeAccounts.findOne(contributor._id);
 
         // Activate the test account.
         h_.activateTimeAccount(contributor._id);
-        results.contributorAfterActivation = TimeAccounts.findOne(contributor._id);
+        result.contributorAfterActivation = TimeAccounts.findOne(contributor._id);
 
         // Try to contribute to the newly activated account.
         try {
-          h_.contribute(contributor._id, results.contributionAmount);
+          h_.contribute(contributor._id, result.contributionAmount);
         }
         catch(error) {
-          results.contributionError2 = error;
+          result.contributionError2 = error;
         }
 
-        results.contributorAfterSuccessfulContribution = TimeAccounts.findOne(contributor._id);
+        result.contributorAfterSuccessfulContribution = TimeAccounts.findOne(contributor._id);
 
+        // Try to contribute a negative amount.
+        try {
+          h_.contribute(contributor._id, -result.contributionAmount);
+        }
+        catch(e) {
+          result.contributeNegativeAmountError = e;
+        }
+
+        // Try to contribute a negative amount.
+        try {
+          h_.contribute(contributor._id, 400000);
+        }
+        catch(e) {
+          result.contributeToMaxError = e;
+        }
+
+        result.liabilityLimit = h_.liabilityLimit();
+        result.contributorAfterContributionToMax = TimeAccounts.findOne(contributor._id);
+        
         // Freeze the time account again.
         h_.freezeTimeAccount(contributor._id);
-        results.contributorAfterFreeze = TimeAccounts.findOne(contributor._id);
+        result.contributorAfterFreeze = TimeAccounts.findOne(contributor._id);
 
         // Try to activate/freeze an invalid id.
         try {
           h_.activateTimeAccount('invalid-id');
         }
         catch(e) {
-          results.activateInvalidIdError = e;
+          result.activateInvalidIdError = e;
         }
 
         try {
           h_.freezeTimeAccount('invalid-id');
         }
         catch(e) {
-          results.freezeInvalidIdError = e;
+          result.freezeInvalidIdError = e;
         }
 
         // Try to contribute to an invalid id.
         try {
-          h_.contribute('invalid-id', results.contributionAmount);
+          h_.contribute('invalid-id', result.contributionAmount);
         }
         catch(e) {
-          results.contributeInvalidIdError = e;
+          result.contributeInvalidIdError = e;
         }
-        
-        Meteor.users.remove(results.testUserId);
+
+        Meteor.users.remove(result.testUserId);
       }
       else {
-        results.testUserId = testUser._id;
-        results.createUserError = new Meteor.Error(500, 'Test user "'+testUsername+'" already exists');
+        result.testUserId = testUser._id;
+        result.createUserError = new Meteor.Error(500, 'Test user "'+testUsername+'" already exists');
       }
 
-      return results;
+      return result;
     }
   });
 

@@ -43,21 +43,19 @@ _.extend(Helpers, {
 	timeAccount: function(ownerId) {
 		var accountId, account;
 
+		// Make sure the `ownerId` specified is valid.
 		var owner = Meteor.users.findOne(ownerId);
 		if (owner) {
+			// See if that owner has a time account.
 	  	account = TimeAccounts.findOne({ owner:ownerId });
 		  if (typeof account == 'undefined') {
+		  	// If they don't have a time account, create one.
 		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, debt:0, status:'frozen' });
+		    account = TimeAccounts.findOne(accountId);
 		  }
-		  else
-				throw new Meteor.Error(500, 'User already has a time account.');
 		}
 		else
 			throw new Meteor.Error(500, 'User not found');
-
-		if (typeof accountId != 'undefined') {
-	    account = TimeAccounts.findOne({ _id:accountId });
-		}
 
 		return account;
 	},

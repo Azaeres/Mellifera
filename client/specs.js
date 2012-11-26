@@ -145,6 +145,12 @@ if (_TESTING) {
 			});
 		});
 
+		it('should throw an exception when contributing a negative amount', function() {
+			runs(function() {
+				expect(result.contributeNegativeAmountError).toBeDefined();
+			});
+		});
+
 		describe('Account creation snapshot', function() {
 			it('results should contain snapshot', function() {
 				runs(function() {
@@ -287,6 +293,38 @@ if (_TESTING) {
 			});
 		});
 
+		describe('Contribution to max snapshot', function() {
+			it('results should contain snapshot', function() {
+				runs(function() {
+					expect(result.contributorAfterContributionToMax).toBeDefined();
+				});
+			});
+
+			it('credit should now be capped to the liability limit', function() {
+				runs(function() {
+					expect(result.contributorAfterContributionToMax.credit).toBe(result.liabilityLimit);
+				});
+			});
+
+			it('debt should now be capped to the liability limit', function() {
+				runs(function() {
+					expect(result.contributorAfterContributionToMax.debt).toBe(result.liabilityLimit);
+				});
+			});
+
+			it('status should still be "active" after contribution', function() {
+				runs(function() {
+					expect(result.contributorAfterContributionToMax.status).toBe('active');
+				});
+			});
+
+			it('owner should still be set correctly', function() {
+				runs(function() {
+					expect(result.contributorAfterContributionToMax.owner).toBe(result.testUserId);
+				});
+			});
+		});
+
 		describe('Freeze snapshot', function() {
 			it('results should contain snapshot', function() {
 				runs(function() {
@@ -294,15 +332,15 @@ if (_TESTING) {
 				});
 			});
 
-			it('credit should still be the contribution amount', function() {
+			it('credit should still be the liability limit', function() {
 				runs(function() {
-					expect(result.contributorAfterFreeze.credit).toBe(result.contributionAmount);
+					expect(result.contributorAfterFreeze.credit).toBe(result.liabilityLimit);
 				});
 			});
 
-			it('debt should still be the contribution amount', function() {
+			it('debt should still be the liability limit', function() {
 				runs(function() {
-					expect(result.contributorAfterFreeze.debt).toBe(result.contributionAmount);
+					expect(result.contributorAfterFreeze.debt).toBe(result.liabilityLimit);
 				});
 			});
 
