@@ -5,12 +5,17 @@ Mellifera is a working proof-of-concept for a time-trading free market that coul
 Roadmap
 -------
 
-* More tests
-* Better testing framework
+* Test payments and surplus distribution
+* Better testing on/off switch
 * Team payment
 * Improved notifications
 * User activity logging
-* Quickpay
+* User guide / API documentation
+
+v1.0.0
+
+* Devel branch
+* Quickpay with QR codes
 * Advanced user search
 * User profiles
 * Global stats/charts

@@ -193,6 +193,12 @@ if (1/*_TESTING*/) {
     },
     TestContribution: function() {
       return h_.testContribution();
+    },
+    ApplyCreditToDebt: function() {
+      return h_.applyCreditToDebt(h_.userTimeAccountId(), 200);
+    },
+    DistributeDividends: function() {
+      return h_.distributeDividends();
     }
   });
 }

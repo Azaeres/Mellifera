@@ -133,7 +133,8 @@ _.extend(Helpers, {
   	var sharedAccount = h_.sharedAccount();
     h_.collideTimeAccount(sharedAccount._id);
 
-		// Finds an amount that can be distributed to every user.
+		// Finds an amount that can be evenly distributed to every user.
+		// Exclude the shared time account and include only active accounts during distribution.
 		var count = TimeAccounts.find({ $and: [{ liabilityLimit:{ $exists:false } }, { status:'active' }] }).count();
 		if (count > 0) {
 			// Refresh our snapshot of the shared account, now that it's been collided.
@@ -203,8 +204,8 @@ _.extend(Helpers, {
   	return result;
   },
   collideTimeAccount: function(accountId) {
-  	var timeAccount = TimeAccounts.findOne({ _id:accountId });
-  	var excessCredit = h_.applyCreditToDebt(accountId, timeAccount.credit);
+  	var account = TimeAccounts.findOne({ _id:accountId });
+  	var excessCredit = h_.applyCreditToDebt(accountId, account.credit);
   	TimeAccounts.update({ _id:accountId }, { $set:{ credit:excessCredit } });
   },
   seizeDebt: function(accountId, amount) {
@@ -293,12 +294,6 @@ Meteor.methods({
 			throw new Meteor.Error(500, 'User not logged in.');
 
 		return result;
-	},
-	ApplyCreditToDebt: function() {
-		return h_.applyCreditToDebt(h_.userTimeAccountId(), 200);
-	},
-	DistributeDividends: function() {
-		return h_.distributeDividends();
 	},
 	MakePayment: function(payeeEmail, amount) {
 		var result = false;
