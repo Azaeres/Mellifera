@@ -95,11 +95,11 @@ There are roughly three parts to the client: template partials, template JS, and
 Testing
 -------
 
-Specs are implemented using Jasmine, a client-side testing library. They typically make requests of the server to perform operations and then analyze the state snapshots that are returned.
+Specs are implemented using Jasmine, a client-side testing library. They typically make requests of the server to perform operations and then analyze the state snapshots that are returned. During testing, the server makes use of a separate collection of test time accounts in order to have control over their state without changing the state of the primary time accounts.
 
 License
 =======
 
-Mellifera is free software released under the MIT License.
+Mellifera is free software released under the [MIT License](https://github.com/ryancbarry/Mellifera/blob/master/LICENSE.md).
 
 
