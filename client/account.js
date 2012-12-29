@@ -1,33 +1,5 @@
 
 (function() {
-  var debtWarning = function(p) {
-    var w = 'success';
-
-    if (p >= 70)
-      w = 'warning'
-
-    if (p >= 90)
-      w = 'danger'
-
-    return w;
-  };
-
-  var warning = 'success';
-  Meteor.autorun(function() {
-    var percent = h_.percentDebtOfLimit();
-    var $progressBar = $('.progress .bar').width(percent+'%');
-
-    var newWarning = debtWarning(percent);
-    if (newWarning !== warning) {
-      // Warning changed.
-      var oldc = 'bar-'+warning;
-      warning = newWarning;
-      var newc = 'bar-'+warning;
-
-      $('.progress .bar').removeClass(oldc).addClass(newc);
-    }
-  });
-})();
 
 Template.account.helpers({
   liabilityLimit: function() {
@@ -89,8 +61,40 @@ Template.account.helpers({
 })
 
 Template.account.rendered = function() {
-  // Hover tooltip.
+
+  var setProgressBarClass = function() {
+    var debtWarning = function(p) {
+      var w = 'success';
+
+      if (p >= 70)
+        w = 'warning'
+
+      if (p >= 90)
+        w = 'danger'
+
+      return w;
+    };
+
+    var warning = 'success';
+  
+    var percent = h_.percentDebtOfLimit();
+    var $progressBar = $('.progress .bar').width(percent+'%');
+
+    var newWarning = debtWarning(percent);
+    if (newWarning !== warning) {
+      // Warning changed.
+      var oldc = 'bar-'+warning;
+      warning = newWarning;
+      var newc = 'bar-'+warning;
+
+      $('.progress .bar').removeClass(oldc).addClass(newc);
+    }
+  };
+
+// Hover tooltip.
   var debtPercent = (Math.round(h_.percentDebtOfLimit() * 100) / 100).toFixed(1);
+
+  setProgressBarClass();
 
   $('#account .progress').hover(function() {
     $('#account .progress').tooltip('destroy').tooltip({
@@ -214,4 +218,8 @@ Template.account.events({
     $('#paymentModal').modal('hide');
   }
 });
+
+
+})();
+
 

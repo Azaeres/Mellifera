@@ -7,10 +7,11 @@ Roadmap
 -------
 
 * Test payments and surplus distribution
-* Better testing on/off switch
-* Team payment
+* Improved testing on/off switch
+* Team contributions/payment
 * Improved notifications
 * User activity logging
+* Refunds and direct debt payment
 * User guide / API documentation
 
 v1.0.0
@@ -19,7 +20,7 @@ v1.0.0
 * Quickpay with QR codes
 * Advanced user search
 * User profiles
-* Global stats/charts
+* Global/individual stats/charts
 * String localization
 * Gravatar support
 

@@ -166,15 +166,20 @@ _.extend(Helpers, {
   payment: function(payerAccountId, payeeAccountId, amount) {
   	var result = false;
 
+  	// Make sure the amount is valid.
   	if (h_.isInteger(amount) && amount >= 0) {
 	  	var payerAccount = TimeAccounts.findOne({ _id:payerAccountId });
 
+	  	// Make sure the payer has an active account.
 	  	if (payerAccount.status === 'active') {
 		  	var payeeAccount = TimeAccounts.findOne({ _id:payeeAccountId });
 
+		  	// Make sure the payee has an active account.
 		  	if (payeeAccount.status === 'active') {
+
 					// Makes sure there's enough credit for the payment.
 			  	if (payerAccount.credit >= amount) {
+			  		
 						// Deduct the amount of the payment from the payer's credit.
 						TimeAccounts.update({ _id:payerAccount._id }, { $inc:{ credit:-amount } });
 
