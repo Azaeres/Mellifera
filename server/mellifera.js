@@ -7,6 +7,12 @@ Accounts.config({
 
 
 
+
+
+/**
+ * Private server methods.
+ */
+
 _.extend(Helpers, {
  	/**
 	 * Returns the time account for the logged-in user.
@@ -273,6 +279,11 @@ _.extend(Helpers, {
 
 
 
+
+
+/**
+ * Public server methods.
+ */
 
 Meteor.methods({
 	UserTimeAccountId: function() {

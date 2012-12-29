@@ -59,6 +59,44 @@ Getting started
 * How to report a contribution of time
 * How to pay someone
 
+System structure
+================
+
+Database
+--------
+
+The database contains a collection of TimeAccounts, and a collection of Meteor users. A TimeAccount collection with two accounts looks like this:
+
+		{ "owner" : null, "credit" : 1, "debt" : 0, "status" : "active", "liabilityLimit" : 16000, "_id" : "2ad95dc6-cea6-4530-8e09-0f9a6b4c226a" }
+		{ "owner" : "32d7a2a6-d882-4e7a-8cfc-ed89f14771b7", "credit" : 3538, "debt" : 9000, "status" : "active", "_id" : "90dbb849-c59f-4672-8368-735830c98f41" }
+		{ "owner" : "bc0bc13b-aafb-44db-84ce-fcee5348b74f", "credit" : 15001, "debt" : 9540, "status" : "active", "_id" : "8090ba81-1a98-4e21-8458-c1796ab692b1" }
+
+In this example, the first account is the shared time account. It is created if there isn't one, and there can be only one. Structurally, it differs from normal time accounts by having a `liabilityLimit` property (all members' debt limit), and by having a null owner. It is responsible for keeping track of shared credit/debt.
+
+The rest of the time accounts are normal, personal accounts, and they are associated with a Meteor user through the `owner` property. A user can have only one time account, and it is responsible for keeping track of that user's personal credit/debt. 
+
+A time account can have "frozen" or "active" status. They are "frozen" when first created, so users can register without impacting the pool of currency. A "frozen" account's credit/debt cannot change, so it can not be contributed to, nor can it make payments, nor can it receive payments of any kind. An "active" time account, in contrast, can do all these things.
+
+Credit/debt is stored as an integer to keep track of every cent, so this may lead to some complexity when dividing amounts. The proposed method of handling this employs a remainder pile of credit/debt, to be stored up until it can be split evenly.
+
+Server
+------
+
+The server is designed to do only work that the client cannot be trusted to do. There are two main parts to the server: private methods and public methods. The public methods typically just take a private method and expose it as an AJAX response.
+
+The most significant server methods are `contribute` (contributes an amount to a time account), `distributeDividends` (gives everyone an even share of the shared credit), `payment` (takes credit from a payer's time account, and applies it to a payee's time account), and `applyCreditToDebt` (applys a credit to a time account's debt, returning any excess credit).
+
+Client
+------
+
+There are roughly three parts to the client: template partials, template JS, and CSS. Much of the user interface comes from Twitter Bootstrap so it can look decent without much effort. Much of the development focus is on the logic of the time exchange itself.
+
+
+Testing
+-------
+
+Specs are implemented using Jasmine, a client-side testing library. They typically make requests of the server to perform operations and then analyze the state snapshots that are returned.
+
 License
 =======
 
