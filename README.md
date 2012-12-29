@@ -1,7 +1,7 @@
 About
 =====
 
-Mellifera is a working proof-of-concept for a time-trading free market that could stand a good chance of surviving an automated future. This system acts as a hub of activity for a time-based local currency. This project is very new and is under active development.
+Mellifera is a working proof-of-concept for a time exchange resilient to wealth distribution problems. It encourages active cooperation, knowledge-sharing, and safeguards against uncontrolled deflation. This exchange trades in hour-based local currency. This project is experimental and is undergoing active development.
 
 Roadmap
 -------
@@ -62,5 +62,6 @@ Getting started
 License
 =======
 
-Mellifera is licensed under the MIT License.
+Mellifera is free software released under the MIT License.
+
 

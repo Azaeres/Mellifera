@@ -4,15 +4,15 @@ Template.container.helpers({
   },
   accountDetailsPage: function() {
     var currentPage = Session.get('currentPage');
-    return (currentPage === 'account') ? true : false;
+    return (currentPage === 'account');
   },
   barterPage: function() {
     var currentPage = Session.get('currentPage');
-    return (currentPage === 'barter') ? true : false;
+    return (currentPage === 'barter');
   },
   testsPage: function() {
     var currentPage = Session.get('currentPage');
-    return (currentPage === 'tests') ? true : false;
+    return (currentPage === 'tests');
   }
 });
 

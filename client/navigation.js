@@ -11,20 +11,6 @@ Template.navigation.helpers({
   }
 });
 
-// Localization
-// 
-Template.navigation.helpers({
-  accountStr: function() {
-    return l_('Account');
-  },
-  barterStr: function() {
-    return l_('Barter');
-  },
-  profileStr: function() {
-    return l_('Profile');
-  }
-});
-
 Template.navigation.rendered = function() {
   $('#navigation .home a').click(function(e) {
     e.preventDefault();
