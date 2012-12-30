@@ -42,10 +42,10 @@ For the purposes of this project, wealth is the quantity and quality of availabl
 
 Mellifera is an exchange that trades in hours, a currency that is widely accessible, yet scarce enough to store value. This money is purposely not backed by a commodity like gold in order to avoid systemically enriching the holders of that commodity. However, like any market, trust in others is necessarily integral to its success.
 
+This exchange treats money primarily as a record of debt. This means that every cent of credit is backed by a cent of debt somewhere in the system.
+
 The monetary cycle
 ==================
-
-This exchange treats money primarily as a record of debt. This means that every cent of credit is backed by a cent of debt somewhere in the system.
 
 Money is created when someone reports a contribution of time, and it is destroyed when debt is compensated. This project refers to this as the monetary cycle. Money reaches its peak utility when it can be flushed out of the system just as easily as it is introduced. A vibrant exchange helps to distribute wealth.
 
