@@ -70,17 +70,28 @@ _.extend(Helpers, {
    * The credit is applied to their debt, and the excess credit is returned.
    */
   applyCreditToDebt: function(accountId, amount) {
-  	var excessCredit = 0, update = 0;
+  	var excessCredit = 0;
   	var account = TimeAccounts.findOne({ _id:accountId });
+
+  	// Make sure the account is valid.
   	if (typeof account != 'undefined') {
+
+	  	// Make sure the amount is valid.
   		if (h_.isInteger(amount) && amount >= 0) {
+  			var update = 0;
+
+  			// Find out how much debt would be left over after applying the amount to it.
 		  	var newDebt = account.debt - amount;
 
+		  	//  If the leftover debt would be less than zero,
+		  	//	set their debt to zero, and return the excess amount.
 		  	if (newDebt < 0) {
 		  		update = 0;
 		  		excessCredit = Math.abs(newDebt);
 		  	}
 		  	else {
+		  		//	If the leftover debt would be greater than or equal to zero,
+		  		//	set their debt to that amount.
 		  		update = newDebt;
 		  	}
 
@@ -176,38 +187,46 @@ _.extend(Helpers, {
   	if (h_.isInteger(amount) && amount >= 0) {
 	  	var payerAccount = TimeAccounts.findOne({ _id:payerAccountId });
 
-	  	// Make sure the payer has an active account.
-	  	if (payerAccount.status === 'active') {
-		  	var payeeAccount = TimeAccounts.findOne({ _id:payeeAccountId });
+	  	// Make sure the payer has a valid and active account.
+	  	if (typeof payerAccount != 'undefined') {
+		  	if (payerAccount.status === 'active') {
+			  	var payeeAccount = TimeAccounts.findOne({ _id:payeeAccountId });
 
-		  	// Make sure the payee has an active account.
-		  	if (payeeAccount.status === 'active') {
+			  	// Make sure the payee has a valid and active account.
+			  	if (typeof payeeAccount != 'undefined') {
+				  	if (payeeAccount.status === 'active') {
 
-					// Makes sure there's enough credit for the payment.
-			  	if (payerAccount.credit >= amount) {
-			  		
-						// Deduct the amount of the payment from the payer's credit.
-						TimeAccounts.update({ _id:payerAccount._id }, { $inc:{ credit:-amount } });
+							// Make sure there's enough credit for the payment.
+					  	if (payerAccount.credit >= amount) {
+					  		
+								// Deduct the amount of the payment from the payer's credit.
+								TimeAccounts.update({ _id:payerAccount._id }, { $inc:{ credit:-amount } });
 
-						// Now we deduct the amount of the payment from the payee's debt.
-						var excessCredit = h_.applyCreditToDebt(payeeAccountId, amount);
+								// Now we deduct the amount of the payment from the payee's debt.
+								var excessCredit = h_.applyCreditToDebt(payeeAccountId, amount);
 
-						// Any excess credit is shared, and goes into the shared time account.
-						TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:excessCredit } });
+								// Any excess credit is shared, and goes into the shared time account.
+								TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:excessCredit } });
 
-						// Distribute shared credit.
-						h_.distributeDividends();
+								// Distribute shared credit.
+								h_.distributeDividends();
 
-						result = true;
+								result = true;
+					  	}
+					  	else
+								throw new Meteor.Error(500, 'Not enough funds.');
+				  	}
+				  	else
+							throw new Meteor.Error(500, 'Payee\'s account is frozen.');
 			  	}
 			  	else
-						throw new Meteor.Error(500, 'Not enough funds.');
+						throw new Meteor.Error(500, 'Payee\'s account not found.');
 		  	}
 		  	else
-					throw new Meteor.Error(500, 'Payee\'s account is frozen.');
-	  	}
-	  	else
-				throw new Meteor.Error(500, 'Payer\'s account is frozen.');
+					throw new Meteor.Error(500, 'Payer\'s account is frozen.');
+			}
+			else
+				throw new Meteor.Error(500, 'Payer\'s account not found.');
   	}
   	else
 			throw new Meteor.Error(500, 'Invalid amount.');
