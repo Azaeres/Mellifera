@@ -6,15 +6,17 @@ Mellifera is a working proof-of-concept for a time exchange resilient to wealth 
 Roadmap
 -------
 
-* Test payments and surplus distribution
+v0.5.0
+
+* Group contributions/payment
+* Implement specs for payments and surplus distribution
 * Improved testing on/off switch
-* Team contributions/payment
-* Improved notifications
-* User activity logging
 * Refunds and direct debt payment
+* User activity logging
+* Improved notifications
 * User guide / API documentation
 
-v1.0.0
+v0.6.0
 
 * Devel branch
 * Quickpay with QR codes
