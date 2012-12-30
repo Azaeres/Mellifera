@@ -1,7 +1,9 @@
 About
 =====
 
-Mellifera is a working proof-of-concept for a time exchange resilient to wealth distribution problems. It encourages active cooperation, knowledge-sharing, and safeguards against uncontrolled deflation. This exchange trades in hour-based local currency. This project is experimental and is undergoing active development.
+Mellifera is a working proof-of-concept for a time exchange resilient to wealth distribution problems. It encourages active cooperation, knowledge-sharing, and safeguards against uncontrolled deflation. This exchange trades in an hour-based local currency. This project is experimental and is undergoing active development.
+
+Mellifera is named after the [western honey bee](https://en.wikipedia.org/wiki/Western_honey_bee), *Apis Mellifera*. It means "honey bearer". 
 
 Roadmap
 -------
@@ -14,11 +16,13 @@ v0.5.0
 * Refunds and direct debt payment
 * User activity logging
 * Improved notifications
+* Terms of use
 * User guide / API documentation
 
 v0.6.0
 
 * Devel branch
+* Deployment
 * Quickpay with QR codes
 * Advanced user search
 * User profiles
@@ -26,16 +30,42 @@ v0.6.0
 * String localization
 * Gravatar support
 
-Theory
-------
+Explanation
+===========
 
-1. An explanation of money and wealth.
-2. Contribution, the start of the Monetary Cycle.
-3. Payment and compensation, the end of the Monetary Cycle.
-4. The case for shared occupational knowledge and shared surplus.
+Mellifera focuses on Explanation-Driven Development (EDD). Since problems persist due to our collective ignorance, this project seeks to prevent them by providing good explanations of how it works. You can expect the documentation to continually improve, and the source code to be well-covered by instructive comments.
 
-Time-trading rules
+Money and wealth
+----------------
+
+For the purposes of this project, wealth is the quantity and quality of available options. Wealth distribution is a problem solved by an economy, one best developed by systems engineers with the interests of all in mind. For this reason, the source and methodology behind this project is open to all.
+
+Mellifera is an exchange that trades in hours, a currency that is widely accessible, yet scarce enough to store value. This money is purposely not backed by a commodity like gold in order to avoid systemically enriching the holders of that commodity. However, like any market, trust in others is necessarily integral to its success.
+
+The monetary cycle
 ------------------
+
+This exchange treats money primarily as a record of debt. This means that every cent of credit is backed by a cent of debt somewhere in the system.
+
+Money is created when someone reports a contribution of time, and it is destroyed when debt is compensated. Money reaches its peak utility when it can be flushed out of the system just as easily as it is introduced. A vibrant exchange helps to distribute wealth.
+
+This project inherits some limitations from being based in debt. There are natural limits to liability. At some point, people's faith in a currency, or in others' ability to pay them back will be shaken. Mellifera makes an attempt to limit the damage by establishing a common liability limit. This is an amount of debt that everyone cannot exceed.
+
+Wealth distribution
+-------------------
+
+Revenue is naturally uneven. Some earn little, some earn a lot. Those that earn more have been able to convince others to pay them. This can be due to factors like trust or some kind of occupational knowledge, but it always comes down to persuasion.
+
+It is preferable to spend our resources creating more and better options for all instead of using it to undermine someone else's ability to do the same. Although competition can motivate us to work hard, it ultimately wastes more time than collaboration. Solving problems is its own reward, and open source methodologies have shown us the ineffecacy of rivalry.
+
+Shared knowledge of best practices is essential to wealth distribution. It is our first line of defense against economic problems. However, if we fail to share knowledge, or if sharing knowledge fails to even out the availability of more and better options, Mellifera attempts to compensate through a policy of sharing surplus revenue.
+
+Surplus, according to Mellifera, is an amount of revenue that exceeds one's outstanding debt. Sharing surplus revenue means that one can only earn money for time contributed. Not only does it help recirculate credit so it can find debt to compensate, it can even help defang monopolies - as long as they're reporting their time honestly.
+
+Member rules
+============
+
+For whatever weaknesses are inherit in a system such as this, Mellifera tries hard to bring our attention to them. If we collectively fail to follow these rules, we erode the market's utility. When we depend on this system to distribute wealth amongst us, breaking the following rules poisons the well we are all drinking from. Since we are all co-dependent, hurting any of us hurts all of us.
 
 1. Members may have only one account.
 2. Only the owner of an account has say on where its credit is spent.
@@ -43,8 +73,9 @@ Time-trading rules
 4. Do not waste others' time; share knowledge of best practices.
 5. Do not waste your own time; use best practices whenever possible, and seek guidance when you need it.
 6. Do not hoard money indefinitely; spend it regularly.
+7. Do not exploit security holes or bugs.
 
-Rule 1 ensures that everyone gets the same amount of dividends and liability limit. Rule 2  Rules 3-6 help stabilize the money supply. Failing to abide by these rules causes the community currency to lose its usefulness, and should be grounds for the termination of membership.
+Rule 1 ensures that everyone gets the same amount of dividends and liability limit. Rule 2 helps stabilize the currency's value. Rules 3-6 help stabilize the money supply. Failure to abide by these rules should be grounds for the termination of membership.
 
 Getting started
 ===============
