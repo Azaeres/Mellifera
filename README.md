@@ -47,7 +47,7 @@ The monetary cycle
 
 This exchange treats money primarily as a record of debt. This means that every cent of credit is backed by a cent of debt somewhere in the system.
 
-Money is created when someone reports a contribution of time, and it is destroyed when debt is compensated. Money reaches its peak utility when it can be flushed out of the system just as easily as it is introduced. A vibrant exchange helps to distribute wealth.
+Money is created when someone reports a contribution of time, and it is destroyed when debt is compensated. This project refers to this as the monetary cycle. Money reaches its peak utility when it can be flushed out of the system just as easily as it is introduced. A vibrant exchange helps to distribute wealth.
 
 This project inherits some limitations from being based in debt. There are natural limits to liability. At some point, people's faith in a currency, or in others' ability to pay them back will be shaken. Mellifera makes an attempt to limit the damage by establishing a common liability limit. This is an amount of debt that everyone cannot exceed.
 
@@ -65,7 +65,7 @@ Surplus, according to Mellifera, is an amount of revenue that exceeds one's outs
 Member rules
 ============
 
-For whatever weaknesses are inherit in a system such as this, Mellifera tries hard to bring our attention to them. If we collectively fail to follow these rules, we erode the market's utility. When we depend on this system to distribute wealth amongst us, breaking the following rules poisons the well we are all drinking from. Since we are all co-dependent, hurting any of us hurts all of us.
+For whatever weaknesses are inherit in a system such as this, Mellifera tries hard to bring our attention to them. If we collectively fail to follow these rules, we erode the market's utility. When we depend on this system to distribute wealth amongst us, breaking the following rules poisons the well we are all drinking from. Since we are all co-dependent, hurting any of us hurts all of us. Every problem is everyone's problem, regardless of how we prioritize the effort to solve them.
 
 1. Members may have only one account.
 2. Only the owner of an account has say on where its credit is spent.
