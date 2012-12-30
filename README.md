@@ -8,7 +8,7 @@ Roadmap
 
 v0.5.0
 
-* Group contributions/payment
+* [Group contributions/payment](https://github.com/ryancbarry/Mellifera/wiki/Group-contribution-payment-proposal)
 * Implement specs for payments and surplus distribution
 * Improved testing on/off switch
 * Refunds and direct debt payment
