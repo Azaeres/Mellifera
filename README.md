@@ -1,12 +1,12 @@
 About
-=====
+-----
 
 Mellifera is a working proof-of-concept for a time exchange resilient to wealth distribution problems. It encourages active cooperation, knowledge-sharing, and safeguards against uncontrolled deflation. This exchange trades in an hour-based local currency. This project is experimental and is undergoing active development.
 
 Mellifera is named after the [western honey bee](https://en.wikipedia.org/wiki/Western_honey_bee), *Apis Mellifera*. It means "honey bearer". 
 
 Roadmap
--------
+=======
 
 v0.5.0
 
@@ -31,19 +31,19 @@ v0.6.0
 * Gravatar support
 
 Explanation
-===========
+-----------
 
 Mellifera focuses on Explanation-Driven Development (EDD). Since problems persist due to our collective ignorance, this project seeks to prevent them by providing good explanations of how it works. You can expect the documentation to continually improve, and the source code to be well-covered by instructive comments.
 
 Money and wealth
-----------------
+================
 
 For the purposes of this project, wealth is the quantity and quality of available options. Wealth distribution is a problem solved by an economy, one best developed by systems engineers with the interests of all in mind. For this reason, the source and methodology behind this project is open to all.
 
 Mellifera is an exchange that trades in hours, a currency that is widely accessible, yet scarce enough to store value. This money is purposely not backed by a commodity like gold in order to avoid systemically enriching the holders of that commodity. However, like any market, trust in others is necessarily integral to its success.
 
 The monetary cycle
-------------------
+==================
 
 This exchange treats money primarily as a record of debt. This means that every cent of credit is backed by a cent of debt somewhere in the system.
 
@@ -52,7 +52,7 @@ Money is created when someone reports a contribution of time, and it is destroye
 This project inherits some limitations from being based in debt. There are natural limits to liability. At some point, people's faith in a currency, or in others' ability to pay them back will be shaken. Mellifera makes an attempt to limit the damage by establishing a common liability limit. This is an amount of debt that everyone cannot exceed.
 
 Wealth distribution
--------------------
+===================
 
 Revenue is naturally uneven. Some earn little, some earn a lot. Those that earn more have been able to convince others to pay them. This can be due to factors like trust or some kind of occupational knowledge, but it always comes down to persuasion.
 
@@ -63,7 +63,7 @@ Shared knowledge of best practices is essential to wealth distribution. It is ou
 Surplus, according to Mellifera, is an amount of revenue that exceeds one's outstanding debt. Sharing surplus revenue means that one can only earn money for time contributed. Not only does it help recirculate credit so it can find debt to compensate, it can even help defang monopolies - as long as they're reporting their time honestly.
 
 Member rules
-============
+------------
 
 For whatever weaknesses are inherit in a system such as this, Mellifera tries hard to bring our attention to them. If we collectively fail to follow these rules, we erode the market's utility. When we depend on this system to distribute wealth amongst us, breaking the following rules poisons the well we are all drinking from. Since we are all co-dependent, hurting any of us hurts all of us. Every problem is everyone's problem, regardless of how we prioritize the effort to solve them.
 
@@ -78,7 +78,7 @@ For whatever weaknesses are inherit in a system such as this, Mellifera tries ha
 Rule 1 ensures that everyone gets the same amount of dividends and liability limit. Rule 2 helps stabilize the currency's value. Rules 3-6 help stabilize the money supply. Failure to abide by these rules should be grounds for the termination of membership.
 
 Getting started
-===============
+---------------
 
 * How to start a local time-trading community server:
 	1. Download and install Meteor `curl https://install.meteor.com | /bin/sh`. For more information on deploying a Meteor app, see the [Meteor documentation](http://docs.meteor.com).
@@ -93,10 +93,10 @@ Getting started
 * How to pay someone
 
 System structure
-================
+----------------
 
 Database
---------
+========
 
 The database contains a collection of TimeAccounts, and a collection of Meteor users. A TimeAccount collection with two accounts looks like this:
 
@@ -113,25 +113,25 @@ A time account can have "frozen" or "active" status. They are "frozen" when firs
 Credit/debt is stored as an integer to keep track of every cent, so this may lead to some complexity when dividing amounts. The proposed method of handling this employs a remainder pile of credit/debt, to be stored up until it can be split evenly.
 
 Server
-------
+======
 
 The server is designed to do only work that the client cannot be trusted to do. There are two main parts to the server: private methods and public methods. The public methods typically just take a private method and expose it as an AJAX response.
 
 The most significant server methods are `contribute` (contributes an amount to a time account), `distributeDividends` (gives everyone an even share of the shared credit), `payment` (takes credit from a payer's time account, and applies it to a payee's time account), and `applyCreditToDebt` (applys a credit to a time account's debt, returning any excess credit).
 
 Client
-------
+======
 
 There are roughly three parts to the client: template partials, template JS, and CSS. Much of the user interface comes from Twitter Bootstrap so it can look decent without much effort. Much of the development focus is on the logic of the time exchange itself.
 
 
 Testing
--------
+=======
 
 Specs are implemented using Jasmine, a client-side testing library. They typically make requests of the server to perform operations and then analyze the state snapshots that are returned. During testing, the server makes use of a separate collection of test time accounts in order to have control over their state without changing the state of the primary time accounts.
 
 License
-=======
+-------
 
 Mellifera is free software released under the [MIT License](https://github.com/ryancbarry/Mellifera/blob/master/LICENSE.md).
 
