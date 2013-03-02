@@ -1,32 +1,43 @@
-if (_TESTING) {
+if (_DEVELOPMENT_) {
 
-	(function() {
-	  var jasmineEnv = jasmine.getEnv();
-	  jasmineEnv.updateInterval = 1000;
+/*
+        d_('Server is supposed to have entered testing mode');
 
-	  var htmlReporter = new jasmine.HtmlReporter();
+        d_(error);
+        h_.enterTestingMode();
 
-	  jasmineEnv.addReporter(htmlReporter);
+        var jasmineEnv = jasmine.getEnv();
+        jasmineEnv.updateInterval = 1000;
 
-	  jasmineEnv.specFilter = function(spec) {
-	    return htmlReporter.specFilter(spec);
-	  };
+        var htmlReporter = new jasmine.HtmlReporter();
 
-	  var currentWindowOnload = window.onload;
+        jasmineEnv.addReporter(htmlReporter);
 
-	  window.onload = function() {
-	    if (currentWindowOnload) {
-	      currentWindowOnload();
-	    }
-	    execJasmine();
-	  };
+        jasmineEnv.specFilter = function(spec) {
+          return htmlReporter.specFilter(spec);
+        };
 
-	  function execJasmine() {
-	    jasmineEnv.execute();
-	  }
+        // var currentWindowOnload = window.onload;
 
-	})();
+        // window.onload = function() {
+        //   if (currentWindowOnload) {
+        //     currentWindowOnload();
+        //   }
+        //   execJasmine();
+        // };
 
+        // function execJasmine() {
+          // jasmineEnv.execute();
+        // }
+
+        jasmineEnv.execute();
+
+        // Meteor.call('ExitTestingMode', function(error, result) {
+        //   h_.exitTestingMode();
+        //   d_('Testing complete');
+        //   d_(error);
+        // });
+*/
 
 	// Specs
 
@@ -101,7 +112,7 @@ if (_TESTING) {
 			});
 		});
 	});
-
+/*
 	describe('Contribution test suite', function() {
 		var value, result, error;
 
@@ -358,6 +369,9 @@ if (_TESTING) {
 		});
 
 	});
+*/
+
+
 
 	/*
 	var userId = Meteor.userId();

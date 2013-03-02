@@ -4,21 +4,21 @@ Template.navigation.helpers({
     var result = (currentPage === 'account') ? ' active' : '';
     return result;
   },
-  barterActive: function() {
+  testsActive: function() {
     var currentPage = Session.get('currentPage');
-    var result = (currentPage === 'barter') ? ' active' : '';
+    var result = (currentPage === 'tests') ? ' active' : '';
     return result;
   }
 });
 
 Template.navigation.rendered = function() {
-  $('#navigation .home a').click(function(e) {
+  $('#navigation .account a').click(function(e) {
     e.preventDefault();
-    Session.set('currentPage', 'account');
+    AppRouter.navigate('', { trigger:true });
   });
-  $('#navigation .barter a').click(function(e) {
+  $('#navigation .tests a').click(function(e) {
     e.preventDefault();
-    Session.set('currentPage', 'barter');
+    AppRouter.navigate('tests', { trigger:true });
   });
 };
 

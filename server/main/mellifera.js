@@ -56,7 +56,7 @@ _.extend(Helpers, {
 	  	account = TimeAccounts.findOne({ owner:ownerId });
 		  if (typeof account == 'undefined') {
 		  	// If they don't have a time account, create one.
-		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, debt:0, status:'frozen' });
+		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, debt:0, revenue:0, contributions:{}, status:'frozen' });
 		    account = TimeAccounts.findOne(accountId);
 		  }
 		}
@@ -284,7 +284,8 @@ _.extend(Helpers, {
 
 		var sharedAccount = h_.sharedAccount();
 		if (typeof sharedAccount == 'undefined') {
-			sharedAccountId = TimeAccounts.insert({ owner:null, credit:0, debt:0, status:'active', liabilityLimit:16000 });
+			var limit = Meteor.settings.liabilityLimit;
+			sharedAccountId = TimeAccounts.insert({ owner:null, credit:0, debt:0, status:'active', liabilityLimit:limit });
 		}
 
 		return sharedAccountId;

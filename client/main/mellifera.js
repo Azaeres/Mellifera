@@ -2,6 +2,27 @@ Meteor.startup(function() {
   if (Session.equals('currentPage', undefined)) {
     Session.set('currentPage', 'account');
   }
+
+  // Routes
+  var Router = Backbone.Router.extend({
+    routes: {
+      '': 'account',
+      'account': 'account',
+      'tests': 'tests',
+    },
+    'account': function() {
+      Session.set('currentPage', 'account');
+    },
+    'tests': function() {
+      Session.set('currentPage', 'tests');
+    }
+  });
+
+  // Initiate the router
+  AppRouter = new Router;
+
+  // Start Backbone history a necessary step for bookmarkable URL's
+  Backbone.history.start({ pushState: true });
 });
 
 Meteor.autosubscribe(function () {
@@ -134,49 +155,3 @@ _.extend(Helpers, {
   });
 
 })();
-
-/* // Testing backbone router
-
-var AppRouter = Backbone.Router.extend({
-  routes: {
-  //  "*actions": "defaultRoute", // matches http://example.com/#anything-here
-    "users/:user": "user"
-  },
-  'user': function(user) {
-    d_('user: '+user);
-  }
-});
-// Initiate the router
-var app_router = new AppRouter;
-
-app_router.on('route:defaultRoute', function(actions) {
-  d_(actions);
-})
-
-// Start Backbone history a necessary step for bookmarkable URL's
-Backbone.history.start();
-*/
-/*
-Template.main.events({
-  'click input' : function () {
-*//*
-    var userId = Meteor.userId;
-    TimeAccounts.find({owner:userId});
-
-
-    var user = Meteor.user();
-    var acctId = user.profile.melliferaAccountId;
-    var acct = TimeAccounts.findOne({_id:acctId});
-    d_(TimeAccounts.find().fetch()[0]);
-     */
-    /*// template data, if any, is available in 'this'
-    Meteor.call('userId', function(error, result) {
-      if (error)
-        d_(error);
-      if (result)
-        d_(result);
-    });*//*
-  }
-});
-*/
-

@@ -1,4 +1,4 @@
-if (1/*_TESTING*/) {
+if (Helpers.isDevelopment()) {
   _.extend(Helpers, {
     wipeAccount: function() {
       return h_.call('WipeAccount', 'Wiping account...');
@@ -28,14 +28,14 @@ if (1/*_TESTING*/) {
       });
       return 'Seizing debt...';
     },
-    freezeTimeAccount: function(accountId) {
+    freezeTimeAccount: function() {
       var timeAccount = h_.timeAccount();
       Meteor.call('FreezeTimeAccount', timeAccount._id, function(error, result) {
         (typeof error === 'undefined') ? d_(result) : d_(error);
       });
       return 'Freezing time account...';
     },
-    activateTimeAccount: function(accountId) {
+    activateTimeAccount: function() {
       var timeAccount = h_.timeAccount();
       Meteor.call('ActivateTimeAccount', timeAccount._id, function(error, result) {
         (typeof error === 'undefined') ? d_(result) : d_(error);
@@ -76,8 +76,73 @@ if (1/*_TESTING*/) {
     testContribution: function(callback) {
       Meteor.call('TestContribution', callback);
       return 'Testing contribution...';
+    },
+    runTests: function(suite) {
+      Meteor.call('RunTests', suite, function(error, result) {
+        (typeof error === 'undefined') ? d_(result) : d_(error);
+      });
+
+      return 'Running tests...';
+    },
+    distributeRevenue: function(debts, revenue) {
+      var result = { newDebts:debts, excessRevenue:0 };
+
+      // Make sure the revenue amount is valid.
+      if (h_.isInteger(revenue) && revenue > 0) {
+        result.excessRevenue = revenue;
+
+        // Divide amount evenly, keeping track of remainder.
+        var count = _.size(result.newDebts);
+        var remainder = revenue % count;
+        var divisibleAmount = revenue - remainder;
+
+        if (divisibleAmount > 0) {
+          // Find the amount to distribute this pass.
+          var shareAmount = divisibleAmount / count;
+
+          // We start with whatever we're not distributing, and gather excess revenue from there.
+          result.excessRevenue = remainder;
+
+          // Apply the share amount to each debt.
+          var debtLeft = 0;
+          _.map(debts, function(debtAmount, timeAccountId) {
+            var update = 0;
+
+            // Find out how much debt would be left over after applying the share amount to it.
+            var newDebt = debtAmount - shareAmount;
+
+            // If the leftover debt is negative, we have overflow and need to gather it up for the next pass.
+            if (newDebt < 0) {
+              // Debt cannot be less than zero.
+              update = 0;
+
+              // Gather excess revenue.
+              result.excessRevenue += Math.abs(newDebt);
+            }
+            else {
+              // No overflow, so just set the new debt amount.
+              update = newDebt;
+            }
+
+            result.newDebts[timeAccountId] = update;
+            debtLeft += update;
+          });
+
+          // Recursively attempts another pass.
+          if (debtLeft > 0) {
+            result = this.distributeRevenue(result.newDebts, result.excessRevenue);
+          }
+        }
+      }
+
+      return result;
     }
   });
+
+  Meteor.autosubscribe(function () {
+    Meteor.subscribe('Tests');
+  });
+
 }
 
 
