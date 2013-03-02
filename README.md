@@ -10,8 +10,6 @@ Mellifera is named after the [western honey bee](https://en.wikipedia.org/wiki/W
 v0.5.0
 
 * [Revenue sharing](https://github.com/ryancbarry/Mellifera/wiki/Group-contribution-payment-proposal)
-* Implement specs for payments and surplus distribution
-* Improved testing on/off switch
 * Refunds and direct debt payment
 * User activity logging
 * Improved notifications
