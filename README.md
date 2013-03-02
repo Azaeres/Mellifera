@@ -3,13 +3,13 @@ About
 
 Mellifera is a working proof-of-concept for a time exchange resilient to wealth distribution problems. It encourages active cooperation, knowledge-sharing, and safeguards against uncontrolled deflation. This exchange trades in an hour-based local currency. This project is experimental and is undergoing active development.
 
-Mellifera is named after the [western honey bee](https://en.wikipedia.org/wiki/Western_honey_bee), *Apis Mellifera*. It means "honey bearer". 
+Mellifera is named after the [western honey bee](https://en.wikipedia.org/wiki/Western_honey_bee), *Apis Mellifera*.
 
 ## Roadmap
 
 v0.5.0
 
-* [Group contributions/payment](https://github.com/ryancbarry/Mellifera/wiki/Group-contribution-payment-proposal)
+* [Revenue sharing](https://github.com/ryancbarry/Mellifera/wiki/Group-contribution-payment-proposal)
 * Implement specs for payments and surplus distribution
 * Improved testing on/off switch
 * Refunds and direct debt payment
@@ -76,17 +76,30 @@ Rule 1 ensures that everyone gets the same amount of dividends and liability lim
 Getting started
 ===============
 
-* How to start a local time-trading community server:
+* How to start a development server (a production-ready, local community server is currently not supported):
 	1. Download and install Meteor `curl https://install.meteor.com | /bin/sh`. For more information on deploying a Meteor app, see the [Meteor documentation](http://docs.meteor.com).
 	2. Clone the repo `git clone git@github.com:ryancbarry/Mellifera.git`.
-	3. Run `meteor` from within the project directory.
+	3. Run `meteor run --settings development.json` from within the project directory.
 	4. Visit `http://localhost:3000` with a web browser.
 
-* Running tests
+* Registering a user
+	1. Logout (unless already logged out).
+	2. Click the "Sign in" link, then enter your email address and password.
+	3. Click the "Create account" link, then click the "Create account" button.
+	4. Run `Helpers.activateTimeAccount()` in the JavaScript console.
  
-
 * How to report a contribution of time
+	1. Click the "Account" tab to navigate to the Account page.
+	2. Click the "Report Contribution" button.
+	3. On the Report Contribution form, enter the amount of time worked.
+	4. Click the "Submit" button.
+
 * How to pay someone
+	1. Click the "Account" tab to navigate to the Account page.
+	2. Click the "Make Payment" button.
+	3. On the "Make Payment" form, enter the email address of the user you want to pay.
+	4. Enter the amount of the payment (in hours).
+	5. Click the "Submit" button.
 
 System structure
 ================
@@ -103,7 +116,7 @@ In this example, the first account is the shared time account. It is created if 
 
 The rest of the time accounts are normal, personal accounts, and they are associated with a Meteor user through the `owner` property. A user can have only one time account, and it is responsible for keeping track of that user's personal credit/debt. 
 
-A time account can have "frozen" or "active" status. They are "frozen" when first created, so users can register without impacting the pool of currency. A "frozen" account's credit/debt cannot change, so it can not be contributed to, nor can it make payments, nor can it receive payments of any kind. An "active" time account, in contrast, can do all these things.
+A time account can have "frozen" or "active" status. They are "frozen" when first created, so users can register without affecting the pool of currency. A "frozen" account's credit/debt cannot change, so it can not be contributed to, nor can it make payments, nor can it receive payments of any kind. An "active" time account, in contrast, can do all these things.
 
 Credit/debt is stored as an integer to keep track of every cent, so this may lead to some complexity when dividing amounts. The proposed method of handling this employs a remainder pile of credit/debt, to be stored up until it can be split evenly.
 
@@ -117,10 +130,9 @@ The most significant server methods are `contribute` (contributes an amount to a
 
 There are roughly three parts to the client: template partials, template JS, and CSS. Much of the user interface comes from Twitter Bootstrap so it can look decent without much effort. Much of the development focus is on the logic of the time exchange itself.
 
-
 ## Testing
 
-Specs are implemented using Jasmine, a client-side testing library. They typically make requests of the server to perform operations and then analyze the state snapshots that are returned. During testing, the server makes use of a separate collection of test time accounts in order to have control over their state without changing the state of the primary time accounts.
+Tests will be implemented when Meteor releases a testing framework.
 
 License
 =======
