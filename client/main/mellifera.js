@@ -64,24 +64,36 @@ _.extend(Helpers, {
     return Math.round(amount);
   },
   timeAccount: function() {
-    var acctId = Session.get('timeAccountId');
-    var timeAccount = TimeAccounts.findOne({ _id:acctId });
+    var accountId = Session.get('timeAccountId');
+    var timeAccount = TimeAccounts.findOne({ _id:accountId });
 
     return timeAccount;
   },
   percentDebtOfLimit: function() {
     var percent = 0, debt;
 
+    // console.log('percentDebtOfLimit');
+
     var sharedAccount = h_.sharedAccount();
     if (typeof sharedAccount !== 'undefined') {
       var limit = sharedAccount.liabilityLimit;
+
+      // console.log('limit');
+      // console.log(limit);
+
       var timeAccount = h_.timeAccount();
 
       if (typeof timeAccount !== 'undefined') {
-        debt = timeAccount.debt;
+        debt = timeAccount.contributions[timeAccount._id].amount;
+
+        // console.log('debt');
+        // console.log(debt);
+
         percent = (debt / limit) * 100;
       }
     }
+
+    // console.log(percent);
 
     return percent;
   }
@@ -126,10 +138,10 @@ _.extend(Helpers, {
     var timeAccount = h_.timeAccount();
     if (typeof timeAccount !== 'undefined') {
       if (typeof debt === 'undefined') {
-        debt = timeAccount.debt;
+        debt = timeAccount.contributions[timeAccount._id].amount;
       }
       else {
-        var diff = debt - timeAccount.debt;
+        var diff = debt - timeAccount.contributions[timeAccount._id].amount;
         if (diff > 0) {
           h_.showAlert('success', h_.debtDecreaseStr(diff));
         }
@@ -137,7 +149,7 @@ _.extend(Helpers, {
           h_.showAlert('warning', h_.debtIncreaseStr(Math.abs(diff)));
         }
 
-        debt = timeAccount.debt;
+        debt = timeAccount.contributions[timeAccount._id].amount;
       }
 
       if (typeof credit === 'undefined') {

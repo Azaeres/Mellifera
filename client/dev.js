@@ -35,9 +35,8 @@ if (Helpers.isDevelopment()) {
       });
       return 'Freezing time account...';
     },
-    activateTimeAccount: function() {
-      var timeAccount = h_.timeAccount();
-      Meteor.call('ActivateTimeAccount', timeAccount._id, function(error, result) {
+    activateTimeAccount: function(email) {
+      Meteor.call('ActivateTimeAccount', email, function(error, result) {
         (typeof error === 'undefined') ? d_(result) : d_(error);
       });
       return 'Activating time account...';

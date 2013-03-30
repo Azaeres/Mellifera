@@ -206,8 +206,8 @@ if (Helpers.isDevelopment()) {
 
       return 'Time account frozen.';
     },
-    ActivateTimeAccount: function(accountId) {
-      h_.activateTimeAccount(accountId);
+    ActivateTimeAccount: function(email) {
+      h_.activateTimeAccount(email);
 
       return 'Time account activated.';
     },

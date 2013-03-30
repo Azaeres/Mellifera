@@ -2,7 +2,7 @@
 /* Login Buttons *****************************/
 
 #login-buttons {
-	margin:1em;
+	margin: 1em;
 }
 
 
@@ -10,58 +10,50 @@
 /* Account ***********************************/
 
 #account {
-	margin-bottom:2em;
+	margin-bottom: 2em;
 }
 #account label {
-	display:inline-block;
+	display: inline-block;
 }
 #account .amount label {
-	font-weight:bold;
-	color:#aaa;
-	font-size:17px;
-	display:inline-block;
-	line-height:40px;
+	font-weight: bold;
+	color: #aaa;
+	font-size: 17px;
+	display: inline-block;
+	line-height: 40px;
 }
 #account .amount .credit {
-	font-size:32px;
-	color:#191;
-	line-height:40px;
+	font-size: 32px;
+	color: #191;
+	line-height: 40px;
 	margin-left: .5em;
 }
 #account .amount .debt {
-	font-size:32px;
-	color:#911;
-	line-height:40px;
+	font-size: 32px;
+	color: #911;
+	line-height: 40px;
 	margin-left: .5em;
 }
 #account .debt-amount .progress {
-	margin-top:11px;
+	margin-top: 11px;
 }
 
 .typeahead {
 	z-index: 1050;
 }
-#reportContributionModal .modal-body, 
-#paymentModal .modal-body,
-#reportContributionModal .amount-input input,
-#paymentModal .amount-input input {
-	text-align: right;
+#reportContributionModal .modal-body,
+#paymentModal .modal-body {
+	overflow-y: visible;
 }
-#paymentModal .payee-field {
-	margin-bottom:1em;
-	margin-right:1em;
-}
+#reportContributionModal .contribute-to-input,
 #paymentModal .payee-input {
-	margin-top:0;
+	margin-top: 0;
 }
 #paymentModal .payee-field label {
-	font-size:11px;
+	font-size: 11px;
 }
-
-
-
-
-
-
-
+#reportContributionModal .amount-input,
+#paymentModal .amount-input {
+	float: right;
+}
 

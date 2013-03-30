@@ -56,7 +56,13 @@ _.extend(Helpers, {
 	  	account = TimeAccounts.findOne({ owner:ownerId });
 		  if (typeof account == 'undefined') {
 		  	// If they don't have a time account, create one.
-		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, debt:0, revenue:0, contributions:{}, status:'frozen' });
+		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, revenue:0, contributions:{}, status:'frozen' });
+
+		    var contributions = {};
+		    contributions[accountId] = { amount:0, status:'active' };
+		    var set = { contributions:contributions };
+		    TimeAccounts.update({ _id:accountId }, { $set:set });
+
 		    account = TimeAccounts.findOne(accountId);
 		  }
 		}
@@ -81,7 +87,7 @@ _.extend(Helpers, {
   			var update = 0;
 
   			// Find out how much debt would be left over after applying the amount to it.
-		  	var newDebt = account.debt - amount;
+		  	var newDebt = account.contributions[accountId].amount - amount;
 
 		  	//  If the leftover debt would be less than zero,
 		  	//	set their debt to zero, and return the excess amount.
@@ -95,7 +101,9 @@ _.extend(Helpers, {
 		  		update = newDebt;
 		  	}
 
-		  	TimeAccounts.update({ _id:accountId }, { $set:{ debt:update } });
+		  	var set = {};
+		  	set['contributions.'+accountId] = { amount:update, status:'active' };
+		  	TimeAccounts.update({ _id:accountId }, { $set:set });
   		}
 	  	else
 				throw new Meteor.Error(500, 'Invalid amount.');
@@ -114,7 +122,7 @@ _.extend(Helpers, {
 			if (typeof account != 'undefined') {
 				if (account.status === 'active') {
 					if (h_.isInteger(amount) && amount >= 0) {
-						var availableDebt = liabilityLimit - account.debt;
+						var availableDebt = liabilityLimit - account.contributions[accountId].amount;
 						var remaining = availableDebt - amount;
 
 						if (remaining < 0) {
@@ -125,7 +133,9 @@ _.extend(Helpers, {
 						if (amount < 0)
 							amount = 0;
 
-						TimeAccounts.update({ _id:account._id }, { $inc:{ credit:amount, debt:amount } });
+						var inc = { credit:amount };
+						inc['contributions.'+accountId+'.amount'] = amount;
+						TimeAccounts.update({ _id:account._id }, { $inc:inc });
 						result = amount;
 					}
 					else
@@ -241,28 +251,41 @@ _.extend(Helpers, {
   seizeDebt: function(accountId, amount) {
   	var account = TimeAccounts.findOne({ _id:accountId });
   	
-  	var newDebt = account.debt - amount;
+  	var newDebt = account.contributions[accountId].amount - amount;
   	var seizedDebt = amount;
   	if (newDebt < 0) {
   		newDebt = 0;
-  		seizedDebt = account.debt;
+  		seizedDebt = account.contributions[accountId].amount;
   	}
   	
-  	TimeAccounts.update({ _id:accountId }, { $set:{ debt:newDebt } });
-  	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ debt:seizedDebt } });
+  	var set = {};
+  	set['contributions.'+accountId+'.amount'] = newDebt;
+  	TimeAccounts.update({ _id:accountId }, { $set:set });
+
+  	var inc = {};
+  	inc['contributions.'+accountId+'.amount'] = seizedDebt;
+  	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:inc });
   },
   setLiabilityLimit: function(newLimit) {
   	var seizedDebt = 0;
 
   	TimeAccounts.find({ liabilityLimit:{ $exists:false } }).map(function(account) {
-  		if (newLimit < account.debt) {
-  			var diff = account.debt - newLimit;
+  		if (newLimit < account.contributions[account._id].amount) {
+  			var diff = account.contributions[account._id].amount - newLimit;
   			seizedDebt += diff;
-  			TimeAccounts.update({ _id:account._id }, { $set:{ debt:newLimit } });
+
+  			var contributions = {};
+  			contributions[account._id] = { amount:newLimit };
+		  	var set = { contributions:contributions };
+  			TimeAccounts.update({ _id:account._id }, { $set:set });
   		}
   	});
 
-  	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ liabilityLimit:newLimit }, $inc:{ debt:seizedDebt } });
+  	var sharedAccount = h_.sharedAccount();
+
+  	var inc = {};
+  	inc['contributions.'+sharedAccount._id+'.amount'] = seizedDebt;
+  	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ liabilityLimit:newLimit }, $inc:inc });
   },
   freezeTimeAccount: function(accountId) {
   	var account = TimeAccounts.findOne(accountId);
@@ -273,11 +296,18 @@ _.extend(Helpers, {
 	  	}
 		}
   },
-  activateTimeAccount: function(accountId) {
-  	var account = TimeAccounts.findOne(accountId);
-  	if (typeof account != 'undefined') {
-			TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
-  	}
+  activateTimeAccount: function(email) {
+		var regex = h_.queryUsersRegex(email);
+		var user = Meteor.users.findOne({ "emails.address":regex });
+
+		if (typeof user != 'undefined') {
+			var userId = user._id;
+			var account = TimeAccounts.findOne({ owner:userId });
+
+	  	if (typeof account != 'undefined') {
+				TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
+	  	}
+		}
   },
   createSharedTimeAccount: function() {
   	var sharedAccountId;
@@ -285,7 +315,12 @@ _.extend(Helpers, {
 		var sharedAccount = h_.sharedAccount();
 		if (typeof sharedAccount == 'undefined') {
 			var limit = Meteor.settings.liabilityLimit;
-			sharedAccountId = TimeAccounts.insert({ owner:null, credit:0, debt:0, status:'active', liabilityLimit:limit });
+			sharedAccountId = TimeAccounts.insert({ owner:null, credit:0, contributions:{}, status:'active', liabilityLimit:limit });
+
+	    var contributions = {};
+	    contributions[sharedAccountId] = { amount:0, status:'active' };
+	    var set = { contributions:contributions };
+	    TimeAccounts.update({ _id:sharedAccountId }, { $set:set });
 		}
 
 		return sharedAccountId;
@@ -367,7 +402,7 @@ Meteor.methods({
 		}
 
 		return info;
-	},
+	}/*,
 	UniversalBalance: function() {
 		var credit = 0, debt = 0, result = { credit:null, debt:null, liabilityLimit:null };
 		TimeAccounts.find().map(function(account) {
@@ -381,7 +416,7 @@ Meteor.methods({
 		result.liabilityLimit = h_.liabilityLimit() * memberCount;
 
 		return result;
-	}
+	}*/
 });
 
 

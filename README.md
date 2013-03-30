@@ -80,17 +80,20 @@ Getting started
 	3. Run `meteor run --settings development.json` from within the project directory.
 	4. Visit `http://localhost:3000` with a web browser.
 
+
 * Registering a user
 	1. Logout (unless already logged out).
 	2. Click the "Sign in" link, then enter your email address and password.
 	3. Click the "Create account" link, then click the "Create account" button.
 	4. Run `Helpers.activateTimeAccount()` in the JavaScript console.
+
  
 * How to report a contribution of time
 	1. Click the "Account" tab to navigate to the Account page.
 	2. Click the "Report Contribution" button.
 	3. On the Report Contribution form, enter the amount of time worked.
 	4. Click the "Submit" button.
+
 
 * How to pay someone
 	1. Click the "Account" tab to navigate to the Account page.

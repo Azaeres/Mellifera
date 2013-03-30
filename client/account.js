@@ -19,19 +19,17 @@
       var timeAccount = h_.timeAccount();
 
       if (typeof timeAccount !== 'undefined') {
-        debt = timeAccount.debt;
+        debt = timeAccount.contributions[timeAccount._id].amount;
       }
 
       return h_.hoursFromCents(debt);
-    },
-    percentDebtOfLimit: function() {
-      return h_.percentDebtOfLimit();
     }
   });
 
-  Template.account.rendered = function() {
-
-    var setProgressBarClass = function() {
+  var warning = 'success';
+    
+  var updateProgressBar = function() {
+    var setProgressBarClass = function(percent) {
       var debtWarning = function(p) {
         var w = 'success';
 
@@ -44,12 +42,9 @@
         return w;
       };
 
-      var warning = 'success';
-    
-      var percent = h_.percentDebtOfLimit();
       var $progressBar = $('.progress .bar').width(percent+'%');
-
       var newWarning = debtWarning(percent);
+
       if (newWarning !== warning) {
         // Warning changed.
         var oldc = 'bar-'+warning;
@@ -61,9 +56,10 @@
     };
 
   // Hover tooltip.
-    var debtPercent = (Math.round(h_.percentDebtOfLimit() * 100) / 100).toFixed(1);
+    var percent = h_.percentDebtOfLimit();
+    var debtPercent = (Math.round(percent * 100) / 100).toFixed(1);
 
-    setProgressBarClass();
+    setProgressBarClass(percent);
 
     $('#account .progress').hover(function() {
       $('#account .progress').tooltip('destroy').tooltip({
@@ -76,7 +72,13 @@
     function() {
       $('#account .progress').tooltip('hide');
     });
-    
+  };
+
+  Meteor.autorun(updateProgressBar);
+
+  Template.account.rendered = function() {
+
+    updateProgressBar();
 
     $('#reportContributionModal').on('shown', function () {
       $('#reportContributionModal .contribution-amount-input').select();
