@@ -84,10 +84,7 @@ _.extend(Helpers, {
       var timeAccount = h_.timeAccount();
 
       if (typeof timeAccount !== 'undefined') {
-        debt = timeAccount.contributions[timeAccount._id].amount;
-
-        // console.log('debt');
-        // console.log(debt);
+        debt = h_.getContributionAmount(timeAccount._id);
 
         percent = (debt / limit) * 100;
       }
@@ -137,11 +134,12 @@ _.extend(Helpers, {
   Meteor.autorun(function() {
     var timeAccount = h_.timeAccount();
     if (typeof timeAccount !== 'undefined') {
+      var contributionAmount = h_.getContributionAmount(timeAccount._id);
       if (typeof debt === 'undefined') {
-        debt = timeAccount.contributions[timeAccount._id].amount;
+        debt = contributionAmount;
       }
       else {
-        var diff = debt - timeAccount.contributions[timeAccount._id].amount;
+        var diff = debt - contributionAmount;
         if (diff > 0) {
           h_.showAlert('success', h_.debtDecreaseStr(diff));
         }
@@ -149,7 +147,7 @@ _.extend(Helpers, {
           h_.showAlert('warning', h_.debtIncreaseStr(Math.abs(diff)));
         }
 
-        debt = timeAccount.contributions[timeAccount._id].amount;
+        debt = contributionAmount;
       }
 
       if (typeof credit === 'undefined') {

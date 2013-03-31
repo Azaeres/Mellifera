@@ -16,10 +16,11 @@
     },
     debt: function() {
       var debt;
+  
       var timeAccount = h_.timeAccount();
 
       if (typeof timeAccount !== 'undefined') {
-        debt = timeAccount.contributions[timeAccount._id].amount;
+        debt = h_.getContributionAmount(timeAccount._id);
       }
 
       return h_.hoursFromCents(debt);

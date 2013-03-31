@@ -58,11 +58,6 @@ _.extend(Helpers, {
 		  	// If they don't have a time account, create one.
 		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, revenue:0, contributions:{}, status:'frozen' });
 
-		    var contributions = {};
-		    contributions[accountId] = { amount:0, status:'active' };
-		    var set = { contributions:contributions };
-		    TimeAccounts.update({ _id:accountId }, { $set:set });
-
 		    account = TimeAccounts.findOne(accountId);
 		  }
 		}
@@ -87,7 +82,7 @@ _.extend(Helpers, {
   			var update = 0;
 
   			// Find out how much debt would be left over after applying the amount to it.
-		  	var newDebt = account.contributions[accountId].amount - amount;
+        var newDebt = h_.getContributionAmount(accountId) - amount;
 
 		  	//  If the leftover debt would be less than zero,
 		  	//	set their debt to zero, and return the excess amount.
@@ -122,7 +117,7 @@ _.extend(Helpers, {
 			if (typeof account != 'undefined') {
 				if (account.status === 'active') {
 					if (h_.isInteger(amount) && amount >= 0) {
-						var availableDebt = liabilityLimit - account.contributions[accountId].amount;
+						var availableDebt = liabilityLimit - h_.getContributionAmount(accountId);
 						var remaining = availableDebt - amount;
 
 						if (remaining < 0) {
@@ -284,11 +279,10 @@ _.extend(Helpers, {
 		  	}
 	  	}
 	  	else
-				throw new Meteor.Error(500, 'Payer\'s account is frozen.');
+				throw new Meteor.Error(500, 'Failed to distribute revenue. Account is frozen.');
 		}
 		else
-			throw new Meteor.Error(500, 'Payer\'s account not found.');
-	  }
+			throw new Meteor.Error(500, 'Failed to distribute revenue. Account not found.');
   },
   /**
    * Takes credit from the payer's account, and applies it to the payee's debt.
@@ -355,11 +349,12 @@ _.extend(Helpers, {
   seizeDebt: function(accountId, amount) {
   	var account = TimeAccounts.findOne({ _id:accountId });
   	
-  	var newDebt = account.contributions[accountId].amount - amount;
+  	var contributionAmount = h_.getContributionAmount(accountId);
+  	var newDebt = contributionAmount - amount;
   	var seizedDebt = amount;
   	if (newDebt < 0) {
   		newDebt = 0;
-  		seizedDebt = account.contributions[accountId].amount;
+  		seizedDebt = contributionAmount;
   	}
   	
   	var set = {};
@@ -374,8 +369,9 @@ _.extend(Helpers, {
   	var seizedDebt = 0;
 
   	TimeAccounts.find({ liabilityLimit:{ $exists:false } }).map(function(account) {
-  		if (newLimit < account.contributions[account._id].amount) {
-  			var diff = account.contributions[account._id].amount - newLimit;
+	  	var contributionAmount = h_.getContributionAmount(accountId);
+  		if (newLimit < contributionAmount) {
+  			var diff = contributionAmount - newLimit;
   			seizedDebt += diff;
 
   			var contributions = {};
@@ -400,34 +396,63 @@ _.extend(Helpers, {
 	  	}
 		}
   },
-  activateTimeAccount: function(email) {
+  findUserByEmail: function(email) {
 		var regex = h_.queryUsersRegex(email);
 		var user = Meteor.users.findOne({ "emails.address":regex });
 
+		return user;
+  },
+  findTimeAccountByEmail: function(email) {
+  	var result;
+
+		var user = this.findUserByEmail(email);
 		if (typeof user != 'undefined') {
 			var userId = user._id;
-			var account = TimeAccounts.findOne({ owner:userId });
-
-	  	if (typeof account != 'undefined') {
-				TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
-	  	}
+			result = TimeAccounts.findOne({ owner:userId });
 		}
+
+		return result;
+  },
+  activateTimeAccount: function(email) {
+  	var account;
+
+		if (email === null) {
+			account = this.userTimeAccount();
+		}
+		else {
+	  	account = this.findTimeAccountByEmail(email);
+		}
+
+  	if (typeof account !== 'undefined') {
+			TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
+  	}
   },
   createSharedTimeAccount: function() {
   	var sharedAccountId;
 
 		var sharedAccount = h_.sharedAccount();
-		if (typeof sharedAccount == 'undefined') {
+		if (typeof sharedAccount === 'undefined') {
 			var limit = Meteor.settings.liabilityLimit;
 			sharedAccountId = TimeAccounts.insert({ owner:null, credit:0, contributions:{}, status:'active', liabilityLimit:limit });
-
-	    var contributions = {};
-	    contributions[sharedAccountId] = { amount:0, status:'active' };
-	    var set = { contributions:contributions };
-	    TimeAccounts.update({ _id:sharedAccountId }, { $set:set });
 		}
 
 		return sharedAccountId;
+  },
+  setContributionAmount: function(accountId, contributorAccountId, amount) {
+    var account = TimeAccounts.findOne({ _id:accountId });
+    
+    // Make sure the account is valid and active.
+    if (typeof account != 'undefined') {
+      if (account.status === 'active') {
+        var set = { contributions:{} };
+        set.contributions[contributorAccountId] = { amount:amount, status:'active' };
+        TimeAccounts.update({ _id:accountId }, { $set:set });
+      }
+      else
+        throw new Meteor.Error(500, 'Failed to get contribution amount. Account is frozen.');
+    }
+    else
+      throw new Meteor.Error(500, 'Failed to get contribution amount. Account not found.');
   }
 });
 
