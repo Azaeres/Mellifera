@@ -187,6 +187,110 @@ _.extend(Helpers, {
 		}
   },
   /**
+   * Apportions the revenue on a given account to its contributors.
+  */
+  distributeRevenue: function(accountId) {
+
+  	// Refresh the account snapshot.
+  	var account = TimeAccounts.findOne({ _id:accountId });
+
+  	// Make sure the account is valid and active.
+  	if (typeof account != 'undefined') {
+	  	if (account.status === 'active') {
+
+		  	var revenue = account.revenue;
+		  	var excessRevenue = revenue;
+
+		  	// Divide amount evenly, keeping track of remainder.
+
+		  	// Get the count of active contributors.
+		  	var contributions = _.pairs(account.contributions);
+		  	var activeContributions = _.filter(contributions, function(contributor) {
+		  		var value = contributor[1];
+					return (value.status === 'active');
+		  	});
+
+		  	// d_('activeContributions');
+		  	// d_(activeContributions);
+
+		  	var count = _.size(activeContributions);
+		  	var remainder = revenue % count;
+		  	var divisibleAmount = revenue - remainder;
+
+		  	// This is where we might stop recursing.
+		  	// We may not have enough revenue to distribute evenly amongst the contributors.
+		  	if (divisibleAmount > 0) {
+          // Find the amount to distribute during this pass.
+          var shareAmount = divisibleAmount / count;
+
+			  	// d_('shareAmount');
+			  	// d_(shareAmount);
+
+          // We start gathering excess revenue with whatever we're not distributing.
+          excessRevenue = remainder;
+
+          // Apply the share amount to each contributor's debt.
+          var debtLeft = 0;
+          _.map(activeContributions, function(contributor) {
+          	d_('map args');
+          	d_(arguments);
+
+          	var contributorAccountId = contributor[0];
+          	var value = contributor[1];
+
+          	var update = 0;
+
+            // Find out how much debt would be left over after applying the share amount to it.
+            var newDebt = value.amount - shareAmount;
+
+            // If the leftover debt is negative, we have overflow and need to gather it up for the next pass.
+            if (newDebt < 0) {
+              // Debt cannot be less than zero.
+              update = 0;
+
+              // Gather excess revenue.
+              excessRevenue += Math.abs(newDebt);
+            }
+            else {
+              // No overflow, so just set the new debt amount.
+              update = newDebt;
+            }
+
+            // Records this contributor's new debt amount.
+            // d_("new debt for "+contributorAccountId);
+            // d_(update);
+
+            var set = {};
+            set['contributions.'+contributorAccountId+'.amount'] = update;
+            TimeAccounts.update({ _id:accountId }, { $set:set });
+
+            debtLeft += update;
+          });
+
+          // d_('excessRevenue');
+          // d_(excessRevenue);
+
+          // Record the excess revenue for the next pass.
+          TimeAccounts.update({ _id:accountId }, { $set:{ revenue:excessRevenue } });
+
+					// d_('debtLeft');
+					// d_(debtLeft);
+
+          // Recursively attempts another pass.
+          if (debtLeft > 0) {
+          	d_("Trying another pass...")
+          	this.distributeRevenue(accountId);
+          }
+		  	}
+	  	}
+	  	else
+				throw new Meteor.Error(500, 'Payer\'s account is frozen.');
+		}
+		else
+			throw new Meteor.Error(500, 'Payer\'s account not found.');
+	  }
+  },
+  /**
    * Takes credit from the payer's account, and applies it to the payee's debt.
    * If there isn't enough credit in the payer's account, the payment is aborted.
    */

@@ -83,6 +83,12 @@ if (Helpers.isDevelopment()) {
 
       return 'Running tests...';
     },
+    distributeRevenue: function() {
+      Meteor.call('DistributeRevenue', function(error, result) {
+        (typeof error === 'undefined') ? d_(result) : d_(error);
+      });
+    },
+    /*,
     distributeRevenue: function(debts, revenue) {
       var result = { newDebts:debts, excessRevenue:0 };
 
@@ -135,7 +141,7 @@ if (Helpers.isDevelopment()) {
       }
 
       return result;
-    }
+    }*/
   });
 
   Meteor.autosubscribe(function () {

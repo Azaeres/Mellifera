@@ -225,6 +225,10 @@ if (Helpers.isDevelopment()) {
     },
     RunTests: function() {
       return h_.runTests();
+    },
+    DistributeRevenue: function() {
+      var accountId = h_.userTimeAccountId();
+      return h_.distributeRevenue(accountId);
     }
   });
 
