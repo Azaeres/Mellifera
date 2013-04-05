@@ -3,7 +3,7 @@ About
 
 Mellifera is a working proof-of-concept for a time exchange resilient to wealth distribution problems. It encourages active cooperation, knowledge-sharing, and safeguards against uncontrolled deflation. This exchange trades in an hour-based local currency. This project is experimental and is undergoing active development.
 
-Mellifera is named after the [western honey bee](https://en.wikipedia.org/wiki/Western_honey_bee), *Apis Mellifera*.
+Mellifera gets its name from the [western honey bee](https://en.wikipedia.org/wiki/Western_honey_bee), *Apis Mellifera*.
 
 ## Roadmap
 
@@ -26,6 +26,37 @@ v0.6.0
 * Global/individual stats/charts
 * String localization
 * Gravatar support
+
+Getting started
+===============
+
+* How to start a development server (a production-ready, local community server is currently not supported):
+	1. Download and install Meteor `curl https://install.meteor.com | /bin/sh`. For more information on deploying a Meteor app, see the [Meteor documentation](http://docs.meteor.com).
+	2. Clone the repo `git clone git@github.com:ryancbarry/Mellifera.git`.
+	3. Run `meteor run --settings development.json` from within the project directory.
+	4. Visit `http://localhost:3000` with a web browser.
+
+
+* Registering a user
+	1. Logout (unless already logged out).
+	2. Click the "Sign in" link, then enter your email address and password.
+	3. Click the "Create account" link, then click the "Create account" button.
+	4. Run `Helpers.activateTimeAccount()` in the JavaScript console.
+
+ 
+* How to report a contribution of time
+	1. Click the "Account" tab to navigate to the Account page.
+	2. Click the "Report Contribution" button.
+	3. On the Report Contribution form, enter the amount of time worked.
+	4. Click the "Submit" button.
+
+
+* How to pay someone
+	1. Click the "Account" tab to navigate to the Account page.
+	2. Click the "Make Payment" button.
+	3. On the "Make Payment" form, enter the email address of the user you want to pay.
+	4. Enter the amount of the payment (in hours).
+	5. Click the "Submit" button.
 
 Explanation
 ===========
@@ -70,37 +101,6 @@ For whatever weaknesses are inherit in a system such as this, Mellifera tries ha
 7. Do not exploit security holes or bugs.
 
 Rule 1 ensures that everyone gets the same amount of dividends and liability limit. Rule 2 helps stabilize the currency's value. Rules 3-6 help stabilize the money supply. Failure to abide by these rules should be grounds for the termination of membership.
-
-Getting started
-===============
-
-* How to start a development server (a production-ready, local community server is currently not supported):
-	1. Download and install Meteor `curl https://install.meteor.com | /bin/sh`. For more information on deploying a Meteor app, see the [Meteor documentation](http://docs.meteor.com).
-	2. Clone the repo `git clone git@github.com:ryancbarry/Mellifera.git`.
-	3. Run `meteor run --settings development.json` from within the project directory.
-	4. Visit `http://localhost:3000` with a web browser.
-
-
-* Registering a user
-	1. Logout (unless already logged out).
-	2. Click the "Sign in" link, then enter your email address and password.
-	3. Click the "Create account" link, then click the "Create account" button.
-	4. Run `Helpers.activateTimeAccount()` in the JavaScript console.
-
- 
-* How to report a contribution of time
-	1. Click the "Account" tab to navigate to the Account page.
-	2. Click the "Report Contribution" button.
-	3. On the Report Contribution form, enter the amount of time worked.
-	4. Click the "Submit" button.
-
-
-* How to pay someone
-	1. Click the "Account" tab to navigate to the Account page.
-	2. Click the "Make Payment" button.
-	3. On the "Make Payment" form, enter the email address of the user you want to pay.
-	4. Enter the amount of the payment (in hours).
-	5. Click the "Submit" button.
 
 System structure
 ================
