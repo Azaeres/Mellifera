@@ -4,11 +4,20 @@
  */
 
 _.extend(Helpers, {
+
+
+
+
   collideTimeAccount: function(accountId) {
   	var account = TimeAccounts.findOne({ _id:accountId });
   	var excessCredit = h_.applyCreditToDebt(accountId, account.credit);
   	TimeAccounts.update({ _id:accountId }, { $set:{ credit:excessCredit } });
   },
+
+
+
+
+
   seizeDebt: function(accountId, amount) {
   	var account = TimeAccounts.findOne({ _id:accountId });
   	
@@ -28,6 +37,11 @@ _.extend(Helpers, {
   	inc['contributions.'+accountId+'.amount'] = seizedDebt;
   	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:inc });
   },
+
+
+
+
+
   setLiabilityLimit: function(newLimit) {
   	var seizedDebt = 0;
 
@@ -50,6 +64,11 @@ _.extend(Helpers, {
   	inc['contributions.'+sharedAccount._id+'.amount'] = seizedDebt;
   	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ liabilityLimit:newLimit }, $inc:inc });
   },
+
+
+
+
+
   freezeTimeAccount: function(accountId) {
   	var account = TimeAccounts.findOne(accountId);
   	if (typeof account != 'undefined') {
@@ -59,6 +78,11 @@ _.extend(Helpers, {
 	  	}
 		}
   },
+
+
+
+
+
   activateTimeAccount: function(email) {
   	var account;
 
@@ -73,6 +97,11 @@ _.extend(Helpers, {
 			TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
   	}
   },
+
+
+
+
+
   createSharedTimeAccount: function() {
   	var sharedAccountId;
 
@@ -84,6 +113,11 @@ _.extend(Helpers, {
 
 		return sharedAccountId;
   },
+
+
+
+
+  
   setContributionAmount: function(accountId, contributorAccountId, amount) {
     var account = TimeAccounts.findOne({ _id:accountId });
     

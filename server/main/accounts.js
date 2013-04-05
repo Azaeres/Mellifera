@@ -6,6 +6,10 @@
  */
 
 _.extend(Helpers, {
+
+
+
+
  	/**
 	 * Returns the time account for the logged-in user.
 	 * 
@@ -22,6 +26,11 @@ _.extend(Helpers, {
 
 	  return account;
 	},
+
+
+
+
+
 	/**
 	 * Returns the time account id for the logged-in user.
 	 * 
@@ -38,6 +47,11 @@ _.extend(Helpers, {
 
 		return accountId;
 	},
+
+
+
+
+
 	timeAccount: function(ownerId) {
 		var accountId, account;
 
@@ -58,12 +72,22 @@ _.extend(Helpers, {
 
 		return account;
 	},
+
+
+
+
+
   findUserByEmail: function(email) {
 		var regex = h_.queryUsersRegex(email);
 		var user = Meteor.users.findOne({ "emails.address":regex });
 
 		return user;
   },
+
+
+
+
+  
   findTimeAccountByEmail: function(email) {
   	var result;
 

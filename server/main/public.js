@@ -5,12 +5,24 @@
  */
 
 Meteor.methods({
+
+
+
+
 	UserTimeAccountId: function() {
 	  return h_.userTimeAccountId();
 	},
+
+
+
 	LiabilityLimit: function() {
 		return h_.liabilityLimit();
 	},
+
+
+
+
+
 	/******************************************************
 	 * Clients report contributions of time to the server.
 	 * 
@@ -30,6 +42,11 @@ Meteor.methods({
 
 		return result;
 	},
+
+
+
+
+
 	MakePayment: function(payeeEmail, amount) {
 		var result = false;
 		var timeAccount;
@@ -52,6 +69,11 @@ Meteor.methods({
 
 		return result;
 	},
+
+
+
+
+
 	QueryUsers: function(query) {
 		var info = {};
 
@@ -67,6 +89,11 @@ Meteor.methods({
 
 		return info;
 	}/*,
+
+
+
+
+	
 	UniversalBalance: function() {
 		var credit = 0, debt = 0, result = { credit:null, debt:null, liabilityLimit:null };
 		TimeAccounts.find().map(function(account) {

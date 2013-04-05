@@ -1,3 +1,5 @@
+
+
 Meteor.startup(function() {
   if (Session.equals('currentPage', undefined)) {
     Session.set('currentPage', 'account');
@@ -25,9 +27,13 @@ Meteor.startup(function() {
   Backbone.history.start({ pushState: true });
 });
 
+
+
 Meteor.autosubscribe(function () {
   Meteor.subscribe('TimeAccounts');
 });
+
+
 
 Meteor.autorun(function() {
   if (Meteor.userId()) {
@@ -41,6 +47,19 @@ Meteor.autorun(function() {
     });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 _.extend(Helpers, {
   showAlert: function(type, message) {
@@ -96,6 +115,15 @@ _.extend(Helpers, {
   }
 });
 
+
+
+
+
+
+
+
+
+
 // Localization
 // English string generators
 // 
@@ -125,6 +153,16 @@ _.extend(Helpers, {
     return 'Your credit has increased by <strong>' + hours + hoursTxt + '</strong>.';
   }
 });
+
+
+
+
+
+
+
+
+
+
 
 // Watches for changes to the time account, and notifies the logged-in user.
 // 
