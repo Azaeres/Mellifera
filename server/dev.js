@@ -232,14 +232,14 @@ if (Helpers.isDevelopment()) {
     }
   });
 
-  Meteor.publish('Tests', function () {
-    return Tests.find();
-  });
+  // Meteor.publish('Tests', function () {
+  //   return Tests.find();
+  // });
 
-  Meteor.startup(function () {
-    if (Tests.find().count() === 0)
-      Tests.insert({ 'describe':'Example test suite', 'suite':'Main Tests', 'method':'testMethod' });
-  });
+  // Meteor.startup(function () {
+  //   if (Tests.find().count() === 0)
+  //     Tests.insert({ 'describe':'Example test suite', 'suite':'Main Tests', 'method':'testMethod' });
+  // });
 
 }
 

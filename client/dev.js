@@ -90,9 +90,9 @@ if (Helpers.isDevelopment()) {
     }
   });
 
-  Meteor.autosubscribe(function () {
-    Meteor.subscribe('Tests');
-  });
+  // Meteor.autosubscribe(function () {
+  //   Meteor.subscribe('Tests');
+  // });
 
 }
 
