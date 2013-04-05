@@ -27,6 +27,9 @@ Accounts.config({
  */
 
 _.extend(Helpers, {
+
+
+
   /**
    * Applies a credit to a user's time account.
    * The credit is applied to their debt, and the excess credit is returned.
@@ -69,6 +72,16 @@ _.extend(Helpers, {
 
   	return excessCredit;
   },
+
+
+
+
+
+
+
+
+
+
   contribute: function(accountId, amount) {
 		var result = 0;
 		var liabilityLimit = h_.liabilityLimit();
@@ -108,6 +121,14 @@ _.extend(Helpers, {
 
 		return result;
 	},
+
+
+
+
+
+
+
+
   /**
    * Evenly distributes credit in the shared time account to each user's time account.
    * The remainder (after dividing the credit evenly amongst all users) stays in the shared account.
@@ -142,6 +163,15 @@ _.extend(Helpers, {
 			TimeAccounts.update({ _id:sharedAccount._id }, { $set:{ credit:amountNotDistributed } });
 		}
   },
+
+
+
+
+
+
+
+
+
   /**
    * Apportions the revenue on a given account to its contributors.
   */
@@ -243,6 +273,13 @@ _.extend(Helpers, {
 		else
 			throw new Meteor.Error(500, 'Failed to distribute revenue. Account not found.');
   },
+
+
+
+
+
+
+  
   /**
    * Takes credit from the payer's account, and applies it to the payee's debt.
    * If there isn't enough credit in the payer's account, the payment is aborted.
