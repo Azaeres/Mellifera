@@ -1,6 +1,8 @@
+
+
 Accounts.config({
-	sendVerificationEmail:true,
-	forbidClientAccountCreation:false
+	sendVerificationEmail: true,
+	forbidClientAccountCreation: false
 });
 
 
@@ -9,63 +11,22 @@ Accounts.config({
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 /**
- * Private server methods.
+ * Core Functionality
  */
 
 _.extend(Helpers, {
- 	/**
-	 * Returns the time account for the logged-in user.
-	 * 
-	 * Returns null if the user isn't logged in.
-	 * If the logged-in user doesn't have a time account yet, one is created.
-	 */
-	userTimeAccount: function() {
-	  var account;
-	  var userId = Meteor.userId();
-
-	  if (userId !== null) {
-	  	account = h_.timeAccount(userId);
-	  }
-
-	  return account;
-	},
-	/**
-	 * Returns the time account id for the logged-in user.
-	 * 
-	 * Returns null if the user isn't logged in.
-	 * If the logged-in user doesn't have a time account yet, one is created.
-	 */
-	userTimeAccountId: function() {
-		var accountId;
-		var account = h_.userTimeAccount();
-
-		if (account !== null) {
-			accountId = account._id;
-		}
-
-		return accountId;
-	},
-	timeAccount: function(ownerId) {
-		var accountId, account;
-
-		// Make sure the `ownerId` specified is valid.
-		var owner = Meteor.users.findOne(ownerId);
-		if (owner) {
-			// See if that owner has a time account.
-	  	account = TimeAccounts.findOne({ owner:ownerId });
-		  if (typeof account == 'undefined') {
-		  	// If they don't have a time account, create one.
-		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, revenue:0, contributions:{}, status:'frozen' });
-
-		    account = TimeAccounts.findOne(accountId);
-		  }
-		}
-		else
-			throw new Meteor.Error(500, 'User not found');
-
-		return account;
-	},
   /**
    * Applies a credit to a user's time account.
    * The credit is applied to their debt, and the excess credit is returned.
@@ -227,8 +188,8 @@ _.extend(Helpers, {
           // Apply the share amount to each contributor's debt.
           var debtLeft = 0;
           _.map(activeContributions, function(contributor) {
-          	d_('map args');
-          	d_(arguments);
+          	// d_('map args');
+          	// d_(arguments);
 
           	var contributorAccountId = contributor[0];
           	var value = contributor[1];
@@ -255,9 +216,7 @@ _.extend(Helpers, {
             // d_("new debt for "+contributorAccountId);
             // d_(update);
 
-            var set = {};
-            set['contributions.'+contributorAccountId+'.amount'] = update;
-            TimeAccounts.update({ _id:accountId }, { $set:set });
+            h_.setContributionAmount(accountId, contributorAccountId, update);
 
             debtLeft += update;
           });
@@ -273,7 +232,7 @@ _.extend(Helpers, {
 
           // Recursively attempts another pass.
           if (debtLeft > 0) {
-          	d_("Trying another pass...")
+          	// d_("Trying another pass...");
           	this.distributeRevenue(accountId);
           }
 		  	}
@@ -340,119 +299,6 @@ _.extend(Helpers, {
 			throw new Meteor.Error(500, 'Invalid amount.');
 
   	return result;
-  },
-  collideTimeAccount: function(accountId) {
-  	var account = TimeAccounts.findOne({ _id:accountId });
-  	var excessCredit = h_.applyCreditToDebt(accountId, account.credit);
-  	TimeAccounts.update({ _id:accountId }, { $set:{ credit:excessCredit } });
-  },
-  seizeDebt: function(accountId, amount) {
-  	var account = TimeAccounts.findOne({ _id:accountId });
-  	
-  	var contributionAmount = h_.getContributionAmount(accountId);
-  	var newDebt = contributionAmount - amount;
-  	var seizedDebt = amount;
-  	if (newDebt < 0) {
-  		newDebt = 0;
-  		seizedDebt = contributionAmount;
-  	}
-  	
-  	var set = {};
-  	set['contributions.'+accountId+'.amount'] = newDebt;
-  	TimeAccounts.update({ _id:accountId }, { $set:set });
-
-  	var inc = {};
-  	inc['contributions.'+accountId+'.amount'] = seizedDebt;
-  	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:inc });
-  },
-  setLiabilityLimit: function(newLimit) {
-  	var seizedDebt = 0;
-
-  	TimeAccounts.find({ liabilityLimit:{ $exists:false } }).map(function(account) {
-	  	var contributionAmount = h_.getContributionAmount(accountId);
-  		if (newLimit < contributionAmount) {
-  			var diff = contributionAmount - newLimit;
-  			seizedDebt += diff;
-
-  			var contributions = {};
-  			contributions[account._id] = { amount:newLimit };
-		  	var set = { contributions:contributions };
-  			TimeAccounts.update({ _id:account._id }, { $set:set });
-  		}
-  	});
-
-  	var sharedAccount = h_.sharedAccount();
-
-  	var inc = {};
-  	inc['contributions.'+sharedAccount._id+'.amount'] = seizedDebt;
-  	TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ liabilityLimit:newLimit }, $inc:inc });
-  },
-  freezeTimeAccount: function(accountId) {
-  	var account = TimeAccounts.findOne(accountId);
-  	if (typeof account != 'undefined') {
-			// The shared account cannot be frozen.
-	  	if (typeof account.liabilityLimit == 'undefined') {
-				TimeAccounts.update({ _id:account._id }, { $set:{ status:'frozen' } });
-	  	}
-		}
-  },
-  findUserByEmail: function(email) {
-		var regex = h_.queryUsersRegex(email);
-		var user = Meteor.users.findOne({ "emails.address":regex });
-
-		return user;
-  },
-  findTimeAccountByEmail: function(email) {
-  	var result;
-
-		var user = this.findUserByEmail(email);
-		if (typeof user != 'undefined') {
-			var userId = user._id;
-			result = TimeAccounts.findOne({ owner:userId });
-		}
-
-		return result;
-  },
-  activateTimeAccount: function(email) {
-  	var account;
-
-		if (email === null) {
-			account = this.userTimeAccount();
-		}
-		else {
-	  	account = this.findTimeAccountByEmail(email);
-		}
-
-  	if (typeof account !== 'undefined') {
-			TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
-  	}
-  },
-  createSharedTimeAccount: function() {
-  	var sharedAccountId;
-
-		var sharedAccount = h_.sharedAccount();
-		if (typeof sharedAccount === 'undefined') {
-			var limit = Meteor.settings.liabilityLimit;
-			sharedAccountId = TimeAccounts.insert({ owner:null, credit:0, contributions:{}, status:'active', liabilityLimit:limit });
-		}
-
-		return sharedAccountId;
-  },
-  setContributionAmount: function(accountId, contributorAccountId, amount) {
-    var account = TimeAccounts.findOne({ _id:accountId });
-    
-    // Make sure the account is valid and active.
-    if (typeof account != 'undefined') {
-      if (account.status === 'active') {
-        var set = { contributions:{} };
-        set.contributions[contributorAccountId] = { amount:amount, status:'active' };
-        TimeAccounts.update({ _id:accountId }, { $set:set });
-      }
-      else
-        throw new Meteor.Error(500, 'Failed to get contribution amount. Account is frozen.');
-    }
-    else
-      throw new Meteor.Error(500, 'Failed to get contribution amount. Account not found.');
   }
 });
 
@@ -465,88 +311,11 @@ _.extend(Helpers, {
 
 
 
-/**
- * Public server methods.
- */
 
-Meteor.methods({
-	UserTimeAccountId: function() {
-	  return h_.userTimeAccountId();
-	},
-	LiabilityLimit: function() {
-		return h_.liabilityLimit();
-	},
-	/******************************************************
-	 * Clients report contributions of time to the server.
-	 * 
-	 * Generates a given amount of credit, backed by debt, in the logged-in user's account.
-	 * Leaves a balance of credit and debt in the system.
-	 * 
-	 * Checks for the liability limit before applying.
-	 */
-	ReportContribution: function(amount) {
-		var result = 0;
-		var accountId = h_.userTimeAccountId();
-		if (accountId !== null) {
-			result = h_.contribute(accountId, amount);
-		}
-		else
-			throw new Meteor.Error(500, 'User not logged in.');
 
-		return result;
-	},
-	MakePayment: function(payeeEmail, amount) {
-		var result = false;
-		var timeAccount;
-  	var payerAccount = h_.userTimeAccount();
-  	if (typeof payerAccount != 'undefined') {
-			var payeeAccount = Meteor.users.findOne({ 'emails.address':payeeEmail });
-			if (typeof payeeAccount != 'undefined') {
-				timeAccount = TimeAccounts.findOne({ owner:payeeAccount._id });
-				if (typeof timeAccount != 'undefined') {
-					result = h_.payment(payerAccount._id, timeAccount._id, amount);
-				}
-				else
-					throw new Meteor.Error(500, 'Found no time account for that user.');
-			}
-			else
-				throw new Meteor.Error(500, 'Found no user account with that email address.');
-  	}
-		else
-			throw new Meteor.Error(500, 'The logged-in user doesn\'t have a time account.');
 
-		return result;
-	},
-	QueryUsers: function(query) {
-		var info = {};
 
-		if (typeof query !== 'undefined') {
-			var regex = h_.queryUsersRegex(query);
-			var results = Meteor.users.find({ "emails.address":regex }, { $limit:10 });
-			var users = results.fetch();
 
-			info = _.map(users, function(user) {
-				return { emails:user.emails };
-			})
-		}
-
-		return info;
-	}/*,
-	UniversalBalance: function() {
-		var credit = 0, debt = 0, result = { credit:null, debt:null, liabilityLimit:null };
-		TimeAccounts.find().map(function(account) {
-			credit += account.credit;
-			debt += account.debt;
-		});
-		result.credit = credit;
-		result.debt = debt;
-
-		var memberCount = Meteor.users.find().count();
-		result.liabilityLimit = h_.liabilityLimit() * memberCount;
-
-		return result;
-	}*/
-});
 
 
 
