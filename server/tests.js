@@ -1,36 +1,36 @@
-
 (function() {
 
+  console.log(h_);
+
+
+/*
   var state = { 
-    a:1,
+    a:2,
     foo:'bar'
   };
 
   Snap('Chain name', function() {
     return state;
+  }, { a:2, foo:'bar' })
+
+  .next('blah', function() {
+    state.a = 3;
+    this.wait(function() {
+    	console.log('done');
+    });
   }, {
-      a:1,
+      a:3,
       foo:'bar'
     })
 
-
-  .next('link 1', function() {
-    state.a = 2;
-    state.bar = 'baz';
-  }, {
-      a:2,
-      foo:'bar',
-      bar:'baz'
-    })
-
-
   .next('changing foo to baz, and a to 2', function() {
-    state.a = 2;
+    state.a = 3;
     state.foo = 'baz'
   }, {
-      a:2,
-      foo:'baz',
-      bar:'baz'
+      a:3,
+      foo:'baz'
     });
+*/
+
 
 })();
