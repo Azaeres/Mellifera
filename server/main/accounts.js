@@ -1,6 +1,8 @@
 
 
 
+
+
 /**
  * Accounts
  */
@@ -35,7 +37,6 @@ _.extend(Helpers, {
 	 * Returns the time account id for the logged-in user.
 	 * 
 	 * Returns null if the user isn't logged in.
-	 * If the logged-in user doesn't have a time account yet, one is created.
 	 */
 	userTimeAccountId: function() {
 		var accountId;
@@ -51,18 +52,24 @@ _.extend(Helpers, {
 
 
 
-
+	/**
+	 * Returns the time account for the given user.
+	 * If the given user doesn't have a time account, one is created for them.
+	 */
 	timeAccount: function(ownerId) {
 		var accountId, account;
 
 		// Make sure the `ownerId` specified is valid.
-		var owner = Meteor.users.findOne(ownerId);
-		if (owner) {
+		var owner = Meteor.users.findOne({ _id:ownerId });
+		
+		if (!_.isUndefined(owner)) {
+
 			// See if that owner has a time account.
 	  	account = TimeAccounts.findOne({ owner:ownerId });
-		  if (typeof account == 'undefined') {
+		  if (_.isUndefined(account)) {
+
 		  	// If they don't have a time account, create one.
-		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, revenue:0, contributions:{}, status:'frozen' });
+		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, revenue:0, contributors:{}, status:'frozen' });
 
 		    account = TimeAccounts.findOne(accountId);
 		  }
@@ -87,7 +94,7 @@ _.extend(Helpers, {
 
 
 
-  
+
   findTimeAccountByEmail: function(email) {
   	var result;
 

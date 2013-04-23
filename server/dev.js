@@ -144,28 +144,6 @@ if (Helpers.isDevelopment()) {
       }
 
       return result;
-    },
-    runTests: function() {
-      d_('Running tests');
-
-
-      // if (Helpers.isDevelopment()) {
-      //   var _live = TimeAccounts, _test;
-      //   _.extend(Helpers, {
-      //     enterTestingMode: function() {
-      //       d_('Entering testing mode...');
-
-      //       if (typeof _test === 'undefined')
-      //         _test = new Meteor.Collection('TestTimeAccounts');
-            
-      //       TimeAccounts = _test;
-      //     },
-      //     exitTestingMode: function() {
-      //       d_('Exiting testing mode...');
-      //       TimeAccounts = _live;
-      //     }
-      //   });
-      // }
     }
   });
 

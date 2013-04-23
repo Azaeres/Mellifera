@@ -103,7 +103,7 @@ _.extend(Helpers, {
       var timeAccount = h_.timeAccount();
 
       if (typeof timeAccount !== 'undefined') {
-        debt = h_.getContributionAmount(timeAccount._id);
+        debt = h_.getOutstandingContributionAmount(timeAccount._id);
 
         percent = (debt / limit) * 100;
       }
@@ -172,7 +172,7 @@ _.extend(Helpers, {
   Meteor.autorun(function() {
     var timeAccount = h_.timeAccount();
     if (typeof timeAccount !== 'undefined') {
-      var contributionAmount = h_.getContributionAmount(timeAccount._id);
+      var contributionAmount = h_.getOutstandingContributionAmount(timeAccount._id);
       if (typeof debt === 'undefined') {
         debt = contributionAmount;
       }

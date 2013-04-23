@@ -29,82 +29,47 @@ Accounts.config({
 _.extend(Helpers, {
 
 
-
-  /**
-   * Applies a credit to a user's time account.
-   * The credit is applied to their debt, and the excess credit is returned.
-   */
-  applyCreditToDebt: function(accountId, amount) {
-  	var excessCredit = 0;
-  	var account = TimeAccounts.findOne({ _id:accountId });
-
-  	// Make sure the account is valid.
-  	if (typeof account != 'undefined') {
-
-	  	// Make sure the amount is valid.
-  		if (h_.isInteger(amount) && amount >= 0) {
-  			var update = 0;
-
-  			// Find out how much debt would be left over after applying the amount to it.
-        var newDebt = h_.getContributionAmount(accountId) - amount;
-
-		  	//  If the leftover debt would be less than zero,
-		  	//	set their debt to zero, and return the excess amount.
-		  	if (newDebt < 0) {
-		  		update = 0;
-		  		excessCredit = Math.abs(newDebt);
-		  	}
-		  	else {
-		  		//	If the leftover debt would be greater than or equal to zero,
-		  		//	set their debt to that amount.
-		  		update = newDebt;
-		  	}
-
-		  	var set = {};
-		  	set['contributions.'+accountId] = { amount:update, status:'active' };
-		  	TimeAccounts.update({ _id:accountId }, { $set:set });
-  		}
-	  	else
-				throw new Meteor.Error(500, 'Invalid amount.');
-  	}
-  	else
-			throw new Meteor.Error(500, 'Time account not found.');
-
-  	return excessCredit;
-  },
-
-
-
-
-
-
-
-
-
-
+	/*
+	* Grants a given account a loan of credit (backed by debt) in a given amount.
+	*/
   contribute: function(accountId, amount) {
 		var result = 0;
 		var liabilityLimit = h_.liabilityLimit();
 		
-		if (typeof liabilityLimit != 'undefined') {
+		// Makes sure we've set a liability limit.
+		if (!_.isUndefined(liabilityLimit)) {
+
+			// Gets a snapshot of the given account.
 			var account = TimeAccounts.findOne(accountId);
-			if (typeof account != 'undefined') {
+
+			// Makes sure the account is valid and active.
+			if (!_.isUndefined(account)) {
 				if (account.status === 'active') {
+
+					// Makes sure the given amount is valid.
 					if (h_.isInteger(amount) && amount >= 0) {
-						var availableDebt = liabilityLimit - h_.getContributionAmount(accountId);
+
+						// Sees if there's enough room within the liability limit to take on
+						// more debt.
+						var availableDebt = liabilityLimit - h_.getOutstandingContributionAmount(accountId);
 						var remaining = availableDebt - amount;
 
 						if (remaining < 0) {
+							// Not enough room to take on the full amount, so we cap it.
 							remaining = Math.abs(remaining);
 							amount -= remaining;
 						}
 
+						// The loan amount we issue cannot be negative.
 						if (amount < 0)
 							amount = 0;
 
+						// Records the loan amount to their credit and debt.
 						var inc = { credit:amount };
-						inc['contributions.'+accountId+'.amount'] = amount;
+						inc['contributors.'+accountId+'.amount'] = amount;
 						TimeAccounts.update({ _id:account._id }, { $inc:inc });
+
+						// Returns the loan amount that was ultimately issued.
 						result = amount;
 					}
 					else
@@ -173,6 +138,58 @@ _.extend(Helpers, {
 
 
   /**
+   * Applies a credit to a user's time account.
+   * The credit is applied to their debt, and the excess credit is returned.
+   */
+  applyCreditToDebt: function(accountId, amount) {
+  	var excessCredit = 0;
+  	var account = TimeAccounts.findOne({ _id:accountId });
+
+  	// Make sure the account is valid.
+  	if (typeof account != 'undefined') {
+
+	  	// Make sure the amount is valid.
+  		if (h_.isInteger(amount) && amount >= 0) {
+  			var update = 0;
+
+  			// Find out how much debt would be left over after applying the amount to it.
+        var newDebt = h_.getOutstandingContributionAmount(accountId) - amount;
+
+		  	//  If the leftover debt would be less than zero,
+		  	//	set their debt to zero, and return the excess amount.
+		  	if (newDebt < 0) {
+		  		update = 0;
+		  		excessCredit = Math.abs(newDebt);
+		  	}
+		  	else {
+		  		//	If the leftover debt would be greater than or equal to zero,
+		  		//	set their debt to that amount.
+		  		update = newDebt;
+		  	}
+
+		  	var set = {};
+		  	set['contributions.'+accountId] = { amount:update, status:'active' };
+		  	TimeAccounts.update({ _id:accountId }, { $set:set });
+  		}
+	  	else
+				throw new Meteor.Error(500, 'Invalid amount.');
+  	}
+  	else
+			throw new Meteor.Error(500, 'Time account not found.');
+
+  	return excessCredit;
+  },
+
+
+
+
+
+
+
+
+
+
+  /**
    * Apportions the revenue on a given account to its contributors.
   */
   distributeRevenue: function(accountId) {
@@ -185,55 +202,44 @@ _.extend(Helpers, {
 	  	if (account.status === 'active') {
 
 		  	var revenue = account.revenue;
-		  	var excessRevenue = revenue;
 
-		  	// Divide amount evenly, keeping track of remainder.
+		  	// Divide amount evenly amongst all contributors, keeping track of the remainder.
 
 		  	// Get the count of active contributors.
-		  	var contributions = _.pairs(account.contributions);
-		  	var activeContributions = _.filter(contributions, function(contributor) {
+		  	var contributors = _.pairs(account.contributions);
+		  	var activeContributors = _.filter(contributors, function(contributor) {
 		  		var value = contributor[1];
 					return (value.status === 'active');
 		  	});
 
-		  	// d_('activeContributions');
-		  	// d_(activeContributions);
-
-		  	var count = _.size(activeContributions);
+		  	var count = _.size(activeContributors);
 		  	var remainder = revenue % count;
 		  	var divisibleAmount = revenue - remainder;
 
-		  	// This is where we might stop recursing.
-		  	// We may not have enough revenue to distribute evenly amongst the contributors.
+		  	// This function will stop recursing when the divisible amount reaches zero.
+		  	// This means we would not have enough revenue to apportion evenly amongst the contributors.
 		  	if (divisibleAmount > 0) {
+
           // Find the amount to distribute during this pass.
           var shareAmount = divisibleAmount / count;
 
-			  	// d_('shareAmount');
-			  	// d_(shareAmount);
-
           // We start gathering excess revenue with whatever we're not distributing.
-          excessRevenue = remainder;
+          var excessRevenue = remainder;
 
           // Apply the share amount to each contributor's debt.
           var debtLeft = 0;
-          _.map(activeContributions, function(contributor) {
-          	// d_('map args');
-          	// d_(arguments);
+          _.map(activeContributors, function(contributor) {
 
           	var contributorAccountId = contributor[0];
-          	var value = contributor[1];
-
-          	var update = 0;
+          	var contributionAmount = contributor[1];
 
             // Find out how much debt would be left over after applying the share amount to it.
-            var newDebt = value.amount - shareAmount;
+            var newDebt = contributionAmount.amount - shareAmount;
 
-            // If the leftover debt is negative, we have overflow and need to gather it up for the next pass.
-            if (newDebt < 0) {
               // Debt cannot be less than zero.
-              update = 0;
-
+            // If the leftover debt is negative, we have overflow and need to gather it up for the next pass.
+          	var update = 0;
+            if (newDebt < 0) {
               // Gather excess revenue.
               excessRevenue += Math.abs(newDebt);
             }
@@ -243,26 +249,18 @@ _.extend(Helpers, {
             }
 
             // Records this contributor's new debt amount.
-            // d_("new debt for "+contributorAccountId);
-            // d_(update);
+            //TODO: this no longer works the same way.
+            // h_.deductAmountFromContributor(accountId, contributorAccountId, update);
 
-            h_.setContributionAmount(accountId, contributorAccountId, update);
-
+            // Keep track of the total debt left amongst all the contributors.
             debtLeft += update;
           });
-
-          // d_('excessRevenue');
-          // d_(excessRevenue);
 
           // Record the excess revenue for the next pass.
           TimeAccounts.update({ _id:accountId }, { $set:{ revenue:excessRevenue } });
 
-					// d_('debtLeft');
-					// d_(debtLeft);
-
-          // Recursively attempts another pass.
+          // If we still have outstanding debt left, recursively attempt another pass.
           if (debtLeft > 0) {
-          	// d_("Trying another pass...");
           	this.distributeRevenue(accountId);
           }
 		  	}
@@ -279,7 +277,7 @@ _.extend(Helpers, {
 
 
 
-  
+
   /**
    * Takes credit from the payer's account, and applies it to the payee's debt.
    * If there isn't enough credit in the payer's account, the payment is aborted.
@@ -368,6 +366,8 @@ Meteor.startup(function () {
 	// liability limit.
 
 	h_.createSharedTimeAccount();
+
+	h_.runTests();
 });
 
 
