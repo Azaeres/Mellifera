@@ -373,13 +373,6 @@ Meteor.startup(function () {
 });
 
 
-Meteor.publish('TimeAccounts', function () {
-	return TimeAccounts.find();
-});
-
-
-
-
 
 
 
