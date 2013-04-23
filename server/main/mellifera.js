@@ -367,7 +367,9 @@ Meteor.startup(function () {
 
 	h_.createSharedTimeAccount();
 
-	h_.runTests();
+	if (Meteor.settings.public.env === 'testing') {
+		h_.runTests();
+	}
 });
 
 

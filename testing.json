@@ -1,0 +1,6 @@
+{
+	"liabilityLimit": 16000,
+	"public": {
+		"env": "testing"
+	}
+}
