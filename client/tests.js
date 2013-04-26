@@ -54,8 +54,6 @@ Template.tests.rendered = function() {
 
   .snap(function() {
 
-    this.stash = 'yay';
-
     this.return({
       gather: function() {
         this.return(snapshot);
@@ -71,7 +69,11 @@ Template.tests.rendered = function() {
 
     snapshot.foo = 'a';
 
-    this.return();
+    this.return({
+      expect: {
+        foo:'a'
+      }
+    });
 
   })
 
@@ -79,21 +81,21 @@ Template.tests.rendered = function() {
 
     snapshot.foo = 12;
 
-    this.expect = {
-      foo:12
+    this.result = {
+      expect: {
+        foo:13
+      }
     };
 
-    this.return({
-      expect: this.expect
-    });
+    this.return(this.result);
 
   })
 
   .snap(function() {
 
-    this.return({
-      expect: this.expect
-    });
+    snapshot.foo = 'blah';
+
+    this.return(this.result);
 
   })
 
@@ -103,7 +105,7 @@ Template.tests.rendered = function() {
 
     this.return({
       expect: {
-        bar:232
+        foo:12
       }
     });
 
