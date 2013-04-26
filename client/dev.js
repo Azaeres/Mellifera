@@ -1,4 +1,4 @@
-if (Helpers.isDevelopment()) {
+if (Helpers.inDevelopmentEnvironment() || Helpers.inTestingEnvironment()) {
   _.extend(Helpers, {
     wipeAccount: function() {
       return h_.call('WipeAccount', 'Wiping account...');
@@ -89,10 +89,6 @@ if (Helpers.isDevelopment()) {
       });
     }
   });
-
-  // Meteor.autosubscribe(function () {
-  //   Meteor.subscribe('Tests');
-  // });
 
 }
 

@@ -37,6 +37,68 @@
     runTests: function() {
       d_('Running tests');
 
+
+
+      var snapshot = { foo:'bar' };
+      var anotherSnapshot = { bar:'baz' };
+
+      (new SnapChain())
+
+      .snap(function() {
+
+        this.return({
+          gather: function() {
+            this.return(snapshot);
+          }, 
+          expect: {
+            foo:'bar'
+          }
+        });
+
+      })
+
+      .snap(function() {
+
+        snapshot.foo = 12;
+
+        this.return({
+          expect: {
+            foo:12
+          }
+        });
+
+      })
+
+      .snap(function() {
+
+        this.return({
+          gather: function() {
+            this.return(anotherSnapshot);
+          },
+          expect: {
+            bar:'baz'
+          }
+        });
+
+      })
+
+      .snap(function() {
+
+        anotherSnapshot.bar = 23;
+
+        this.return({
+          expect: {
+            bar:23
+          }
+        });
+
+      })
+
+
+
+
+      /*
+
       TimeAccounts.remove({});
       h_.createSharedTimeAccount();
 
@@ -111,7 +173,7 @@
           this.return();
 
         }, expectation2)
-
+        */
 
 
     }

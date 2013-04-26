@@ -47,6 +47,68 @@ Template.tests.rendered = function() {
 (function() {
 
 
+  var snapshot = { foo:'bar' };
+  var anotherSnapshot = { bar:'baz' };
+
+  (new SnapChain())
+
+  .snap(function() {
+
+    this.stash = 'yay';
+
+    this.return({
+      gather: function() {
+        this.return(snapshot);
+      }, 
+      expect: {
+        foo:'bar'
+      }
+    });
+
+  })
+
+  .snap(function() {
+
+    snapshot.foo = 'a';
+
+    this.return();
+
+  })
+
+  .snap(function() {
+
+    snapshot.foo = 12;
+
+    this.expect = {
+      foo:12
+    };
+
+    this.return({
+      expect: this.expect
+    });
+
+  })
+
+  .snap(function() {
+
+    this.return({
+      expect: this.expect
+    });
+
+  })
+
+  .snap(function() {
+
+    anotherSnapshot.bar = 23;
+
+    this.return({
+      expect: {
+        bar:232
+      }
+    });
+
+  })
+
 
   // var snapshot = { 
   //   a: 2,

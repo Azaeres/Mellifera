@@ -13,7 +13,7 @@ Meteor.publish('TimeAccounts', function () {
 	return TimeAccounts.find();
 });
 
-if (Meteor.settings.public.env === 'testing') {
+if (h_.inTestingEnvironment()) {
 	Meteor.publish('TestTimeAccounts', function () {
 		return TestTimeAccounts.find();
 	});

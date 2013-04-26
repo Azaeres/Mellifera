@@ -1,8 +1,5 @@
-if (Helpers.isDevelopment()) {
+if (Helpers.inDevelopmentEnvironment() && Helpers.inTestingEnvironment()) {
 
-  // Meteor.publish('TestTimeAccounts', function () {
-  //   return TimeAccounts.find();
-  // });
 
   _.extend(Helpers, {
     /** FOR TESTING
@@ -209,15 +206,6 @@ if (Helpers.isDevelopment()) {
       return h_.distributeRevenue(accountId);
     }
   });
-
-  // Meteor.publish('Tests', function () {
-  //   return Tests.find();
-  // });
-
-  // Meteor.startup(function () {
-  //   if (Tests.find().count() === 0)
-  //     Tests.insert({ 'describe':'Example test suite', 'suite':'Main Tests', 'method':'testMethod' });
-  // });
 
 }
 
