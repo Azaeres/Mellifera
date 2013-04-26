@@ -50,7 +50,7 @@ Template.tests.rendered = function() {
   var snapshot = { foo:'bar' };
   var anotherSnapshot = { bar:'baz' };
 
-  (new SnapChain())
+  (new SnapChain('first chain'))
 
   .snap(function() {
 
@@ -105,6 +105,53 @@ Template.tests.rendered = function() {
       expect: {
         bar:232
       }
+    });
+
+  });
+
+
+  snapshot2 = { foo:'bar' };
+
+  (new SnapChain('Second chain'))
+
+  .snap(function() {
+
+    this.expect = {
+      foo:'bar'
+    };
+
+    this.return({
+      gather: function() {
+        this.return(snapshot2);
+      }, 
+      expect: this.expect
+    });
+
+  })
+
+  .snap(function() {
+
+    this.return({
+      expect: this.expect
+    });
+
+  })
+
+  .snap(function() {
+
+    snapshot2.foo = 12;
+    this.expect.foo = '12';
+
+    this.return({
+      expect: this.expect
+    });
+
+  })
+
+  .snap(function() {
+
+    this.return({
+      expect: this.expect
     });
 
   })
