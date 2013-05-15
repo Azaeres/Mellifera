@@ -20,7 +20,7 @@
       var timeAccount = h_.timeAccount();
 
       if (typeof timeAccount !== 'undefined') {
-        debt = h_.getOutstandingContributionAmount(timeAccount._id);
+        debt = h_.getTotalOutstandingContributionAmount(timeAccount._id);
       }
 
       return h_.hoursFromCents(debt);
