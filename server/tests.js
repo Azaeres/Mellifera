@@ -4,6 +4,11 @@
 
   _.extend(Helpers, {
 
+    wipeSlate: function() {
+      TimeAccounts.remove({});
+      h_.createSharedTimeAccount();
+    },
+
     // Creates a dummy user with a given `email` and `password`.
     // Returns the `userId` of the created user.
     // If one already exists with the given email, it just returns 
@@ -35,16 +40,81 @@
 
 
     runTests: function() {
-      d_('Running tests');
+  
+      (new SnapChain())
+
+      .snap('Creating dummy users', function() {
+
+        d_('Running tests...');
+
+        h_.wipeSlate();
+
+        this.emails = [
+          'azaeres@gmail.com', 
+          'ryanb@fullscreen.net'
+        ];
+
+        var accounts = [];
+
+        _.each(this.emails, function(email) {
+          h_.createDummyUser(email, 'password');
+          accounts.push(h_.findTimeAccountByEmail(email));
+        });
+
+        this.accounts = accounts;
+
+        this.return({
+          gather: function() {
+            this.return({
+              userCount: Meteor.users.find().count(),
+              timeAccountCount: TimeAccounts.find().count()
+            });
+          }, 
+          expect: {
+            userCount: 2,
+            timeAccountCount: 3
+          }
+        });
+
+      })
+
+      .snap(function() {
+
+        h_.contribute(this.accounts[0]._id, 20);
+
+        var emails = this.emails;
+
+        this.return({
+          gather: function() {
+
+            var account = h_.findTimeAccountByEmail(emails[0])
+
+            this.return({
+              credit: account.credit,
+              debt: h_.getTotalOutstandingContributionAmount(account._id)
+            });
+          },
+          expect: {
+            credit: 20,
+            debt: 20
+          }
+        });
+      })
 
 
+      .snap(function() {
+        d_('Tests complete.');
+        this.return();
+      });
 
+
+      /*
       var snapshot = { foo:'bar' };
       var anotherSnapshot = { bar:'baz' };
 
       (new SnapChain())
 
-      .snap(function() {
+      .snap('one', function() {
 
         this.return({
           gather: function() {
@@ -57,19 +127,19 @@
 
       })
 
-      .snap(function() {
+      .snap('two', function() {
 
         snapshot.foo = 12;
 
         this.return({
           expect: {
-            foo:12
+            foo:13
           }
         });
 
       })
 
-      .snap(function() {
+      .snap('three', function() {
 
         this.return({
           gather: function() {
@@ -82,7 +152,7 @@
 
       })
 
-      .snap(function() {
+      .snap('four', function() {
 
         anotherSnapshot.bar = 23;
 
@@ -93,9 +163,7 @@
         });
 
       })
-
-
-
+      */
 
       /*
 
