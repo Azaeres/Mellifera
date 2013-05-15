@@ -44,119 +44,127 @@ Template.tests.rendered = function() {
 
 
 
+
 (function() {
 
+  // var snapshot = { foo:'bar' };
+  // var anotherSnapshot = { bar:'baz' };
 
-  var snapshot = { foo:'bar' };
-  var anotherSnapshot = { bar:'baz' };
+  // (new SnapChain('First chain'))
 
-  (new SnapChain('first chain'))
-
-  .snap(function() {
-
-    this.return({
-      gather: function() {
-        this.return(snapshot);
-      }, 
-      expect: {
-        foo:'bar'
-      }
-    });
-
-  })
-
-  .snap(function() {
-
-    snapshot.foo = 'a';
-
-    this.return({
-      expect: {
-        foo:'a'
-      }
-    });
-
-  })
-
-  .snap(function() {
-
-    snapshot.foo = 12;
-
-    this.result = {
-      expect: {
-        foo:13
-      }
-    };
-
-    this.return(this.result);
-
-  })
-
-  .snap(function() {
-
-    snapshot.foo = 'blah';
-
-    this.return(this.result);
-
-  })
-
-  .snap(function() {
-
-    anotherSnapshot.bar = 23;
-
-    this.return({
-      expect: {
-        foo:12
-      }
-    });
-
-  });
+  // .snap('Initial state', function() {
 
 
-  snapshot2 = { foo:'bar' };
+  //   this.return({
+  //     gather: function() {
+  //       this.return(snapshot);
+  //     }, 
+  //     expect: {
+  //       foo:'bar'
+  //     }
+  //   });
 
-  (new SnapChain('Second chain'))
+  // })
 
-  .snap(function() {
+  // .snap('Setting foo to "a"', function() {
 
-    this.expect = {
-      foo:'bar'
-    };
+  //   snapshot.foo = 'a';
 
-    this.return({
-      gather: function() {
-        this.return(snapshot2);
-      }, 
-      expect: this.expect
-    });
+  //   this.return({
+  //     expect: {
+  //       foo:'a'
+  //     }
+  //   });
 
-  })
+  // })
 
-  .snap(function() {
+  // .snap('Setting foo to 12', function() {
 
-    this.return({
-      expect: this.expect
-    });
+  //   snapshot.foo = 12;
 
-  })
+  //   this.result = {
+  //     expect: {
+  //       foo:12
+  //     }
+  //   };
 
-  .snap(function() {
+  //   this.return(this.result);
 
-    snapshot2.foo = 12;
-    this.expect.foo = '12';
+  // })
 
-    this.return({
-      expect: this.expect
-    });
+  // .snap('Setting foo to "blah"', function() {
 
-  })
+  //   snapshot.foo = 'blah';
 
-  .snap(function() {
+  //   this.return({
+  //     expect: {
+  //       foo:'blah'
+  //     }
+  //   });
 
-    this.return({
-      expect: this.expect
-    });
+  // })
 
-  })
+  // .snap('Setting ignored state', function() {
+
+  //   anotherSnapshot.bar = 23;
+
+  //   this.return({
+  //     expect: {
+  //       foo:12
+  //     }
+  //   });
+
+  // });
+
+
+  // snapshot2 = { foo:'bar' };
+
+  // (new SnapChain('Second chain'))
+
+  // .snap(function() {
+
+  //   this.expect = {
+  //     foo:'bar'
+  //   };
+
+  //   this.return({
+  //     gather: function() {
+  //       this.return(snapshot2);
+  //     }, 
+  //     expect: this.expect
+  //   });
+
+  // })
+
+  // .snap(function() {
+
+  //   this.return({
+  //     expect: this.expect
+  //   });
+
+  // })
+
+  // .snap(function() {
+
+  //   snapshot2.foo = 12;
+  //   this.expect.foo = '12';
+
+  //   this.return({
+  //     expect: this.expect
+  //   });
+
+  // })
+
+  // .snap(function() {
+
+  //   this.return({
+  //     expect: this.expect
+  //   });
+
+  // })
+
+
+
 
 
   // var snapshot = { 
