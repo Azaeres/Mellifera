@@ -51,7 +51,9 @@
 
         this.emails = [
           'azaeres@gmail.com', 
-          'ryanb@fullscreen.net'
+          'ryanb@fullscreen.net',
+          'bob@aol.com',
+          'peter@aol.com'
         ];
 
         var accounts = [];
@@ -78,9 +80,9 @@
 
       })
 
-      .snap(function() {
+      .snap('Self contribution', function() {
 
-        h_.contribute(this.accounts[0]._id, 20);
+        h_.contribute(this.accounts[0]._id, 1000);
 
         var emails = this.emails;
 
@@ -99,6 +101,35 @@
             debt: 20
           }
         });
+      })
+
+
+      .snap('Other contributions', function() {
+
+
+        h_.contribute(this.accounts[1]._id, 500);
+        h_.contribute(this.accounts[2]._id, 300);
+        h_.contribute(this.accounts[3]._id, 100);
+
+        // var emails = this.emails;
+
+        // this.return({
+        //   gather: function() {
+
+        //     var account = h_.findTimeAccountByEmail(emails[0])
+
+        //     this.return({
+        //       credit: account.credit,
+        //       debt: h_.getTotalOutstandingContributionAmount(account._id)
+        //     });
+        //   },
+        //   expect: {
+        //     credit: 20,
+        //     debt: 20
+        //   }
+        // });
+
+        this.return();
       })
 
 
