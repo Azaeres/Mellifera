@@ -8,16 +8,10 @@
  */
 
 
-
 Meteor.publish('TimeAccounts', function () {
 	return TimeAccounts.find();
 });
 
-if (h_.inTestingEnvironment()) {
-	Meteor.publish('TestTimeAccounts', function () {
-		return TestTimeAccounts.find();
-	});
-}
 
 
 
@@ -86,7 +80,7 @@ _.extend(Helpers, {
 		  if (_.isUndefined(account)) {
 
 		  	// If they don't have a time account, create one.
-		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, revenue:0, contributors:{}, status:'frozen' });
+		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, revenue:0, contributors:{}, contributions:{}, status:'frozen' });
 
 		    account = TimeAccounts.findOne(accountId);
 		  }

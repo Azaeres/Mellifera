@@ -7,6 +7,8 @@
     wipeSlate: function() {
       TimeAccounts.remove({});
       h_.createSharedTimeAccount();
+
+      Contributions.remove({});
     },
 
     // Creates a dummy user with a given `email` and `password`.
@@ -73,64 +75,117 @@
             });
           }, 
           expect: {
-            userCount: 2,
-            timeAccountCount: 3
+            userCount: 4,
+            timeAccountCount: 5
           }
         });
 
       })
 
-      .snap('Self contribution', function() {
 
-        h_.contribute(this.accounts[0]._id, 1000);
+
+
+      .snap('Contributions', function() {
+
+        h_.contribute(this.accounts[0]._id, 500);
+        h_.contribute(this.accounts[0]._id, 400);
+        h_.contribute(this.accounts[0]._id, 200);
+
+        h_.contribute(this.accounts[1]._id, 500, this.accounts[0]._id);
+        h_.contribute(this.accounts[2]._id, 300, this.accounts[0]._id);
+        h_.contribute(this.accounts[3]._id, 100, this.accounts[0]._id);
 
         var emails = this.emails;
 
         this.return({
           gather: function() {
 
-            var account = h_.findTimeAccountByEmail(emails[0])
+            var account = h_.findTimeAccountByEmail(emails[0]);
 
             this.return({
-              credit: account.credit,
-              debt: h_.getTotalOutstandingContributionAmount(account._id)
+              contributorCount:_.size(account.contributors)
             });
           },
           expect: {
-            credit: 20,
-            debt: 20
+            contributorCount:4
+          }
+        });
+      })
+
+      .snap('Accept contributions', function() {
+
+        var account = TimeAccounts.findOne(this.accounts[0]._id);
+        var accountId = account._id;
+
+        var arr = [];
+
+        arr.push(account.contributors[accountId][1]);
+        arr.push(account.contributors[accountId][2]);
+        arr.push(account.contributors[this.accounts[2]._id][0]);
+        arr.push(account.contributors[this.accounts[3]._id][0]);
+
+        _.each(arr, function(contributionId) {
+          h_.acceptContribution(contributionId);
+        });
+
+        this.acceptedContributions = arr;
+
+        this.return();
+      })
+
+      .snap('Deny contributions', function() {
+
+        h_.denyContribution(this.acceptedContributions[3]);
+        h_.denyContribution(this.acceptedContributions[1]);
+
+        this.return();
+      })
+
+      .snap('Give revenue', function() {
+
+        h_.giftRevenue(this.accounts[0]._id, 600);
+        var emails = this.emails;
+
+        this.return({
+          gather: function() {
+
+            var account = h_.findTimeAccountByEmail(emails[0]);
+
+            this.return({
+              revenue:account.revenue
+            });
+          },
+          expect: {
+            revenue:600
           }
         });
       })
 
 
-      .snap('Other contributions', function() {
+      // .snap('Distribute revenue', function() {
+
+      //   h_.distributeRevenue(this.accounts[0]._id);
+      //   var emails = this.emails;
 
 
-        h_.contribute(this.accounts[1]._id, 500);
-        h_.contribute(this.accounts[2]._id, 300);
-        h_.contribute(this.accounts[3]._id, 100);
+      //   this.return({
+      //     gather: function() {
 
-        // var emails = this.emails;
+      //       var a = [];
 
-        // this.return({
-        //   gather: function() {
+      //       _.each(emails, function(email) {
+      //         a.push(h_.findTimeAccountByEmail(email));
+      //       });
 
-        //     var account = h_.findTimeAccountByEmail(emails[0])
-
-        //     this.return({
-        //       credit: account.credit,
-        //       debt: h_.getTotalOutstandingContributionAmount(account._id)
-        //     });
-        //   },
-        //   expect: {
-        //     credit: 20,
-        //     debt: 20
-        //   }
-        // });
-
-        this.return();
-      })
+      //       this.return({
+      //         accounts:a
+      //       });
+      //     },
+      //     expect: {
+      //       accounts:'foo'
+      //     }
+      //   });
+      // })
 
 
       .snap(function() {

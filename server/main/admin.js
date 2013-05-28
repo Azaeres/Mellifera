@@ -106,7 +106,7 @@ _.extend(Helpers, {
   	var sharedAccountId;
 
 		var sharedAccount = h_.sharedAccount();
-		if (typeof sharedAccount === 'undefined') {
+		if (_.isUndefined(sharedAccount)) {
 			var limit = Meteor.settings.liabilityLimit;
 			sharedAccountId = TimeAccounts.insert({ owner:null, credit:0, contributions:{}, status:'active', liabilityLimit:limit });
 		}

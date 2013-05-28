@@ -1,4 +1,4 @@
-if (Helpers.inDevelopmentEnvironment() && Helpers.inTestingEnvironment()) {
+if (Helpers.inDevelopmentEnvironment() || Helpers.inTestingEnvironment()) {
 
 
   _.extend(Helpers, {
@@ -141,6 +141,23 @@ if (Helpers.inDevelopmentEnvironment() && Helpers.inTestingEnvironment()) {
       }
 
       return result;
+    },
+    giftRevenue: function(accountId, amount) {
+
+      var account = TimeAccounts.findOne({ _id:accountId });
+    
+      // Make sure the account is valid.
+      if (!_.isUndefined(account)) {
+
+        // Make sure the amount is valid.
+        if (h_.isInteger(amount) && amount >= 0) {
+          TimeAccounts.update({ _id:accountId }, { $inc:{ revenue:amount } });
+        }
+        else
+          throw new Meteor.Error(500, 'Invalid amount.');
+      }
+      else
+        throw new Meteor.Error(500, 'Time account not found.');
     }
   });
 
