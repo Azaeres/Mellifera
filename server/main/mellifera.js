@@ -99,7 +99,7 @@ _.extend(Helpers, {
 
 
   /**
-   * Apportions the revenue on a given account to its contributors.
+   * Apportions the revenue on a given account to its active contributors.
   */
   distributeRevenue: function(accountId) {
 
@@ -116,25 +116,35 @@ _.extend(Helpers, {
 
 		  	// Get the count of active contributors.
 		  	var contributors = _.pairs(account.contributors);
-		  	d_(account);
+		  	var activeContributions = {};
 
 		  	_.map(contributors, function(contributor) {
+
 			  	var contributorAccountId = contributor[0];
-			  	var contributionId = contributor[1];
+			  	var contributionIds = contributor[1];
+			  	// d_(contributionIds);
 
-			  	var contribution = Contributions.findOne({ _id:contributionId });
-			  	d_(contribution.amounts);
+			  	_.map(contributionIds, function(contributionId) {
 
+			  		if (!_.has(activeContributions, contributionId)) {
+			  			var contribution = Contributions.findOne({ _id:contributionId })
+					  	if (!_.isNull(contribution.dateActivated)) {
+					  		activeContributions[contributionId] = contribution;
+					  	}
+			  		}
+
+			  	});
 		  	});
 
-		  	var activeContributors = _.filter(contributors, function(contributor) {
-		  		var value = contributor[1];
-					return (value.status === 'active');
-		  	});
+		  	var activeContributionIds = _.keys(activeContributions);
 
-		  	var count = _.size(activeContributors);
+		  	// d_(activeContributions);
+
+
+		  	var count = _.size(activeContributionIds);
 		  	var remainder = revenue % count;
 		  	var divisibleAmount = revenue - remainder;
+
 
 		  	// This function will stop recursing when the divisible amount reaches zero.
 		  	// This means we would not have enough revenue to apportion evenly amongst the contributors.
@@ -143,21 +153,22 @@ _.extend(Helpers, {
           // Find the amount to distribute during this pass.
           var shareAmount = divisibleAmount / count;
 
+          // d_('shareAmount');
+          // d_(shareAmount);
+
           // We start gathering excess revenue with whatever we're not distributing.
           var excessRevenue = remainder;
 
           // Apply the share amount to each contributor's debt.
           var debtLeft = 0;
-          _.map(activeContributors, function(contributor) {
-
-          	var contributorAccountId = contributor[0];
-          	var contributionAmount = contributor[1];
+          _.map(activeContributions, function(contribution) {
 
             // Find out how much debt would be left over after applying the share amount to it.
-            var newDebt = contributionAmount.amount - shareAmount;
+            var newDebt = contribution.amountOutstanding - shareAmount;
 
-              // Debt cannot be less than zero.
+            // Debt cannot be less than zero.
             // If the leftover debt is negative, we have overflow and need to gather it up for the next pass.
+
           	var update = 0;
             if (newDebt < 0) {
               // Gather excess revenue.
@@ -168,9 +179,21 @@ _.extend(Helpers, {
               update = newDebt;
             }
 
-            // Records this contributor's new debt amount.
-            //TODO: this no longer works the same way.
-            // h_.deductAmountFromContributor(accountId, contributorAccountId, update);
+	          // d_('update');
+	          // d_(update);
+
+	          if (update === 0) {
+	          	// If the contribution has been zeroed, it can be removed.
+	          	h_.removeContribution(contribution._id);
+	          	// Contributions.update({ _id:contribution._id }, { $set:{ amountOutstanding:update } });
+	          }
+	          else {
+	          	// Record the contribution's new outstanding amount.
+	          	// d_('recording new amount');
+	          	// d_(contribution);
+
+	          	Contributions.update({ _id:contribution._id }, { $set:{ amountOutstanding:update } });
+	          }
 
             // Keep track of the total debt left amongst all the contributors.
             debtLeft += update;

@@ -125,7 +125,7 @@
         arr.push(account.contributors[this.accounts[3]._id][0]);
 
         _.each(arr, function(contributionId) {
-          h_.acceptContribution(contributionId);
+          h_.activateContribution(contributionId);
         });
 
         this.acceptedContributions = arr;
@@ -135,15 +135,18 @@
 
       .snap('Deny contributions', function() {
 
-        h_.denyContribution(this.acceptedContributions[3]);
-        h_.denyContribution(this.acceptedContributions[1]);
+        // h_.removeContribution(this.acceptedContributions[3]);
+        // h_.removeContribution(this.acceptedContributions[1]);
 
         this.return();
       })
 
       .snap('Give revenue', function() {
 
-        h_.giftRevenue(this.accounts[0]._id, 600);
+        var gift = 8;
+        this.gift = gift;
+
+        h_.giftRevenue(this.accounts[0]._id, gift);
         var emails = this.emails;
 
         this.return({
@@ -156,36 +159,49 @@
             });
           },
           expect: {
-            revenue:600
+            revenue:gift
           }
         });
       })
 
 
-      // .snap('Distribute revenue', function() {
+      .snap('Distribute revenue', function() {
 
-      //   h_.distributeRevenue(this.accounts[0]._id);
-      //   var emails = this.emails;
+        var businessAccountId = this.accounts[0]._id;
+        h_.distributeRevenue(businessAccountId);
 
+        var gift = this.gift;
 
-      //   this.return({
-      //     gather: function() {
+        this.return({
+          gather: function() {
 
-      //       var a = [];
+            var businessAccount = TimeAccounts.findOne({ _id:businessAccountId });
 
-      //       _.each(emails, function(email) {
-      //         a.push(h_.findTimeAccountByEmail(email));
-      //       });
+            // d_(businessAccount);
+            var results = [];
+            _.map(businessAccount.contributors, function(contributions) {
+              _.map(contributions, function(contributionId) {
+                var contribution = Contributions.findOne({ _id:contributionId });
+                // d_(contribution);
+                results.push({ 
+                  isActivated:!_.isNull(contribution.dateActivated),
+                  amountRemunerated:contribution.amountReported - contribution.amountOutstanding,
+                  amountReported:contribution.amountReported
+                });
+              });
+            });
 
-      //       this.return({
-      //         accounts:a
-      //       });
-      //     },
-      //     expect: {
-      //       accounts:'foo'
-      //     }
-      //   });
-      // })
+            this.return({
+              contributions:results,
+              revenue:businessAccount.revenue,
+              revenueDistributed:gift - businessAccount.revenue
+            });
+          },
+          expect: {
+            foo:'bar'
+          }
+        });
+      })
 
 
       .snap(function() {
