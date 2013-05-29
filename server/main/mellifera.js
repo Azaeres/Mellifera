@@ -185,7 +185,6 @@ _.extend(Helpers, {
 	          if (update === 0) {
 	          	// If the contribution has been zeroed, it can be removed.
 	          	h_.removeContribution(contribution._id);
-	          	// Contributions.update({ _id:contribution._id }, { $set:{ amountOutstanding:update } });
 	          }
 	          else {
 	          	// Record the contribution's new outstanding amount.
@@ -206,6 +205,22 @@ _.extend(Helpers, {
           if (debtLeft > 0) {
           	this.distributeRevenue(accountId);
           }
+          else {
+			  		d_('Stopping recursion - no more debt left');
+			  		d_('Sending excess revenue to shared account');
+			  		d_(excessRevenue);
+
+						TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:excessRevenue } });
+
+			  		// var sharedAccount = h_.sharedAccount();
+			  		// d_(sharedAccount);
+
+			  		h_.distributeDividends();
+          }
+		  	}
+		  	else {
+		  		d_('Stopping recursion - cannot distribute leftover revenue');
+		  		d_('Will not send excess revenue to shared account');
 		  	}
 	  	}
 	  	else
@@ -226,12 +241,15 @@ _.extend(Helpers, {
    */
   distributeDividends: function() {
   	var sharedAccount = h_.sharedAccount();
-    h_.collideTimeAccount(sharedAccount._id);
+
+    h_.collideSharedTimeAccount();
 
 		// Finds an amount that can be evenly distributed to every user.
 		// Exclude the shared time account and include only active accounts during distribution.
 		var count = TimeAccounts.find({ $and: [{ liabilityLimit:{ $exists:false } }, { status:'active' }] }).count();
+
 		if (count > 0) {
+
 			// Refresh our snapshot of the shared account, now that it's been collided.
   		sharedAccount = h_.sharedAccount();
 
@@ -240,18 +258,24 @@ _.extend(Helpers, {
 			var dividendAmount = divisibleFund / count;
 
 			var amountNotDistributed = divisibleFund;
-			TimeAccounts.find({ $and: [{ liabilityLimit:{ $exists:false } }, { status:'active' }] }).map(function(account) {
-				// Grants dividend to each member.
-				var accountId = account._id;
-				var excessCredit = h_.applyCreditToDebt(accountId, dividendAmount);
-				TimeAccounts.update({ _id:accountId }, { $inc:{ credit:excessCredit } });
-				amountNotDistributed -= dividendAmount;
-			});
+
+			TimeAccounts.find({ $and: [{ liabilityLimit:{ $exists:false } }, { status:'active' }] })
+				.map(function(account) {
+					// Grants dividend to each member.
+					var accountId = account._id;
+					d_(accountId);
+					/*
+					var excessCredit = h_.applyCreditToDebt(accountId, dividendAmount);
+					TimeAccounts.update({ _id:accountId }, { $inc:{ credit:excessCredit } });
+					amountNotDistributed -= dividendAmount;
+					*/
+				});
 
 			// The remainder of shared credit stays in the shared account for later 
 			// 	distribution (after more shared credit accumulates).
 			amountNotDistributed += remainder;
 			TimeAccounts.update({ _id:sharedAccount._id }, { $set:{ credit:amountNotDistributed } });
+
 		}
   },
 
@@ -268,6 +292,8 @@ _.extend(Helpers, {
    * The credit is applied to their debt, and the excess credit is returned.
    */
   applyCreditToDebt: function(accountId, amount) {
+
+   /*
   	var excessCredit = 0;
   	var account = TimeAccounts.findOne({ _id:accountId });
 
@@ -304,8 +330,8 @@ _.extend(Helpers, {
 			throw new Meteor.Error(500, 'Time account not found.');
 
   	return excessCredit;
+	*/
   },
-
 
 
 
@@ -398,7 +424,7 @@ _.extend(Helpers, {
 Meteor.startup(function () {
 	// On startup, create the shared time account if it hasn't been created yet.
 	// The shared account can be identified by how it is the only time account that
-	// does not have an owner.
+	// keeps track of a liability limit.
 	// 
 	// It also differs from other time accounts by how it records the universal 
 	// liability limit.

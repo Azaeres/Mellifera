@@ -8,10 +8,21 @@ _.extend(Helpers, {
 
 
 
-  collideTimeAccount: function(accountId) {
-  	var account = TimeAccounts.findOne({ _id:accountId });
-  	var excessCredit = h_.applyCreditToDebt(accountId, account.credit);
-  	TimeAccounts.update({ _id:accountId }, { $set:{ credit:excessCredit } });
+  collideSharedTimeAccount: function() {
+    var sharedAccount = h_.sharedAccount();
+
+    // Find out how much debt would be left over after applying the amount to it.
+    var newDebt = sharedAccount.debt - sharedAccount.credit;
+
+    //  If the leftover debt would be less than zero,
+    //  set their debt to zero, and return the excess amount.
+    if (newDebt < 0) {
+      var newCredit = Math.abs(newDebt);
+      TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ credit:newCredit, debt:0 } });
+    }
+    else {
+      TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ credit:0, debt:newDebt } });
+    }
   },
 
 
@@ -108,7 +119,7 @@ _.extend(Helpers, {
 		var sharedAccount = h_.sharedAccount();
 		if (_.isUndefined(sharedAccount)) {
 			var limit = Meteor.settings.liabilityLimit;
-			sharedAccountId = TimeAccounts.insert({ owner:null, credit:0, contributions:{}, status:'active', liabilityLimit:limit });
+			sharedAccountId = TimeAccounts.insert({ credit:0, debt:0, liabilityLimit:limit });
 		}
 
 		return sharedAccountId;

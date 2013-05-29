@@ -143,7 +143,7 @@
 
       .snap('Give revenue', function() {
 
-        var gift = 8;
+        var gift = 8000;
         this.gift = gift;
 
         h_.giftRevenue(this.accounts[0]._id, gift);
