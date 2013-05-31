@@ -6,13 +6,13 @@ _.extend(Helpers, {
 
 	recordContribution: function(contributorAccountId, amount, businessAccountId) {
 
-		var contributionId = Contributions.insert({ 
-			contributorAccountId:contributorAccountId,
-			businessAccountId:businessAccountId,
-			dateReported:new Date(),
-			amountReported:amount,
-			dateActivated:null,
-			amountOutstanding:amount
+		var contributionId = Contributions.insert({
+			contributorAccountId: contributorAccountId,
+			businessAccountId: businessAccountId,
+			dateReported: new Date(),
+			amountReported: amount,
+			dateActivated: null,
+			amountOutstanding: amount
 		});
 
 		// Hook the contribution up to the time accounts.
@@ -37,7 +37,10 @@ _.extend(Helpers, {
 		// d_('Cancelling contribution');
 		// d_(contributionId);
 
+
+
 		// Remove association from business account.
+
 		var contribution = Contributions.findOne({ _id:contributionId });
 		// d_(contribution);
 
@@ -62,6 +65,8 @@ _.extend(Helpers, {
 			TimeAccounts.update({ _id:businessAccountId }, { $pull:pull });
 		}
 
+
+
 		// Remove association from contributor account.
 
 		// d_('contributorAccount');
@@ -81,6 +86,9 @@ _.extend(Helpers, {
 			pull['contributions.'+businessAccountId] = contributionId;
 			TimeAccounts.update({ _id:contributorAccountId }, { $pull:pull });
 		}
+
+
+
 
 		// Remove the contribution.
 		Contributions.remove({ _id:contributionId });

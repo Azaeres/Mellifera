@@ -34,7 +34,9 @@
       }
 
       h_.timeAccount(userId);
-      h_.activateTimeAccount(email);
+
+      if (email !== 'peter@aol.com')
+        h_.activateTimeAccount(email);
 
       return userId;
     },
@@ -95,6 +97,10 @@
         h_.contribute(this.accounts[2]._id, 300, this.accounts[0]._id);
         h_.contribute(this.accounts[3]._id, 100, this.accounts[0]._id);
 
+        // h_.contribute(this.accounts[3]._id, 500, this.accounts[1]._id);
+        // h_.contribute(this.accounts[1]._id, 300, this.accounts[2]._id);
+        // h_.contribute(this.accounts[2]._id, 100, this.accounts[1]._id);
+
         var emails = this.emails;
 
         this.return({
@@ -122,7 +128,14 @@
         arr.push(account.contributors[accountId][1]);
         arr.push(account.contributors[accountId][2]);
         arr.push(account.contributors[this.accounts[2]._id][0]);
-        arr.push(account.contributors[this.accounts[3]._id][0]);
+
+        // d_('Accepting contributions for ' + this.accounts[0]._id);
+        // d_(account.contributions[this.accounts[3]]);
+
+        // _.map(account.contributions[this.accounts[3]._id], function(contribution) {
+        //   d_(contribution);
+        //   // arr.push(contribution);
+        // });
 
         _.each(arr, function(contributionId) {
           h_.activateContribution(contributionId);
@@ -143,7 +156,7 @@
 
       .snap('Give revenue', function() {
 
-        var gift = 8000;
+        var gift = 1000;
         this.gift = gift;
 
         h_.giftRevenue(this.accounts[0]._id, gift);
@@ -168,44 +181,44 @@
       .snap('Distribute revenue', function() {
 
         var businessAccountId = this.accounts[0]._id;
-        h_.distributeRevenue(businessAccountId);
+        h_.distribute(businessAccountId, 'revenue');
 
         var gift = this.gift;
 
         this.return({
           gather: function() {
 
-            var businessAccount = TimeAccounts.findOne({ _id:businessAccountId });
+            // var businessAccount = TimeAccounts.findOne({ _id:businessAccountId });
 
             // d_(businessAccount);
-            var results = [];
-            _.map(businessAccount.contributors, function(contributions) {
-              _.map(contributions, function(contributionId) {
-                var contribution = Contributions.findOne({ _id:contributionId });
-                // d_(contribution);
-                results.push({ 
-                  isActivated:!_.isNull(contribution.dateActivated),
-                  amountRemunerated:contribution.amountReported - contribution.amountOutstanding,
-                  amountReported:contribution.amountReported
-                });
-              });
-            });
+            // var results = [];
+            // _.map(businessAccount.contributors, function(contributions) {
+            //   _.map(contributions, function(contributionId) {
+            //     var contribution = Contributions.findOne({ _id:contributionId });
+            //     // d_(contribution);
+            //     results.push({ 
+            //       isActivated:!_.isNull(contribution.dateActivated),
+            //       amountRemunerated:contribution.amountReported - contribution.amountOutstanding,
+            //       amountReported:contribution.amountReported
+            //     });
+            //   });
+            // });
+
+
 
             this.return({
-              contributions:results,
-              revenue:businessAccount.revenue,
-              revenueDistributed:gift - businessAccount.revenue
+              account:'foo'
             });
           },
           expect: {
-            foo:'bar'
+            account:'foo'
           }
         });
       })
 
 
       .snap(function() {
-        d_('Tests complete.');
+        d_('Tests complete.\n\n');
         this.return();
       });
 

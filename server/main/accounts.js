@@ -80,7 +80,19 @@ _.extend(Helpers, {
 		  if (_.isUndefined(account)) {
 
 		  	// If they don't have a time account, create one.
-		    accountId = TimeAccounts.insert({ owner:ownerId, credit:0, revenue:0, contributors:{}, contributions:{}, status:'frozen' });
+		    accountId = TimeAccounts.insert({
+		    	owner: ownerId,
+		    	status:'frozen',
+		    	credit: 0,
+
+		    	// Revenue distribution
+		    	revenue: 0,
+		    	contributors: {},
+
+		    	// Dividend distribution
+		    	dividends: 0,
+		    	contributions: {}
+		    });
 
 		    account = TimeAccounts.findOne(accountId);
 		  }
