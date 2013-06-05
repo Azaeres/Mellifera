@@ -12,6 +12,10 @@ Meteor.publish('TimeAccounts', function () {
 	return TimeAccounts.find();
 });
 
+Meteor.publish('Contributions', function () {
+	return Contributions.find();
+});
+
 
 
 

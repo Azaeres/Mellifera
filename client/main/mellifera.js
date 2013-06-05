@@ -33,6 +33,10 @@ Meteor.autosubscribe(function () {
   Meteor.subscribe('TimeAccounts');
 });
 
+Meteor.autosubscribe(function () {
+  Meteor.subscribe('Contributions');
+});
+
 
 
 Meteor.autorun(function() {

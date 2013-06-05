@@ -89,17 +89,25 @@
 
       .snap('Contributions', function() {
 
-        h_.contribute(this.accounts[0]._id, 500);
-        h_.contribute(this.accounts[0]._id, 400);
-        h_.contribute(this.accounts[0]._id, 200);
+        var arr = [];
 
-        h_.contribute(this.accounts[1]._id, 500, this.accounts[0]._id);
-        h_.contribute(this.accounts[2]._id, 300, this.accounts[0]._id);
-        h_.contribute(this.accounts[3]._id, 100, this.accounts[0]._id);
+        // From main account to itself.
+        arr.push(h_.contribute(this.accounts[0]._id, 500));
+        arr.push(h_.contribute(this.accounts[0]._id, 400));
+        arr.push(h_.contribute(this.accounts[0]._id, 200));
 
-        // h_.contribute(this.accounts[3]._id, 500, this.accounts[1]._id);
+        // From other accounts to main account.
+        arr.push(h_.contribute(this.accounts[1]._id, 500, this.accounts[0]._id));
+        arr.push(h_.contribute(this.accounts[2]._id, 300, this.accounts[0]._id));
+        arr.push(h_.contribute(this.accounts[3]._id, 100, this.accounts[0]._id));
+
+        // From main account to other accounts.
+        arr.push(h_.contribute(this.accounts[0]._id, 500, this.accounts[1]._id));
         // h_.contribute(this.accounts[1]._id, 300, this.accounts[2]._id);
         // h_.contribute(this.accounts[2]._id, 100, this.accounts[1]._id);
+
+        this.contributionsToAccept = arr;
+
 
         var emails = this.emails;
 
@@ -123,19 +131,10 @@
         var account = TimeAccounts.findOne(this.accounts[0]._id);
         var accountId = account._id;
 
-        var arr = [];
+        var arr = this.contributionsToAccept;
 
-        arr.push(account.contributors[accountId][1]);
-        arr.push(account.contributors[accountId][2]);
-        arr.push(account.contributors[this.accounts[2]._id][0]);
-
-        // d_('Accepting contributions for ' + this.accounts[0]._id);
-        // d_(account.contributions[this.accounts[3]]);
-
-        // _.map(account.contributions[this.accounts[3]._id], function(contribution) {
-        //   d_(contribution);
-        //   // arr.push(contribution);
-        // });
+        d_('Accepting contributions for: ');
+        d_(arr);
 
         _.each(arr, function(contributionId) {
           h_.activateContribution(contributionId);
@@ -156,7 +155,7 @@
 
       .snap('Give revenue', function() {
 
-        var gift = 1000;
+        var gift = 1903;
         this.gift = gift;
 
         h_.giftRevenue(this.accounts[0]._id, gift);
