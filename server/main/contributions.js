@@ -15,6 +15,11 @@ _.extend(Helpers, {
 			amountOutstanding: amount
 		});
 
+		d_('\nRecording contribution');
+		d_('From contributor: '+contributorAccountId);
+		d_('To business account: '+businessAccountId);
+
+
 		// Hook the contribution up to the time accounts.
 		var set = {};
 		set['contributions.'+businessAccountId] = contributionId;

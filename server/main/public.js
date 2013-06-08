@@ -31,14 +31,33 @@ Meteor.methods({
 	 * 
 	 * Checks for the liability limit before applying.
 	 */
-	ReportContribution: function(amount) {
+	ReportContribution: function(contributeToEmail, amount) {
 		var result = 0;
-		var accountId = h_.userTimeAccountId();
-		if (accountId !== null) {
-			result = h_.contribute(accountId, amount);
+
+		var fromAccountId = h_.userTimeAccountId();
+		if (!_.isNull(fromAccountId)) {
+
+			var toAccountId = fromAccountId;
+			if (!_.isEmpty(contributeToEmail)) {
+
+				var contributeToUser = Meteor.users.findOne({ 'emails.address':contributeToEmail });
+				if (!_.isUndefined(contributeToUser)) {
+
+					var contributeToAccount = TimeAccounts.findOne({ owner:contributeToUser._id });
+					if (!_.isUndefined(contributeToAccount)) {
+						toAccountId = contributeToAccount._id;
+					}
+					else
+						throw new Meteor.Error(500, 'Found no time account for that user.');
+				}
+				else
+					throw new Meteor.Error(500, 'Found no user account with that email address.');
+			}
+
+			result = h_.contribute(fromAccountId, amount, toAccountId);
 		}
 		else
-			throw new Meteor.Error(500, 'User not logged in.');
+			throw new Meteor.Error(500, 'The logged-in user doesn\'t have a time account.');
 
 		return result;
 	},

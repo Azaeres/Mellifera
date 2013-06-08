@@ -78,6 +78,10 @@ _.extend(Helpers, {
 	* If the `toAccountId` is not provided, the contribution is made both from and to the `fromAccountId`.
 	*/
   contribute: function(fromAccountId, amount, toAccountId) {
+		d_('\nMaking contribution...');
+		d_('From contributor: '+fromAccountId);
+		d_('To business account: '+toAccountId);
+
 		var contributionId = 0;
 		var liabilityLimit = h_.liabilityLimit();
 		
@@ -133,6 +137,9 @@ _.extend(Helpers, {
 		}
 		else
 			throw new Meteor.Error(500, 'Liability limit not set.');
+
+		d_('\nTotal balance:');
+		d_(h_.totalBalance());
 
 		return contributionId;
 	},
@@ -228,6 +235,10 @@ _.extend(Helpers, {
 
 	          		totalShareApplied += shareApplied;
 
+			          // var inc = {};
+			          // inc[distributionName] = -shareApplied;
+			          // TimeAccounts.update({ _id:accountId }, { $inc:inc });
+
 		          	d_('  ' + contribution._id + ': Reported: ' + contribution.amountReported + ': Outstanding: ' + contribution.amountOutstanding + ' -> ' + newOutstandingAmount 
 		          		+ ', Share applied: ' + shareApplied + ': Share remaining: ' + shareRemaining);
 	          	});
@@ -238,6 +249,18 @@ _.extend(Helpers, {
 	          });
 
 						d_('\nTotal applied: ' + totalShareApplied + ', Total excess: ' + excess + ', Outstanding remaining: ' + outstandingRemaining);
+
+						if (distributionName === 'dividends') {
+							d_('Deducting applied credit from shared account');
+		
+				  		sharedAccount = h_.sharedAccount();
+					  	d_(sharedAccount);
+
+							TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:-totalShareApplied } });
+				
+				  		sharedAccount = h_.sharedAccount();
+					  	d_(sharedAccount);
+						}
 
 	          // If we still have outstanding debt left, recursively attempt another pass.
 	          if (outstandingRemaining) {
@@ -301,13 +324,21 @@ _.extend(Helpers, {
 			  }
 			  else {
 			  	if (distributionName === 'revenue') {
-			  		d_('No active contributors -- revenue sent to shared account');
+			  		d_('No active contributors -- revenue sent to shared account: ' + remainderPool);
+
+			  		sharedAccount = h_.sharedAccount();
+				  	d_(sharedAccount);
 
 						TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:remainderPool } });
 						TimeAccounts.update({ _id:accountId }, { $set:{ revenue:0 } });
+
+			  		sharedAccount = h_.sharedAccount();
+				  	d_(sharedAccount);
+
+			  		h_.distributeDividends();
 			  	}
 			  	else if (distributionName === 'dividends') {
-				  	d_('No active contributions -- dividends placed in account credit');
+				  	d_('No active contributions -- dividends placed in account credit: ' + remainderPool);
 
 				  	// Since we don't have any active contributions, we have no outstanding debt to apply this dividend to.
 				  	// It can be placed into their credit instead.
@@ -320,6 +351,9 @@ _.extend(Helpers, {
 				  	d_(account);
 			  	}
 			  }
+
+				d_('\nTotal balance:');
+				d_(h_.totalBalance());
 	  	}
 	  	else
 				throw new Meteor.Error(500, 'Failed to distribute ' + distributionName+ '. Account is frozen.');
@@ -369,6 +403,7 @@ _.extend(Helpers, {
 
 	  			// Moves credit from shared account to this account.
 	        TimeAccounts.update({ _id:accountId }, { $inc:{ dividends:dividendAmount } });
+
 					remainingAmountToDistribute -= dividendAmount;
 
 					d_('\nDistributing dividend to ' + accountId + '...');
@@ -377,6 +412,7 @@ _.extend(Helpers, {
 
 				remainingAmountToDistribute += remainder;
 	  		d_('Divisible fund: ' + divisibleFund + ', Remainder: ' + remainder);
+				TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $set:{ credit:remainder } });
 			}
 			else {
 				d_('Dividend amount is zero -- we will wait for more dividends before we distribute them');
@@ -444,6 +480,7 @@ _.extend(Helpers, {
 								TimeAccounts.update({ _id:payerAccount._id }, { $inc:{ credit:-amount } });
 
 								// Add the payment amount to the payee's revenue.
+								d_('Adding payment amount to the payee\'s revenue: '+amount);
 								TimeAccounts.update({ _id:payeeAccount._id }, { $inc:{ revenue:amount } });
 
 								// Now, distribute the revenue for the payee.
@@ -457,6 +494,9 @@ _.extend(Helpers, {
 
 								// Distribute shared credit.
 								// h_.distributeDividends();
+
+								d_('\nTotal balance:');
+								d_(h_.totalBalance());
 
 								result = true;
 					  	}

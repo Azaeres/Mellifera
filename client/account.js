@@ -15,6 +15,8 @@
       return h_.hoursFromCents(credit);
     },
     debt: function() {
+      d_('Getting debt...');
+
       var debt;
   
       var timeAccount = h_.timeAccount();
@@ -124,11 +126,12 @@
     },
     'click #reportContributionModal .contribution-submit': function(event) {
       var btn = $(event.target);
+      var email = $('#reportContributionModal .contribute-to-input').val();
       var hours = parseFloat($('#reportContributionModal .contribution-amount-input').val());
       var cents = h_.centsFromHours(hours);
 
       if (!isNaN(cents)) {
-        Meteor.call('ReportContribution', cents, function(error, result) {
+        Meteor.call('ReportContribution', email, cents, function(error, result) {
           if (error) {
             h_.showAlert('error', '<strong>Error ' + error.error + ':</strong> ' + error.reason);
             if (typeof error.details !== 'undefined')

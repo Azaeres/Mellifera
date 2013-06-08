@@ -232,6 +232,31 @@ _.extend(Helpers, {
       throw new Meteor.Error(500, 'Failed to get contribution amount. Account not found.');
 
     return excessAmount;
+  },
+
+
+
+
+  totalBalance: function() {
+
+    var r = { credit:0, debt:0 };
+
+    // Sum up shared account.
+    var sharedAccount = h_.sharedAccount();
+    r.credit += sharedAccount.credit;
+    r.debt += sharedAccount.debt;
+
+    // Sum up all time accounts.
+    TimeAccounts.find({ liabilityLimit:{ $exists:false } }).map(function(account) {
+      r.credit += account.credit + account.dividends + account.revenue;
+    });
+
+    // Sum up all contributions.
+    Contributions.find().map(function(contribution) {
+      r.debt += contribution.amountOutstanding;
+    });
+
+    return r;
   }
 });
 
