@@ -281,11 +281,11 @@ _.extend(Helpers, {
 				  		if (distributionName === 'revenue') {
 				  			// We only consider sending revenue to the shared account we are actually distributing revenue.
 
+					  		// Zero the remainder pool.
+			          TimeAccounts.update({ _id:accountId }, { $set:{ revenue:0 } });
+
 					  		if (excess > 0) {
 						  		d_('Sending excess revenue to shared account: ' + excess);
-
-						  		// Zero the remainder pool.
-				          TimeAccounts.update({ _id:accountId }, { $set:{ revenue:0 } });
 
 				          // Sending excess to shared account.
 				          d_('Incrementing shared credit by ' + excess);
@@ -295,7 +295,7 @@ _.extend(Helpers, {
 							  	d_(_activeDistribution(TimeAccounts.findOne({ _id:accountId }), 'revenue'));
 						  		h_.distributeDividends();
 					  		}
-					  		else if (distributionName === 'dividends') {
+					  		else {
 						  		d_('No excess left either - no need to send anything to the shared account');
 							  	d_('\nFinal distribution');
 							  	d_(_activeDistribution(TimeAccounts.findOne({ _id:accountId }), 'dividends'));
