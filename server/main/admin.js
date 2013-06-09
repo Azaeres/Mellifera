@@ -133,6 +133,7 @@ _.extend(Helpers, {
   Deducts a given amount from a given contributor's outstanding debt.
   Returns the amount remaining after the deduction.
   */
+  /*
   deductAmountFromContributor: function(accountId, contributorAccountId, amount) {
     var excessAmount = 0;
     var account = TimeAccounts.findOne({ _id:accountId });
@@ -233,8 +234,7 @@ _.extend(Helpers, {
 
     return excessAmount;
   },
-
-
+  */
 
 
   totalBalance: function() {
