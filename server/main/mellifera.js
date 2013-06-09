@@ -239,10 +239,6 @@ _.extend(Helpers, {
 
 	          		totalShareApplied += shareApplied;
 
-			          // var inc = {};
-			          // inc[distributionName] = -shareApplied;
-			          // TimeAccounts.update({ _id:accountId }, { $inc:inc });
-
 		          	d_('  ' + contribution._id + ': Reported: ' + contribution.amountReported + ': Outstanding: ' + contribution.amountOutstanding + ' -> ' + newOutstandingAmount 
 		          		+ ', Share applied: ' + shareApplied + ': Share remaining: ' + shareRemaining);
 	          	});
