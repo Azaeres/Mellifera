@@ -278,11 +278,13 @@ _.extend(Helpers, {
 	          else {
 				  		d_('Stopping recursion - no more debt left');
 
+				  		// Zero the remainder pool.
+				  		var set = {};
+				  		set[distributionName] = 0;
+		          TimeAccounts.update({ _id:accountId }, { $set:set });
+
 				  		if (distributionName === 'revenue') {
 				  			// We only consider sending revenue to the shared account we are actually distributing revenue.
-
-					  		// Zero the remainder pool.
-			          TimeAccounts.update({ _id:accountId }, { $set:{ revenue:0 } });
 
 					  		if (excess > 0) {
 						  		d_('Sending excess revenue to shared account: ' + excess);
