@@ -125,6 +125,10 @@ _.extend(Helpers, {
 						// Records the contribution association.
 						// Returns the loan amount that was ultimately issued.
 						contributionId = h_.recordContribution(fromAccountId, amount, toAccountId);
+
+						// For now, we'll automatically activate all contributions,
+						// for convenience until the authorization views are completed.
+						h_.activateContribution(contributionId);
 					}
 					else
 						throw new Meteor.Error(500, 'Invalid contribution amount.');
