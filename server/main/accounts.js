@@ -132,5 +132,17 @@ _.extend(Helpers, {
 		}
 
 		return result;
+  },
+
+
+
+
+  findEmailByTimeAccountId: function(accountId) {
+  	var timeAccount = TimeAccounts.findOne(accountId);
+  	d_(timeAccount);
   }
+
 });
+
+
+

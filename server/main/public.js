@@ -107,12 +107,13 @@ Meteor.methods({
 		}
 
 		return info;
-	}/*,
+	}
 
 
 
 
-	
+
+	/*
 	UniversalBalance: function() {
 		var credit = 0, debt = 0, result = { credit:null, debt:null, liabilityLimit:null };
 		TimeAccounts.find().map(function(account) {

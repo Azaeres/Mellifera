@@ -176,7 +176,7 @@ _.extend(Helpers, {
   Meteor.autorun(function() {
     var timeAccount = h_.timeAccount();
     if (typeof timeAccount !== 'undefined') {
-      var contributionAmount = h_.getOutstandingContributionAmount(timeAccount._id);
+      var contributionAmount = h_.getTotalOutstandingContributionAmount(timeAccount._id);
       if (typeof debt === 'undefined') {
         debt = contributionAmount;
       }
