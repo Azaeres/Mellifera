@@ -137,9 +137,11 @@ _.extend(Helpers, {
 
 
 
-  findEmailByTimeAccountId: function(accountId) {
+  findEmailByTimeAccoeuntId: function(accountId) {
   	var timeAccount = TimeAccounts.findOne(accountId);
   	d_(timeAccount);
+
+  	return 'foo';
   }
 
 });

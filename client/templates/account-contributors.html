@@ -1,6 +1,43 @@
 <template name="contributors">
-	Contributors
-	{{#each contributors}}
-		<div>{{this}}</div>
-	{{/each}}
+	<section class="span6">
+		<h4>Shares</h4>
+		{{#each revenueShares}}
+			<div><strong>Time account id:</strong> {{this.id}}</div>
+			<div><strong>User email:</strong> {{this.email}}</div>
+			<br>
+			<div>
+			{{#each this.contributions}}
+				<div><strong>Contribution id:</strong> {{this._id}}</div>
+				<div><strong>Date reported:</strong> {{this.dateReported}}</div>
+				<div><strong>Amount reported:</strong> {{this.amountReported}}</div>
+				<div><strong>Date activated:</strong> {{this.dateActivated}}</div>
+				<div><strong>Amount outstanding:</strong> {{this.amountOutstanding}}</div>
+				<br>
+			{{/each}}
+			</div>
+			<br>
+		{{/each}}
+	</section>
+</template>
+
+<template name="contributions">
+	<section class="span6">
+		<h4>Sources</h4>
+		{{#each revenueSources}}
+			<div><strong>Time account id:</strong> {{this.id}}</div>
+			<div><strong>User email:</strong> {{this.email}}</div>
+			<br>
+			<div>
+			{{#each this.contributions}}
+				<div><strong>Contribution id:</strong> {{this._id}}</div>
+				<div><strong>Date reported:</strong> {{this.dateReported}}</div>
+				<div><strong>Amount reported:</strong> {{this.amountReported}}</div>
+				<div><strong>Date activated:</strong> {{this.dateActivated}}</div>
+				<div><strong>Amount outstanding:</strong> {{this.amountOutstanding}}</div>
+				<br>
+			{{/each}}
+			</div>
+			<br>
+		{{/each}}
+	</section>
 </template>

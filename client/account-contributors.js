@@ -1,18 +1,86 @@
 (function() {
 
   Template.contributors.helpers({
-  	contributors: function() {
-  		// var accountId = Session.get('timeAccountId');
+  	revenueShares: function() {
   		var account = h_.timeAccount();
 
   		if (!_.isUndefined(account)) {
-	  		d_('account')
-	  		d_(account)
+  			var contributorIds = _.keys(account.contributors);
 
-	  		// var email = h_.findEmailByTimeAccountId(accountId);
-	  		// d_(email);
+  			var info = [];
+  			_.each(contributorIds, function(contributorId) {
+  				var contributorAccount = TimeAccounts.findOne(contributorId);
+  				info.push(contributorAccount.owner);
+  			});
 
-	  		return _.keys(account.contributors);
+
+	  		Meteor.call('EmailsForUserAccountIds', info, function(error, contributorEmails) {
+
+	  			var contributors = [];
+	  			_.each(contributorEmails, function(contributorEmail, index) {
+	  				var contributor = {};
+	  				contributor.id = contributorIds[index];
+	  				contributor.email = contributorEmail;
+	  				contributors.push(contributor);
+
+	  				var contributions = [];
+	  				var contributionIds = account.contributors[contributor.id];
+	  				_.each(contributionIds, function(contributionId) {
+	  					var contribution = Contributions.findOne(contributionId);
+	  					contributions.push(contribution);
+	  				});
+
+	  				contributor.contributions = contributions;
+	  			});
+
+	  			Session.set('Contributors', contributors);
+	  		});
+
+	  		
+
+				return Session.get('Contributors');
+  		}
+  	}
+  });
+
+	Template.contributions.helpers({
+  	revenueSources: function() {
+  		var account = h_.timeAccount();
+
+  		if (!_.isUndefined(account)) {
+  			var contributorIds = _.keys(account.contributions);
+
+  			var info = [];
+  			_.each(contributorIds, function(contributorId) {
+  				var contributorAccount = TimeAccounts.findOne(contributorId);
+  				info.push(contributorAccount.owner);
+  			});
+
+	  		Meteor.call('EmailsForUserAccountIds', info, function(error, contributorEmails) {
+
+	  			var contributors = [];
+	  			_.each(contributorEmails, function(contributorEmail, index) {
+	  				var contributor = {};
+	  				contributor.id = contributorIds[index];
+	  				contributor.email = contributorEmail;
+	  				contributors.push(contributor);
+
+	  				var contributions = [];
+	  				var contributionIds = account.contributions[contributor.id];
+	  				_.each(contributionIds, function(contributionId) {
+	  					var contribution = Contributions.findOne(contributionId);
+	  					contributions.push(contribution);
+	  				});
+
+	  				contributor.contributions = contributions;
+	  			});
+
+	  			Session.set('Contributions', contributors);
+	  		});
+
+	  		
+
+				return Session.get('Contributions');
   		}
   	}
   });

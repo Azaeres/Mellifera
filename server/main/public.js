@@ -103,11 +103,33 @@ Meteor.methods({
 
 			info = _.map(users, function(user) {
 				return { emails:user.emails };
-			})
+			});
+		}
+
+		return info;
+	},
+
+
+
+
+
+
+	EmailsForUserAccountIds: function(userAccountIds) {
+		var info = [];
+
+		if (!_.isUndefined(userAccountIds)) {
+			if (_.isArray(userAccountIds)) {
+				_.each(userAccountIds, function(userAccountId) {
+					var userAccount = Meteor.users.findOne(userAccountId);
+					info.push(_.first(userAccount.emails).address);
+				});
+			}
 		}
 
 		return info;
 	}
+
+
 
 
 
