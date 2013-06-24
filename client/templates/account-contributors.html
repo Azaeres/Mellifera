@@ -1,43 +1,46 @@
 <template name="contributors">
-	<section class="span6">
+	<section class="shares span6">
 		<h4>Shares</h4>
 		{{#each revenueShares}}
-			<div><strong>Time account id:</strong> {{this.id}}</div>
-			<div><strong>User email:</strong> {{this.email}}</div>
-			<br>
-			<div>
-			{{#each this.contributions}}
-				<div><strong>Contribution id:</strong> {{this._id}}</div>
-				<div><strong>Date reported:</strong> {{this.dateReported}}</div>
-				<div><strong>Amount reported:</strong> {{this.amountReported}}</div>
-				<div><strong>Date activated:</strong> {{this.dateActivated}}</div>
-				<div><strong>Amount outstanding:</strong> {{this.amountOutstanding}}</div>
+			<div class="contributor" data-contributor-id="{{this.id}}">
+				<div class="email"><a href="mailto:{{this.email}}">{{this.email}}</a></div>
+				<div class="contributions">
+				{{#each this.contributions}}
+					<div class="contribution" data-contribution-id="{{this._id}}">
+						<div class="amount"><span>{{this.amountOutstanding}}</span><span> / {{this.amountReported}}</span></div>
+						{{#if this.inactive}}
+							<button class="accept btn btn-success">Accept</button>
+							<button class="deny btn btn-danger">Deny</button>
+						{{/if}}
+						<br>
+					</div>
+				{{/each}}
+				</div>
 				<br>
-			{{/each}}
 			</div>
-			<br>
 		{{/each}}
 	</section>
 </template>
 
 <template name="contributions">
-	<section class="span6">
+	<section class="sources span6">
 		<h4>Sources</h4>
 		{{#each revenueSources}}
-			<div><strong>Time account id:</strong> {{this.id}}</div>
-			<div><strong>User email:</strong> {{this.email}}</div>
-			<br>
-			<div>
-			{{#each this.contributions}}
-				<div><strong>Contribution id:</strong> {{this._id}}</div>
-				<div><strong>Date reported:</strong> {{this.dateReported}}</div>
-				<div><strong>Amount reported:</strong> {{this.amountReported}}</div>
-				<div><strong>Date activated:</strong> {{this.dateActivated}}</div>
-				<div><strong>Amount outstanding:</strong> {{this.amountOutstanding}}</div>
+			<div class="contributor" data-contributor-id="{{this.id}}">
+				<div class="email"><a href="mailto:{{this.email}}">{{this.email}}</a></div>
+				<div class="contributions">
+				{{#each this.contributions}}
+					<div class="contribution" data-contribution-id="{{this._id}}">
+						<div class="amount"><span>{{this.amountOutstanding}}</span><span> / {{this.amountReported}}</span></div>
+						{{#if this.inactive}}
+							<button class="cancel btn btn-danger">Cancel</button>
+						{{/if}}
+						<br>
+					</div>
+				{{/each}}
+				</div>
 				<br>
-			{{/each}}
 			</div>
-			<br>
 		{{/each}}
 	</section>
 </template>

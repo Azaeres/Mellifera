@@ -127,7 +127,21 @@ Meteor.methods({
 		}
 
 		return info;
+	},
+
+
+
+
+
+	ActivateContribution: function(contributionId) {
+		h_.activateContribution(contributionId);
+	},
+
+	RemoveContribution: function(contributionId) {
+		h_.removeContribution(contributionId);
 	}
+
+
 
 
 

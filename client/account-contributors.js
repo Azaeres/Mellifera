@@ -27,6 +27,14 @@
 	  				var contributionIds = account.contributors[contributor.id];
 	  				_.each(contributionIds, function(contributionId) {
 	  					var contribution = Contributions.findOne(contributionId);
+	  					
+	  					if (_.isNull(contribution.dateActivated)) {
+	  						contribution.inactive = true;
+	  					}
+	  					else {
+	  						contribution.inactive = false;
+	  					}
+
 	  					contributions.push(contribution);
 	  				});
 
@@ -42,6 +50,14 @@
   		}
   	}
   });
+
+	Template.contributors.events({
+		'click .shares .deny': function(event) {
+			var contributionId = $(event.target).closest('.contribution').data('contribution-id');
+			Meteor.call('RemoveContribution', contributionId);
+		}
+	});
+
 
 	Template.contributions.helpers({
   	revenueSources: function() {
@@ -69,6 +85,14 @@
 	  				var contributionIds = account.contributions[contributor.id];
 	  				_.each(contributionIds, function(contributionId) {
 	  					var contribution = Contributions.findOne(contributionId);
+
+	  					if (_.isNull(contribution.dateActivated)) {
+	  						contribution.inactive = true;
+	  					}
+	  					else {
+	  						contribution.inactive = false;
+	  					}
+
 	  					contributions.push(contribution);
 	  				});
 

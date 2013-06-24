@@ -8,26 +8,30 @@
 	  <div class="amount row-fluid">
 			<label>Debt</label>&nbsp;<span class="debt">{{debt}}</span>
 	  </div>
-	  <div class="row-fluid">
+	  <div class="progress-bar row-fluid">
 	  	<div class="span12">
 				{{#constant}}<div class="progress">
 				  <div class="bar bar-success"></div>
 				</div>{{/constant}}
 	  	</div>
 	  </div>
-		<!-- Button to trigger modal -->
-		<a href="#reportContributionModal" role="button" class="btn" data-toggle="modal">Report Contribution</a>
 
-		<!-- Button to trigger modal -->
-		<a href="#paymentModal" role="button" class="btn" data-toggle="modal">Make Payment</a>
+	  <div class="form-buttons row-fluid">
+			<!-- Button to trigger modal -->
+			<a href="#reportContributionModal" role="button" class="btn" data-toggle="modal">Report Contribution</a>
+
+			<!-- Button to trigger modal -->
+			<a href="#paymentModal" role="button" class="btn" data-toggle="modal">Make Payment</a>
+		</div>
+
+		<div class="revenue row-fluid">
+			{{> contributors}}
+			{{> contributions}}
+		</div>
+
+		{{> contributionModal}}
+		{{> paymentModal}}
+
 	</div>
-
-	<div class="row-fluid">
-		{{> contributors}}
-		{{> contributions}}
-	</div>
-
-	{{> contributionModal}}
-	{{> paymentModal}}
 
 </template>

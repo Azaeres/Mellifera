@@ -128,7 +128,7 @@ _.extend(Helpers, {
 
 						// For now, we'll automatically activate all contributions,
 						// for convenience until the authorization views are completed.
-						h_.activateContribution(contributionId);
+						// h_.activateContribution(contributionId);
 					}
 					else
 						throw new Meteor.Error(500, 'Invalid contribution amount.');
