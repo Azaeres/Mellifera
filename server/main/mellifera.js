@@ -476,13 +476,14 @@ _.extend(Helpers, {
 				  	if (payeeAccount.status === 'active') {
 
 							// Make sure there's enough credit for the payment.
-					  	if (payerAccount.credit >= amount) {
+							var lockedCredit = h_.totalOutstandingContributionAmount(payerAccount._id, true);
+					  	if ((payerAccount.credit - lockedCredit) >= amount) {
 					  		
 								// Deduct the amount of the payment from the payer's credit.
 								TimeAccounts.update({ _id:payerAccount._id }, { $inc:{ credit:-amount } });
 
 								// Add the payment amount to the payee's revenue.
-								d_('Adding payment amount to the payee\'s revenue: '+amount);
+								// d_('Adding payment amount to the payee\'s revenue: '+amount);
 								TimeAccounts.update({ _id:payeeAccount._id }, { $inc:{ revenue:amount } });
 
 								// Now, distribute the revenue for the payee.

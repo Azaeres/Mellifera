@@ -13,7 +13,6 @@
         credit = account.credit - lockedCredit;
         if (credit < 0)
           credit = 0;
-        d_('credit:', credit, account.credit, lockedCredit);
       }
 
       return h_.hoursFromCents(credit);
@@ -29,13 +28,11 @@
       return h_.hoursFromCents(lockedCredit);
     },
     debt: function() {
-      // d_('Getting debt...');
-
       var debt;
   
       var timeAccount = h_.timeAccount();
 
-      if (typeof timeAccount !== 'undefined') {
+      if (!_.isUndefined(timeAccount)) {
         debt = h_.totalOutstandingContributionAmount(timeAccount._id);
       }
 
