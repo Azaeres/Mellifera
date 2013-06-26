@@ -32,7 +32,7 @@ _.extend(Helpers, {
   seizeDebt: function(accountId, amount) {
   	var account = TimeAccounts.findOne({ _id:accountId });
   	
-  	var contributionAmount = h_.getTotalOutstandingContributionAmount(accountId);
+  	var contributionAmount = h_.totalOutstandingContributionAmount(accountId);
   	var newDebt = contributionAmount - amount;
   	var seizedDebt = amount;
   	if (newDebt < 0) {
@@ -57,7 +57,7 @@ _.extend(Helpers, {
   	var seizedDebt = 0;
 
   	TimeAccounts.find({ liabilityLimit:{ $exists:false } }).map(function(account) {
-	  	var contributionAmount = h_.getTotalOutstandingContributionAmount(accountId);
+	  	var contributionAmount = h_.totalOutstandingContributionAmount(accountId);
   		if (newLimit < contributionAmount) {
   			var diff = contributionAmount - newLimit;
   			seizedDebt += diff;

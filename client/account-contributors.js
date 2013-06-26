@@ -27,15 +27,19 @@
 	  				var contributionIds = account.contributors[contributor.id];
 	  				_.each(contributionIds, function(contributionId) {
 	  					var contribution = Contributions.findOne(contributionId);
-	  					
-	  					if (_.isNull(contribution.dateActivated)) {
-	  						contribution.inactive = true;
-	  					}
-	  					else {
-	  						contribution.inactive = false;
-	  					}
+	  					if (!_.isUndefined(contribution)) {
+		  					contribution.amountOutstanding = h_.hoursFromCents(contribution.amountOutstanding);
+		  					contribution.amountReported = h_.hoursFromCents(contribution.amountReported);
+		  					
+		  					if (_.isNull(contribution.dateActivated)) {
+		  						contribution.inactive = true;
+		  					}
+		  					else {
+		  						contribution.inactive = false;
+		  					}
 
-	  					contributions.push(contribution);
+		  					contributions.push(contribution);
+	  					}
 	  				});
 
 	  				contributor.contributions = contributions;
@@ -76,6 +80,7 @@
 
 	  			var contributors = [];
 	  			_.each(contributorEmails, function(contributorEmail, index) {
+
 	  				var contributor = {};
 	  				contributor.id = contributorIds[index];
 	  				contributor.email = contributorEmail;
@@ -83,17 +88,22 @@
 
 	  				var contributions = [];
 	  				var contributionIds = account.contributions[contributor.id];
+
 	  				_.each(contributionIds, function(contributionId) {
 	  					var contribution = Contributions.findOne(contributionId);
+	  					if (!_.isUndefined(contribution)) {
+		  					contribution.amountOutstanding = h_.hoursFromCents(contribution.amountOutstanding);
+		  					contribution.amountReported = h_.hoursFromCents(contribution.amountReported);
+		  					
+		  					if (_.isNull(contribution.dateActivated)) {
+		  						contribution.inactive = true;
+		  					}
+		  					else {
+		  						contribution.inactive = false;
+		  					}
 
-	  					if (_.isNull(contribution.dateActivated)) {
-	  						contribution.inactive = true;
+		  					contributions.push(contribution);
 	  					}
-	  					else {
-	  						contribution.inactive = false;
-	  					}
-
-	  					contributions.push(contribution);
 	  				});
 
 	  				contributor.contributions = contributions;

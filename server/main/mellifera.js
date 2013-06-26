@@ -27,16 +27,16 @@ var _activeDistribution = function(account, distributionName) {
 
 		var account = TimeAccounts.findOne({ _id:accountId });
 		var contributorIsActive = account.status === 'active';
-  	d_('Account: ' + account._id + ': "' + account.status + '"' + (contributorIsActive ? '  *' : ''));
+  	// d_('Account: ' + account._id + ': "' + account.status + '"' + (contributorIsActive ? '  *' : ''));
 
   	_.map(contributionIds, function(contributionId) {
 
   		var contribution = Contributions.findOne({ _id:contributionId });
   		var contributionIsActive = !_.isNull(contribution.dateActivated);
-  		d_('  ' + contributionId + ': "' + (contributionIsActive ? 'active' : 'pending' ) + '": ' + contribution.amountOutstanding + '/' + contribution.amountReported + '  ' + (contributionIsActive ? '*' : ''));
+  		// d_('  ' + contributionId + ': "' + (contributionIsActive ? 'active' : 'pending' ) + '": ' + contribution.amountOutstanding + '/' + contribution.amountReported + '  ' + (contributionIsActive ? '*' : ''));
 
   		if (contributorIsActive && contributionIsActive) {
-				d_('+ {' + accountId + ':[' + contributionId + '] }')
+				// d_('+ {' + accountId + ':[' + contributionId + '] }')
   			if (_.has(distribution, accountId)) {
   				// d_('Distribution already has account ' + accountId);
   				distribution[accountId].push(contribution);
@@ -106,7 +106,7 @@ _.extend(Helpers, {
 
 						// Sees if there's enough room within the liability limit to take on
 						// more debt.
-						var availableDebt = liabilityLimit - h_.getTotalOutstandingContributionAmount(toAccountId);
+						var availableDebt = liabilityLimit - h_.totalOutstandingContributionAmount(toAccountId);
 						var remaining = availableDebt - amount;
 
 						if (remaining < 0) {
@@ -119,12 +119,12 @@ _.extend(Helpers, {
 						if (amount < 0)
 							amount = 0;
 
-						// Increment the contributor's credit.
-						TimeAccounts.update({ _id:fromAccountId }, { $inc:{ credit:amount } });
-
 						// Records the contribution association.
 						// Returns the loan amount that was ultimately issued.
 						contributionId = h_.recordContribution(fromAccountId, amount, toAccountId);
+
+						// Increment the contributor's credit.
+						TimeAccounts.update({ _id:fromAccountId }, { $inc:{ credit:amount } });
 
 						// For now, we'll automatically activate all contributions,
 						// for convenience until the authorization views are completed.
@@ -163,8 +163,8 @@ _.extend(Helpers, {
   	// Refresh the account snapshot.
   	var account = TimeAccounts.findOne({ _id:accountId });
 
-  	d_('Account');
-  	d_(account);
+  	// d_('Account');
+  	// d_(account);
 
   	// Make sure the account is valid and active.
   	if (!_.isUndefined(account)) {
@@ -174,11 +174,11 @@ _.extend(Helpers, {
 
 		  	// Divide amount evenly amongst all contributors/contributions, keeping track of the remainder.
 
-				d_('Gathering active distribution "' + distributionName + '"...');
+				// d_('Gathering active distribution "' + distributionName + '"...');
 		  	var distribution = _activeDistribution(account, distributionName);
 
-		  	d_('Active distribution');
-		  	d_(distribution);
+		  	// d_('Active distribution');
+		  	// d_(distribution);
 
 
 		  	var count = _.size(distribution);
@@ -187,9 +187,9 @@ _.extend(Helpers, {
 			  	var remainder = remainderPool % count;
 			  	var divisibleAmount = remainderPool - remainder;
 
-			  	d_('remainderPool: ' + remainderPool);
-			  	d_('Count: ' + count);
-			  	d_('Remainder: ' + remainder);
+			  	// d_('remainderPool: ' + remainderPool);
+			  	// d_('Count: ' + count);
+			  	// d_('Remainder: ' + remainder);
 
 
 			  	// This function will stop recursing when the divisible amount reaches zero.
@@ -198,9 +198,9 @@ _.extend(Helpers, {
 
 	          // Find the amount to distribute during this pass.
 	          var shareAmount = divisibleAmount / count;
-	          d_('\nAmount in remainder pool: ' + remainderPool)
-				  	d_('Number of shares: ' + count);
-				  	d_('Amount in each share: ' + shareAmount + '\n');
+	      		// d_('\nAmount in remainder pool: ' + remainderPool)
+				  	// d_('Number of shares: ' + count);
+				  	// d_('Amount in each share: ' + shareAmount + '\n');
 
 	          // We start gathering excess revenue with whatever we're not distributing.
 	          var outstandingRemaining = false;
@@ -210,7 +210,7 @@ _.extend(Helpers, {
 	          // Apply the share amount to each contributor's debt.
 	          _.map(distribution, function(contributionSeries, accountId) {
 
-	          	d_('Share for ' + accountId + ': ' + shareAmount);
+	          	// d_('Share for ' + accountId + ': ' + shareAmount);
 	          	var shareRemaining = shareAmount;
 
 	          	_.each(contributionSeries, function(contribution) {
@@ -239,27 +239,27 @@ _.extend(Helpers, {
 
 	          		totalShareApplied += shareApplied;
 
-		          	d_('  ' + contribution._id + ': Reported: ' + contribution.amountReported + ': Outstanding: ' + contribution.amountOutstanding + ' -> ' + newOutstandingAmount 
-		          		+ ', Share applied: ' + shareApplied + ': Share remaining: ' + shareRemaining);
+		          	// d_('  ' + contribution._id + ': Reported: ' + contribution.amountReported + ': Outstanding: ' + contribution.amountOutstanding + ' -> ' + newOutstandingAmount 
+		          		// + ', Share applied: ' + shareApplied + ': Share remaining: ' + shareRemaining);
 	          	});
 
 	          	// If we have an excess share at this point, then none of the contributions in this series has debt left.
-	          	d_('  > Excess share: ' + shareRemaining);
+	          	// d_('  > Excess share: ' + shareRemaining);
 	          	excess += shareRemaining;
 	          });
 
-						d_('\nTotal applied: ' + totalShareApplied + ', Total excess: ' + excess + ', Outstanding remaining: ' + outstandingRemaining);
+						// d_('\nTotal applied: ' + totalShareApplied + ', Total excess: ' + excess + ', Outstanding remaining: ' + outstandingRemaining);
 
 						if (distributionName === 'dividends') {
-							d_('Deducting applied credit from shared account');
+							// d_('Deducting applied credit from shared account');
 		
 				  		sharedAccount = h_.sharedAccount();
-					  	d_(sharedAccount);
+					  	// d_(sharedAccount);
 
 							TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:-totalShareApplied } });
 				
 				  		sharedAccount = h_.sharedAccount();
-					  	d_(sharedAccount);
+					  	// d_(sharedAccount);
 						}
 
 	          // If we still have outstanding debt left, recursively attempt another pass.
@@ -272,7 +272,7 @@ _.extend(Helpers, {
 	          	this.distribute(accountId, distributionName);
 	          }
 	          else {
-				  		d_('Stopping recursion - no more debt left');
+				  		// d_('Stopping recursion - no more debt left');
 
 				  		// Zero the remainder pool.
 				  		var set = {};
@@ -283,29 +283,29 @@ _.extend(Helpers, {
 				  			// We only consider sending revenue to the shared account we are actually distributing revenue.
 
 					  		if (excess > 0) {
-						  		d_('Sending excess revenue to shared account: ' + excess);
+						  		// d_('Sending excess revenue to shared account: ' + excess);
 
 				          // Sending excess to shared account.
-				          d_('Incrementing shared credit by ' + excess);
+				          // d_('Incrementing shared credit by ' + excess);
 									TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:excess } });
 
-							  	d_('\nFinal distribution');
-							  	d_(_activeDistribution(TimeAccounts.findOne({ _id:accountId }), 'revenue'));
+							  	// d_('\nFinal distribution');
+							  	// d_(_activeDistribution(TimeAccounts.findOne({ _id:accountId }), 'revenue'));
 						  		h_.distributeDividends();
 					  		}
 					  		else {
-						  		d_('No excess left either - no need to send anything to the shared account');
-							  	d_('\nFinal distribution');
-							  	d_(_activeDistribution(TimeAccounts.findOne({ _id:accountId }), 'dividends'));
+						  		// d_('No excess left either - no need to send anything to the shared account');
+							  	// d_('\nFinal distribution');
+							  	// d_(_activeDistribution(TimeAccounts.findOne({ _id:accountId }), 'dividends'));
 					  		}
 				  		}
 				  		else {
-				  			d_('Not distributing revenue - Will not be sending anything to the shared account');
+				  			// d_('Not distributing revenue - Will not be sending anything to the shared account');
 				  		}
 	          }
 			  	}
 			  	else {
-			  		d_('Stopping recursion - cannot distribute leftover ' + distributionName+ ' - not enough remaining: Remainder: ' + remainder);
+			  		// d_('Stopping recursion - cannot distribute leftover ' + distributionName+ ' - not enough remaining: Remainder: ' + remainder);
 
 			  		// Record the remainder.
 	          var set = {};
@@ -313,34 +313,34 @@ _.extend(Helpers, {
 			  		TimeAccounts.update({ _id:accountId }, { $set:set });
 
 			  		if (distributionName === 'revenue') {
-				  		d_('Will not send excess revenue to shared account');
+				  		// d_('Will not send excess revenue to shared account');
 			  		}
 			  		else if (distributionName === 'dividends') {
 				  		var account = TimeAccounts.findOne({ _id:accountId });
-				  		d_(account.contributions);
+				  		// d_(account.contributions);
 			  		}
 
-				  	d_('\nFinal distribution');
-				  	d_(_activeDistribution(account, distributionName));
+				  	// d_('\nFinal distribution');
+				  	// d_(_activeDistribution(account, distributionName));
 			  	}
 			  }
 			  else {
 			  	if (distributionName === 'revenue') {
-			  		d_('No active contributors -- revenue sent to shared account: ' + remainderPool);
+			  		// d_('No active contributors -- revenue sent to shared account: ' + remainderPool);
 
 			  		sharedAccount = h_.sharedAccount();
-				  	d_(sharedAccount);
+				  	// d_(sharedAccount);
 
 						TimeAccounts.update({ liabilityLimit:{ $exists:true } }, { $inc:{ credit:remainderPool } });
 						TimeAccounts.update({ _id:accountId }, { $set:{ revenue:0 } });
 
 			  		sharedAccount = h_.sharedAccount();
-				  	d_(sharedAccount);
+				  	// d_(sharedAccount);
 
 			  		h_.distributeDividends();
 			  	}
 			  	else if (distributionName === 'dividends') {
-				  	d_('No active contributions -- dividends placed in account credit: ' + remainderPool);
+				  	// d_('No active contributions -- dividends placed in account credit: ' + remainderPool);
 
 				  	// Since we don't have any active contributions, we have no outstanding debt to apply this dividend to.
 				  	// It can be placed into their credit instead.
@@ -349,8 +349,8 @@ _.extend(Helpers, {
 				  	TimeAccounts.update({ _id:accountId }, { $set:{ dividends:0 } });
 
 			  		var account = TimeAccounts.findOne({ _id:accountId });
-				  	d_('Account after:');
-				  	d_(account);
+				  	// d_('Account after:');
+				  	// d_(account);
 			  	}
 			  }
 

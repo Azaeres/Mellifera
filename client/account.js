@@ -5,24 +5,38 @@
       return h_.liabilityLimit();
     },
     credit: function() {
-      var credit;
-      var timeAccount = h_.timeAccount();
+      var credit = 0;
+      var account = h_.timeAccount();
 
-      if (typeof timeAccount !== 'undefined') {
-        credit = timeAccount.credit;
+      if (!_.isUndefined(account)) {
+        var lockedCredit = h_.totalOutstandingContributionAmount(account._id, true);
+        credit = account.credit - lockedCredit;
+        if (credit < 0)
+          credit = 0;
+        d_('credit:', credit, account.credit, lockedCredit);
       }
 
       return h_.hoursFromCents(credit);
     },
+    lockedCredit: function() {
+      var lockedCredit = 0;
+      var account = h_.timeAccount();
+
+      if (!_.isUndefined(account)) {
+        lockedCredit = h_.totalOutstandingContributionAmount(account._id, true);
+      }
+
+      return h_.hoursFromCents(lockedCredit);
+    },
     debt: function() {
-      d_('Getting debt...');
+      // d_('Getting debt...');
 
       var debt;
   
       var timeAccount = h_.timeAccount();
 
       if (typeof timeAccount !== 'undefined') {
-        debt = h_.getTotalOutstandingContributionAmount(timeAccount._id);
+        debt = h_.totalOutstandingContributionAmount(timeAccount._id);
       }
 
       return h_.hoursFromCents(debt);

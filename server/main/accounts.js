@@ -57,7 +57,7 @@ _.extend(Helpers, {
 		var accountId;
 		var account = h_.userTimeAccount();
 
-		if (account !== null) {
+		if (!_.isUndefined(account)) {
 			accountId = account._id;
 		}
 
