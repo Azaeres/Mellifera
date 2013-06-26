@@ -119,4 +119,12 @@
   	}
   });
 
+	Template.contributions.events({
+		'click .sources .cancel': function(event) {
+			var contributionId = $(event.target).closest('.contribution').data('contribution-id');
+			Meteor.call('RemoveContribution', contributionId);
+		}
+	});
+
+
 })();
