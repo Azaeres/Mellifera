@@ -147,6 +147,6 @@ License
 
 Mellifera is licensed under a [Creative Commons Attribution 3.0 Unported license](http://creativecommons.org/licenses/by/3.0/).
 
-![Creative Commons License](http://i.creativecommons.org/l/by/3.0/80x15.png "Creative Commons License
+![Creative Commons License](http://i.creativecommons.org/l/by/3.0/80x15.png "Creative Commons License")
 
 
