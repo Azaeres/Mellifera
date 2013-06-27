@@ -26,11 +26,13 @@
 	  				var contributions = [];
 	  				var contributionIds = account.contributors[contributor.id];
 	  				_.each(contributionIds, function(contributionId) {
+
 	  					var contribution = Contributions.findOne(contributionId);
 	  					if (!_.isUndefined(contribution)) {
+
 		  					contribution.amountOutstanding = h_.hoursFromCents(contribution.amountOutstanding);
 		  					contribution.amountReported = h_.hoursFromCents(contribution.amountReported);
-		  					
+
 		  					if (_.isNull(contribution.dateActivated)) {
 		  						contribution.inactive = true;
 		  					}
@@ -48,14 +50,22 @@
 	  			Session.set('Contributors', contributors);
 	  		});
 
-	  		
-
 				return Session.get('Contributors');
   		}
   	}
   });
 
 	Template.contributors.events({
+		'click .shares .accept': function(event) {
+			var contributionId = $(event.target).closest('.contribution').data('contribution-id');
+			Meteor.call('ActivateContribution', contributionId, function() {
+				// This is strange that I have to manually render the `contributors` template here.
+				// I can't see how this template isn't set up to autorun properly, but maybe I'll figure it out later.
+				Meteor.render(function () {
+				  return Template.contributors();
+				});
+			});
+		},
 		'click .shares .deny': function(event) {
 			var contributionId = $(event.target).closest('.contribution').data('contribution-id');
 			Meteor.call('RemoveContribution', contributionId);

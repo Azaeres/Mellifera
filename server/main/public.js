@@ -138,7 +138,15 @@ Meteor.methods({
 	},
 
 	RemoveContribution: function(contributionId) {
-		h_.removeContribution(contributionId);
+		// Remove the locked credit associated with this contribution.
+		var contribution = Contributions.findOne({ _id:contributionId });
+		if (!_.isUndefined(contribution)) {
+			var contributorAccountId = contribution.contributorAccountId;
+			var amount = contribution.amountOutstanding;
+			TimeAccounts.update({ _id:contributorAccountId }, { $inc:{ credit:-amount } });
+
+			h_.removeContribution(contributionId);
+		}
 	}
 
 

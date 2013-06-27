@@ -65,11 +65,6 @@ _.extend(Helpers, {
 			var contributorAccountId = contribution.contributorAccountId;
 			var contributorAccount = TimeAccounts.findOne({ _id:contribution.contributorAccountId });
 
-			// Remove the locked credit associated with this contribution.
-			var amount = contribution.amountOutstanding;
-			TimeAccounts.update({ _id:contributorAccountId }, { $inc:{ credit:-amount } });
-
-
 			var numContributions = contributorAccount.contributions[businessAccountId].length;
 
 			if (numContributions <= 1) {
@@ -92,5 +87,5 @@ _.extend(Helpers, {
 	}
 
 
-	
+
 });
