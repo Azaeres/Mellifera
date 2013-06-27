@@ -6,23 +6,27 @@ _.extend(Helpers, {
 
 	recordContribution: function(contributorAccountId, amount, businessAccountId) {
 
-		var contributionId = Contributions.insert({
-			contributorAccountId: contributorAccountId,
-			businessAccountId: businessAccountId,
-			dateReported: new Date(),
-			amountReported: amount,
-			dateActivated: null,
-			amountOutstanding: amount
-		});
+		var contributionId;
 
-		// Hook the contribution up to the time accounts.
-		var set = {};
-		set['contributions.'+businessAccountId] = contributionId;
-		TimeAccounts.update({ _id:contributorAccountId }, { $push:set });
+		if (amount > 0) {
+			var contributionId = Contributions.insert({
+				contributorAccountId: contributorAccountId,
+				businessAccountId: businessAccountId,
+				dateReported: new Date(),
+				amountReported: amount,
+				dateActivated: null,
+				amountOutstanding: amount
+			});
 
-		set = {};
-		set['contributors.'+contributorAccountId] = contributionId;
-		TimeAccounts.update({ _id:businessAccountId }, { $push:set });
+			// Hook the contribution up to the time accounts.
+			var set = {};
+			set['contributions.'+businessAccountId] = contributionId;
+			TimeAccounts.update({ _id:contributorAccountId }, { $push:set });
+
+			set = {};
+			set['contributors.'+contributorAccountId] = contributionId;
+			TimeAccounts.update({ _id:businessAccountId }, { $push:set });
+		}
 
 		return contributionId;
 	},

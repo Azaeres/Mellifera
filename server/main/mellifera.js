@@ -102,34 +102,42 @@ _.extend(Helpers, {
 				if (account.status === 'active') {
 
 					// Makes sure the given amount is valid.
-					if (h_.isInteger(amount) && amount >= 0) {
+					if (h_.isInteger(amount)) {
 
-						// Sees if there's enough room within the liability limit to take on
-						// more debt.
-						var totalDebt = h_.totalOutstandingContributionAmount(fromAccountId);
-						var availableDebt = liabilityLimit - totalDebt;
-						var remaining = availableDebt - amount;
+						if (amount > 0) {
 
-						if (remaining < 0) {
-							// Not enough room to take on the full amount, so we cap it.
-							remaining = Math.abs(remaining);
-							amount -= remaining;
+							// Sees if there's enough room within the liability limit to take on
+							// more debt.
+							var totalDebt = h_.totalOutstandingContributionAmount(fromAccountId);
+							var availableDebt = liabilityLimit - totalDebt;
+							var remaining = availableDebt - amount;
+
+							if (remaining < 0) {
+								// Not enough room to take on the full amount, so we cap it.
+								remaining = Math.abs(remaining);
+								amount -= remaining;
+							}
+
+							// The loan amount we issue cannot be negative.
+							if (amount < 0)
+								amount = 0;
+
+							// Records the contribution association.
+							// Returns the loan amount that was ultimately issued.
+							contributionId = h_.recordContribution(fromAccountId, amount, toAccountId);
+							if (!_.isUndefined(contributionId)) {
+								// Increment the contributor's credit.
+								TimeAccounts.update({ _id:fromAccountId }, { $inc:{ credit:amount } });
+
+								// For now, we'll automatically activate all contributions,
+								// for convenience until the authorization views are completed.
+								// h_.activateContribution(contributionId);
+							}
+							else
+								throw new Meteor.Error(500, 'Contribution amount was capped to zero by the liability limit.');
 						}
-
-						// The loan amount we issue cannot be negative.
-						if (amount < 0)
-							amount = 0;
-
-						// Records the contribution association.
-						// Returns the loan amount that was ultimately issued.
-						contributionId = h_.recordContribution(fromAccountId, amount, toAccountId);
-
-						// Increment the contributor's credit.
-						TimeAccounts.update({ _id:fromAccountId }, { $inc:{ credit:amount } });
-
-						// For now, we'll automatically activate all contributions,
-						// for convenience until the authorization views are completed.
-						// h_.activateContribution(contributionId);
+						else
+							throw new Meteor.Error(500, 'Contribution amount must be greater than zero.');
 					}
 					else
 						throw new Meteor.Error(500, 'Invalid contribution amount.');
