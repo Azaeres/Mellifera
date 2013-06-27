@@ -106,7 +106,8 @@ _.extend(Helpers, {
 
 						// Sees if there's enough room within the liability limit to take on
 						// more debt.
-						var availableDebt = liabilityLimit - h_.totalOutstandingContributionAmount(toAccountId);
+						var totalDebt = h_.totalOutstandingContributionAmount(fromAccountId);
+						var availableDebt = liabilityLimit - totalDebt;
 						var remaining = availableDebt - amount;
 
 						if (remaining < 0) {
