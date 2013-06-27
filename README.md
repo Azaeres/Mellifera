@@ -7,25 +7,32 @@ Mellifera gets its name from the [western honey bee](https://en.wikipedia.org/wi
 
 ## Roadmap
 
-v0.5.0
+Working proof-of-concept:
 
-* [Revenue sharing](https://github.com/ryancbarry/Mellifera/wiki/Group-contribution-payment-proposal)
-* Refunds and direct debt payment
-* User activity logging
-* Improved notifications
-* Terms of use
-* User guide / API documentation
+* 0.6 Update documentation, readme, code comments
+* 0.7 Separate devel branch, refactor, organize codebase
+* 0.8 Improving security, using Meteor match
+* 0.9 Admin tool to activate, freeze, and seize time accounts, also the ability to change the liability limit
+* Deployment to Meteor
+* Usage testing
+* 1.0 Logging and notifications
+* 1.1 Refunds
+* 1.2 Terms of use
+* 1.3 User guide and developer documentation
 
-v0.6.0
+Community:
 
-* Devel branch
-* Deployment
-* Quickpay with QR codes
-* Advanced user search
-* User profiles
-* Global/individual stats/charts
-* String localization
 * Gravatar support
+* Quickpay with QR codes
+* User profiles
+* Advanced user search
+* Global/individual stats/charts
+
+With upcoming Meteor features:
+
+* String localization
+* Test specs
+
 
 Getting started
 ===============
