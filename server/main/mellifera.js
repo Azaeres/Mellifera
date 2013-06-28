@@ -129,9 +129,10 @@ _.extend(Helpers, {
 								// Increment the contributor's credit.
 								TimeAccounts.update({ _id:fromAccountId }, { $inc:{ credit:amount } });
 
-								// For now, we'll automatically activate all contributions,
-								// for convenience until the authorization views are completed.
-								// h_.activateContribution(contributionId);
+								// Automatically accept contributions to one's own account.
+								if (toAccountId === fromAccountId) {
+									h_.activateContribution(contributionId);
+								}
 							}
 							else
 								throw new Meteor.Error(500, 'Contribution amount was capped to zero by the liability limit.');
