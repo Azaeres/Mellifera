@@ -13,12 +13,13 @@ Working proof-of-concept:
 * 0.7 Separate devel branch, refactor, organize codebase
 * 0.8 Improving security, using Meteor match
 * 0.9 Admin tool to activate, freeze, and seize time accounts, also the ability to change the liability limit
+* 1.0 Mellifera logo
 * Deployment to Meteor
 * Usage testing
-* 1.0 Logging and notifications
-* 1.1 Refunds
-* 1.2 Terms of use
-* 1.3 User guide and developer documentation
+* 1.1 Logging and notifications
+* 1.2 Refunds
+* 1.3 Terms of use
+* 1.4 User guide and developer documentation
 
 Community:
 
