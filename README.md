@@ -11,29 +11,33 @@ Working proof-of-concept:
 
 * 0.6 Update documentation, readme, code comments
 * 0.7 Separate devel branch, refactor, organize codebase
-* 0.8 Improving security, using Meteor match
-* 0.9 Admin tool to activate, freeze, and seize time accounts, also the ability to change the liability limit
-* 1.0 Mellifera logo
-* Deployment to Meteor
-* Usage testing
-* 1.1 Logging and notifications
-* 1.2 Refunds
-* 1.3 Terms of use
-* 1.4 User guide and developer documentation
+* 0.8 Root account method to activate a given time account
+* 0.9 Root account method to freeze a given time account
+* 0.10 Improving security, using Meteor match, and closing known loopholes
+* 1.0 Deployment to Meteor and usage testing
+
+* 1.1 Root account method to seize a given time account
+* 1.2 Root account method to change the system-wide liability limit
+* 1.3 Mellifera logo
+* 1.4 Refunds
+* 1.5 Terms of use
+* 1.6 User guide and developer documentation
 
 Community:
 
+* Notifications
 * Gravatar support
 * Confirm payment readout with contributors it will compensate and surplus it will generate
 * Quickpay with QR codes
 * User profiles
 * Advanced user search
-* Global/individual stats/charts
 
 With upcoming Meteor features:
 
-* String localization
-* Test specs
+* Logging (SQL)
+* Analytics (SQL)
+* String localization (l18n)
+* Test specs (Testing framework)
 
 
 Getting started
