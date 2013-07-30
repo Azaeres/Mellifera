@@ -74,7 +74,7 @@ With upcoming Meteor features:
 
 Since problems persist because of the lack of suffient explanatory knowledge, this project seeks good explanation as its primary means of solving and preventing problems.
 
-See the [wiki](https://github.com/ryancbarry/Mellifera/wiki/The-Open-Economy) for more information.
+See the [wiki](https://github.com/ryancbarry/Mellifera/wiki) for more information.
 
 ## License
 
