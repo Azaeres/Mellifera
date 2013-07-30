@@ -56,7 +56,7 @@ Working proof-of-concept:
 * 0.0.15 User guide and developer documentation
 * **0.1.0 Deployment to Meteor**
 
-Community:
+Ideas for the future:
 
 * Usage testing
 * Refunds
