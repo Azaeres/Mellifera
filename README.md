@@ -1,5 +1,4 @@
-About
-=====
+# About Mellifera
 
 Mellifera is a working proof-of-concept for a time exchange resilient to wealth distribution problems. It encourages active cooperation, knowledge-sharing, and helps stabilize prices, safeguarding against uncontrolled deflation. This exchange trades in an hour-based local currency. This project is experimental and is undergoing active development.
 
@@ -24,6 +23,7 @@ Working proof-of-concept:
 
 Community:
 
+* Contribution memo field
 * Notifications
 * Gravatar support
 * Quickpay with QR codes (Mellifera Paypoint)
@@ -39,8 +39,7 @@ With upcoming Meteor features:
 * Test specs (Testing framework)
 
 
-Getting started
-===============
+## Getting started
 
 * How to start a development server (a production-ready, local community server is currently not supported):
 	1. Download and install Meteor `curl https://install.meteor.com | /bin/sh`. For more information on deploying a Meteor app, see the [Meteor documentation](http://docs.meteor.com).
@@ -70,15 +69,13 @@ Getting started
 	4. Enter the amount of the payment (in hours).
 	5. Click the "Submit" button.
 
-Explanation-Driven Development
-==============================
+## Explanation-Driven Development
 
 Since problems persist because of the lack of suffient explanatory knowledge, this project seeks good explanation as its primary means of solving and preventing problems.
 
 See the [wiki](https://github.com/ryancbarry/Mellifera/wiki/The-Open-Economy) for more information.
 
-License
-=======
+## License
 
 Mellifera is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported license](http://creativecommons.org/licenses/by-sa/3.0/).
 
