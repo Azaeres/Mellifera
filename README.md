@@ -14,15 +14,16 @@ Working proof-of-concept:
 * 0.0.9 Root account method to freeze a given time account
 * 0.0.10 Improving security, using Meteor match, and closing known loopholes
 * 0.0.11 Terms of use, make sure users cannot register an account without agreeing to the terms
-* **0.1.0 Deployment to Meteor and usage testing**
 * 0.1.1 Root account method to seize a given time account
 * 0.1.2 Root account method to change the system-wide liability limit
 * 0.1.3 Mellifera logo
-* 0.1.4 Refunds
 * 0.1.6 User guide and developer documentation
+* **0.1.0 Deployment to Meteor**
 
 Community:
 
+* Usage testing
+* Refunds
 * Contribution memo field
 * Notifications
 * Gravatar support
