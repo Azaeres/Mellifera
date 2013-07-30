@@ -75,6 +75,7 @@ With upcoming Meteor features:
 * Analytics (SQL)
 * String localization (l18n)
 * Test specs (Testing framework)
+* Public API (REST endpoints)
 
 ## License
 
