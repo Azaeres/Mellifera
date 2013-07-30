@@ -28,6 +28,7 @@ Community:
 * Gravatar support
 * Quickpay with QR codes (Mellifera Paypoint)
 * Confirm payment readout with contributors it will compensate and surplus it will generate
+* Redesigned front end
 * User profiles
 * Advanced user search
 
