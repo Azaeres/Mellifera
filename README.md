@@ -6,7 +6,7 @@ Mellifera gets its name from the [western honey bee](https://en.wikipedia.org/wi
 
 ## Explanation-Driven Development
 
-Since problems persist because of the lack of suffient explanatory knowledge, this project seeks good explanation as its primary means of solving and preventing problems.
+Since problems persist because of the lack of sufficient explanatory knowledge, this project seeks good explanation as its primary means of solving and preventing problems.
 
 See the [wiki](https://github.com/ryancbarry/Mellifera/wiki/The-Open-Economy) for more information.
 
