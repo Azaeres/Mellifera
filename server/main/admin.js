@@ -97,16 +97,16 @@ _.extend(Helpers, {
   activateTimeAccount: function(email) {
   	var account;
 
-    if (_.isNull(email)) {
-      account = this.userTimeAccount();
-    }
-    else {
+    if (!_.isNull(email)) {
       account = this.findTimeAccountByEmail(email);
+
+      if (!_.isUndefined(account)) {
+        TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
+        return true;
+      }
     }
 
-    if (!_.isUndefined(account)) {
-      TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
-    }
+    return false;
   },
 
 

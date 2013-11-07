@@ -87,6 +87,7 @@ _.extend(Helpers, {
 		    accountId = TimeAccounts.insert({
 		    	owner: ownerId,
 		    	status:'frozen',
+		    	role:'user',
 		    	credit: 0,
 
 		    	// Revenue distribution
@@ -99,6 +100,12 @@ _.extend(Helpers, {
 		    });
 
 		    account = TimeAccounts.findOne(accountId);
+
+		    // For now, the first user (other than the shared time account),
+	    	// 	will be admin.
+	    	if (TimeAccounts.find().count() === 2) {
+	    		TimeAccounts.update({ _id:accountId }, { $set:{ role:'admin' } });
+	    	}
 		  }
 		}
 		else
@@ -137,7 +144,7 @@ _.extend(Helpers, {
 
 
 
-  findEmailByTimeAccoeuntId: function(accountId) {
+  findEmailByTimeAccountId: function(accountId) {
   	var timeAccount = TimeAccounts.findOne(accountId);
   	d_(timeAccount);
 

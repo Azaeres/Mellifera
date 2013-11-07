@@ -199,9 +199,10 @@ if (Helpers.inDevelopmentEnvironment() || Helpers.inTestingEnvironment()) {
       return 'Time account frozen.';
     },
     ActivateTimeAccount: function(email) {
-      h_.activateTimeAccount(email);
-
-      return 'Time account activated.';
+      if (h_.activateTimeAccount(email)) {
+        return 'Time account activated.';
+      }
+      return 'Failed to activate time account.';
     },
     SetupTestEnvironment: function() {
       return h_.setupTestEnvironment();
