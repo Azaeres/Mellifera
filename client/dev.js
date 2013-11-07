@@ -1,3 +1,6 @@
+// Helpers that are only available in the development or testing environments.
+
+
 if (Helpers.inDevelopmentEnvironment() || Helpers.inTestingEnvironment()) {
   _.extend(Helpers, {
     wipeAccount: function() {

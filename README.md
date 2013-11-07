@@ -12,7 +12,7 @@ See the [wiki](https://github.com/ryancbarry/Mellifera/wiki) for more informatio
 
 ## Getting started
 
-* How to start a development server (a production-ready, local community server is currently not supported):
+* How to start a development server (a production-ready, local community server is planned, but currently not supported):
 	1. Download and install Meteor `curl https://install.meteor.com | /bin/sh`. For more information on deploying a Meteor app, see the [Meteor documentation](http://docs.meteor.com).
 	2. Clone the repo `git clone git@github.com:ryancbarry/Mellifera.git`.
 	3. Run `meteor run --settings development.json` from within the project directory.
@@ -44,17 +44,17 @@ See the [wiki](https://github.com/ryancbarry/Mellifera/wiki) for more informatio
 
 Working proof-of-concept:
 
-* 0.0.6 Update documentation, readme, code comments
-* 0.0.7 Refactor, organize codebase
-* 0.0.8 Root account method to activate a given time account
-* 0.0.9 Root account method to freeze a given time account
-* 0.0.10 Improving security, using Meteor match, and closing known loopholes
-* 0.0.11 Terms of use, make sure users cannot register an account without agreeing to the terms
-* 0.0.12 Root account method to seize a given time account
-* 0.0.13 Root account method to change the system-wide liability limit
-* 0.0.14 Mellifera logo
-* 0.0.15 User guide and developer documentation
-* **0.1.0 Deployment to Meteor**
+* 0.1.0 Update documentation, readme, code comments
+* 0.1.1 Refactor, organize codebase
+* 0.1.2 Root account method to activate a given time account
+* 0.1.3 Root account method to freeze a given time account
+* 0.1.4 Improving security, using Meteor match, and closing known loopholes
+* 0.1.5 Terms of use, make sure users cannot register an account without agreeing to the terms
+* 0.1.6 Root account method to seize a given time account
+* 0.1.7 Root account method to change the system-wide liability limit
+* 0.1.8 Mellifera logo
+* 0.2.0 User guide and developer documentation
+* **0.2.0 Deployment to Meteor**
 
 Ideas for the future:
 
