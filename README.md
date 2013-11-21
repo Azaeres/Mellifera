@@ -20,26 +20,27 @@ See the [wiki](https://github.com/ryancbarry/Mellifera/wiki) for more informatio
 	3. Run `meteor run --settings development.json` from within the project directory.
 	4. Visit `http://localhost:3000` with a web browser.
 
-* Registering a user account (the first user created is automatically given the 'admin' role):
+* How to registering a user account (the first user created is automatically given the 'admin' role):
 	1. Create the account.
 		1. Logout (unless already logged out).
 		2. Click the "Sign in" link, then enter your email address and password.
 		3. Click the "Create account" link, then click the "Create account" button.
 	2. Logged in with the 'admin' account, run `Helpers.activateTimeAccount([email address])` in the JavaScript console, replacing [email address] with the email of the registered account to activate.
 
-* Freezing an account:
+* How to freeze an account (keeping it from affecting the economy, and keeping the economy from affecting it):
 	1. Logged in with the 'admin' account, run `Helpers.freezeTimeAccount([email address])` in the JavaScript console, replacing [email address] with the email of the account to freeze.
  
 * How to report a contribution of time:
 	1. Click the "Account" tab to navigate to the Account page.
 	2. Click the "Report Contribution" button.
-	3. On the Report Contribution form, enter the amount of time worked.
-	4. Click the "Submit" button.
+	3. On the Report Contribution form, enter the email address of the time account you wish to contribute to, or leave it blank to contribute to your own account.
+	4. On the Report Contribution form, enter the amount of time worked (in hours).
+	5. Click the "Submit" button.
 
 * How to pay someone:
 	1. Click the "Account" tab to navigate to the Account page.
 	2. Click the "Make Payment" button.
-	3. On the "Make Payment" form, enter the email address of the user you want to pay.
+	3. On the "Make Payment" form, enter the email address of the time account you want to pay.
 	4. Enter the amount of the payment (in hours).
 	5. Click the "Submit" button.
 
@@ -58,6 +59,7 @@ Working proof-of-concept:
 
 Ideas for the future:
 
+* Instead of presenting the word "debt" to the user, present "available credit", which is = liabilityLimit - currentDebt. 0 if debt-locked, liability limit if no debt on account.
 * Redesigned, responsive front end ready for mobile.
 * Quickpay with QR codes (Mellifera Paypoint).
 * Refunds.
