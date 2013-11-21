@@ -1,3 +1,5 @@
+v0.0.5
+
 # About
 
 Mellifera is a working proof-of-concept for a time exchange resilient to wealth distribution problems. It encourages active cooperation, knowledge-sharing, and helps stabilize prices, safeguarding against uncontrolled deflation. This exchange trades in an hour-based local currency. This project is experimental and is undergoing active development.
