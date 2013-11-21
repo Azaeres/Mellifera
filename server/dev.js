@@ -174,35 +174,50 @@ if (Helpers.inDevelopmentEnvironment() || Helpers.inTestingEnvironment()) {
     CollideSharedAccount: function() {
       var sharedAcct = h_.sharedAccount();
       h_.collideTimeAccount(sharedAcct._id);
-
       return 'Shared time account collided.';
     },
     CollideAccount: function() {
       var timeAcctId = h_.userTimeAccountId();
       h_.collideTimeAccount(timeAcctId);
-
       return 'Time account collided.';
     },
     SetLiabilityLimit: function(newLimit) {
       h_.setLiabilityLimit(newLimit);
-
       return 'Liability limit set.';
     },
     SeizeDebt: function(accountId, amount) {
       h_.seizeDebt(accountId, amount);
-
       return 'Debt seized.';
     },
-    FreezeTimeAccount: function(accountId) {
-      h_.freezeTimeAccount(accountId);
+    FreezeTimeAccount: function(email) {
+      var timeAccount = h_.userTimeAccount();
+      if (!_.isNull(timeAccount)) {
+        if (timeAccount.role === 'admin') {
+          account = h_.findTimeAccountByEmail(email);
+          h_.freezeTimeAccount(account._id);
 
-      return 'Time account frozen.';
+          return 'Time account frozen.';
+        }
+        else
+          throw new Meteor.Error(500, 'Permission denied.');
+      }
+      else
+        throw new Meteor.Error(500, 'User not logged in.');
     },
     ActivateTimeAccount: function(email) {
-      if (h_.activateTimeAccount(email)) {
-        return 'Time account activated.';
+      var timeAccount = h_.userTimeAccount();
+      if (!_.isNull(timeAccount)) {
+        if (timeAccount.role === 'admin') {
+          account = h_.findTimeAccountByEmail(email);
+          h_.activateTimeAccount(account._id);
+
+          return 'Time account activated.';
+        }
+        else
+          throw new Meteor.Error(500, 'Permission denied.');
       }
-      return 'Failed to activate time account.';
+      else
+        throw new Meteor.Error(500, 'User not logged in.');
     },
     SetupTestEnvironment: function() {
       return h_.setupTestEnvironment();
@@ -224,6 +239,5 @@ if (Helpers.inDevelopmentEnvironment() || Helpers.inTestingEnvironment()) {
       return h_.distributeRevenue(accountId);
     }
   });
-
 }
 

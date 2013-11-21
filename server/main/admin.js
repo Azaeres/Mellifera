@@ -82,18 +82,43 @@ _.extend(Helpers, {
 
   freezeTimeAccount: function(accountId) {
   	var account = TimeAccounts.findOne(accountId);
-  	if (typeof account != 'undefined') {
-			// The shared account cannot be frozen.
-	  	if (typeof account.liabilityLimit == 'undefined') {
+  	if (!_.isUndefined(account)) {
+      // The shared account cannot be activated or frozen.
+      // The shared time account stands out because it is the only account 
+      // with a liability limit.
+	  	if (_.isUndefined(account.liabilityLimit)) {
 				TimeAccounts.update({ _id:account._id }, { $set:{ status:'frozen' } });
 	  	}
+      else
+        throw new Meteor.Error(500, 'Failed to freeze time account. Cannot freeze the shared time account.');
 		}
+    else
+      throw new Meteor.Error(500, 'Failed to freeze time account. Account not found.');
   },
 
 
 
 
 
+  activateTimeAccount: function(accountId) {
+    var account = TimeAccounts.findOne(accountId);
+    if (!_.isUndefined(account)) {
+      // The shared account cannot be activated or frozen.
+      // The shared time account stands out because it is the only account 
+      // with a liability limit.
+      if (_.isUndefined(account.liabilityLimit)) {
+        TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
+      }
+      else
+        throw new Meteor.Error(500, 'Failed to activate time account. Cannot activate the shared time account.');
+    }
+    else
+      throw new Meteor.Error(500, 'Failed to activate time account. Account not found.');
+  },
+
+
+
+/*
   activateTimeAccount: function(email) {
   	var account;
 
@@ -101,14 +126,28 @@ _.extend(Helpers, {
       account = this.findTimeAccountByEmail(email);
 
       if (!_.isUndefined(account)) {
-        TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
-        return true;
+
+        var hasPermission = false;
+        try {
+          var thisAccount = this.userTimeAccount();
+          if (thisAccount.role === 'admin') {
+            hasPermission = true;
+          }
+        }
+        catch(e) {
+          hasPermission = true;
+        }
+      
+        if (hasPermission) {
+          TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
+          return true;
+        }
       }
     }
 
     return false;
   },
-
+*/
 
 
 

@@ -31,9 +31,8 @@ if (Helpers.inDevelopmentEnvironment() || Helpers.inTestingEnvironment()) {
       });
       return 'Seizing debt...';
     },
-    freezeTimeAccount: function() {
-      var timeAccount = h_.timeAccount();
-      Meteor.call('FreezeTimeAccount', timeAccount._id, function(error, result) {
+    freezeTimeAccount: function(email) {
+      Meteor.call('FreezeTimeAccount', email, function(error, result) {
         (typeof error === 'undefined') ? d_(result) : d_(error);
       });
       return 'Freezing time account...';
