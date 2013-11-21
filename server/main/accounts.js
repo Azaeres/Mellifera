@@ -34,10 +34,10 @@ _.extend(Helpers, {
 	 * If the logged-in user doesn't have a time account yet, one is created.
 	 */
 	userTimeAccount: function() {
-	  var account;
+	  var account = null;
 	  var userId = Meteor.userId();
 
-	  if (userId !== null) {
+	  if (!_.isNull(userId)) {
 	  	account = h_.timeAccount(userId);
 	  }
 
@@ -86,8 +86,8 @@ _.extend(Helpers, {
 		  	// If they don't have a time account, create one.
 		    accountId = TimeAccounts.insert({
 		    	owner: ownerId,
-		    	status:'frozen',
-		    	role:'user',
+		    	status: 'frozen',
+		    	role: 'user',
 		    	credit: 0,
 
 		    	// Revenue distribution
