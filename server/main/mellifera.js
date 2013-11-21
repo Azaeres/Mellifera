@@ -95,59 +95,65 @@ _.extend(Helpers, {
 			}
 
 
-			var account = TimeAccounts.findOne(toAccountId);
+			var toAccount = TimeAccounts.findOne(toAccountId);
 
 			// Makes sure the account is valid and active.
-			if (!_.isUndefined(account)) {
-				if (account.status === 'active') {
+			if (!_.isUndefined(toAccount)) {
 
-					// Makes sure the given amount is valid.
-					if (h_.isInteger(amount)) {
+				var fromAccount = TimeAccounts.findOne(fromAccountId);
+				if (fromAccount.status === 'active') {
+					if (toAccount.status === 'active') {
 
-						if (amount > 0) {
+						// Makes sure the given amount is valid.
+						if (h_.isInteger(amount)) {
 
-							// Sees if there's enough room within the liability limit to take on
-							// more debt.
-							var totalDebt = h_.totalOutstandingContributionAmount(fromAccountId);
-							var availableDebt = liabilityLimit - totalDebt;
-							var remaining = availableDebt - amount;
+							if (amount > 0) {
 
-							if (remaining < 0) {
-								// Not enough room to take on the full amount, so we cap it.
-								remaining = Math.abs(remaining);
-								amount -= remaining;
-							}
+								// Sees if there's enough room within the liability limit to take on
+								// more debt.
+								var totalDebt = h_.totalOutstandingContributionAmount(fromAccountId);
+								var availableDebt = liabilityLimit - totalDebt;
+								var remaining = availableDebt - amount;
 
-							// The loan amount we issue cannot be negative.
-							if (amount < 0)
-								amount = 0;
-
-							// Records the contribution association.
-							// Returns the loan amount that was ultimately issued.
-							contributionId = h_.recordContribution(fromAccountId, amount, toAccountId);
-							if (!_.isUndefined(contributionId)) {
-								// Increment the contributor's credit.
-								TimeAccounts.update({ _id:fromAccountId }, { $inc:{ credit:amount } });
-
-								// Automatically accept contributions to one's own account.
-								if (toAccountId === fromAccountId) {
-									h_.activateContribution(contributionId);
+								if (remaining < 0) {
+									// Not enough room to take on the full amount, so we cap it.
+									remaining = Math.abs(remaining);
+									amount -= remaining;
 								}
+
+								// The loan amount we issue cannot be negative.
+								if (amount < 0)
+									amount = 0;
+
+								// Records the contribution association.
+								// Returns the loan amount that was ultimately issued.
+								contributionId = h_.recordContribution(fromAccountId, amount, toAccountId);
+								if (!_.isUndefined(contributionId)) {
+									// Increment the contributor's credit.
+									TimeAccounts.update({ _id:fromAccountId }, { $inc:{ credit:amount } });
+
+									// Automatically accept contributions to one's own account.
+									if (toAccountId === fromAccountId) {
+										h_.activateContribution(contributionId);
+									}
+								}
+								else
+									throw new Meteor.Error(500, 'Contribution amount was capped to zero by the liability limit.');
 							}
 							else
-								throw new Meteor.Error(500, 'Contribution amount was capped to zero by the liability limit.');
+								throw new Meteor.Error(500, 'Contribution amount must be greater than zero.');
 						}
 						else
-							throw new Meteor.Error(500, 'Contribution amount must be greater than zero.');
+							throw new Meteor.Error(500, 'Invalid contribution amount.');
 					}
 					else
-						throw new Meteor.Error(500, 'Invalid contribution amount.');
+						throw new Meteor.Error(500, 'Destination time account is frozen.');
 				}
 				else
-					throw new Meteor.Error(500, 'User\'s time account is frozen.');
+					throw new Meteor.Error(500, 'Source account is frozen.');
 			}
 			else
-				throw new Meteor.Error(500, 'No time account found for user.');
+				throw new Meteor.Error(500, 'Destination time account not found.');
 		}
 		else
 			throw new Meteor.Error(500, 'Liability limit not set.');
