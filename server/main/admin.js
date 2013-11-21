@@ -118,38 +118,6 @@ _.extend(Helpers, {
 
 
 
-/*
-  activateTimeAccount: function(email) {
-  	var account;
-
-    if (!_.isNull(email)) {
-      account = this.findTimeAccountByEmail(email);
-
-      if (!_.isUndefined(account)) {
-
-        var hasPermission = false;
-        try {
-          var thisAccount = this.userTimeAccount();
-          if (thisAccount.role === 'admin') {
-            hasPermission = true;
-          }
-        }
-        catch(e) {
-          hasPermission = true;
-        }
-      
-        if (hasPermission) {
-          TimeAccounts.update({ _id:account._id }, { $set:{ status:'active' } });
-          return true;
-        }
-      }
-    }
-
-    return false;
-  },
-*/
-
-
 
 
   createSharedTimeAccount: function() {
