@@ -58,24 +58,24 @@ Working proof-of-concept:
 
 Ideas for the future:
 
-* Redesigned, responsive front end ready for mobile
-* Quickpay with QR codes (Mellifera Paypoint)
-* Refunds
-* Confirm payment readout with contributors it will compensate and surplus it will generate
-* Contribution memo field
-* Usage testing
-* Notification system
-* Gravatar support
-* User profiles
-* Advanced user search
+* Redesigned, responsive front end ready for mobile.
+* Quickpay with QR codes (Mellifera Paypoint).
+* Refunds.
+* Confirm payment readout with contributors it will compensate and surplus it will generate.
+* Contribution memo field.
+* Usage testing.
+* Notification system.
+* Gravatar support.
+* User profiles.
+* Advanced user search.
 
 With upcoming Meteor features:
 
-* Logging (SQL)
-* Analytics (SQL)
-* String localization (l18n)
-* Test specs (Testing framework)
-* Public API (REST endpoints)
+* Logging (SQL).
+* Analytics (SQL).
+* String localization (l18n).
+* Test specs (Testing framework).
+* Public API (REST endpoints).
 
 ## License
 
